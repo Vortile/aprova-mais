@@ -2,9 +2,10 @@ export const ROUTES = {
   HOME: "/",
   DASHBOARD: "/dashboard",
   SETUP: "/setup",
-  SIGN_IN: "/sign-in",
+  SIGN_IN: "/entrar",
   SIGN_UP: "/sign-up",
   LOGIN: "/login",
+  REGISTER: "/registrar",
   ADMIN: {
     ALUNOS: "/admin/alunos",
     PROFESSORES: "/admin/professores",

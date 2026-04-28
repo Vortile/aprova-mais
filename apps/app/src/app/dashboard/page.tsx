@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { Loader2 } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
 
 export default function DashboardPage() {
   const { isLoaded, user } = useUser();
@@ -13,7 +14,7 @@ export default function DashboardPage() {
     if (!isLoaded) return;
 
     if (!user) {
-      router.replace("/sign-in");
+      router.replace(ROUTES.SIGN_IN);
       return;
     }
 

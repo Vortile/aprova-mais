@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   title: "Entrar | Plataforma do Professor",
 };
 
-export default function SignInPage() {
+export default function RegistrarPage() {
   if (!hasAppEnv()) {
     redirect(ROUTES.SETUP);
   }

@@ -98,7 +98,7 @@ export function StudentSidebar({ userName, userEmail }: StudentSidebarProps) {
               <DropdownMenuContent side="top" align="start" className="w-52">
                 <DropdownMenuItem
                   className="text-destructive focus:text-destructive"
-                  onClick={() => void signOut({ redirectUrl: "/sign-in" })}
+                  onClick={() => void signOut({ redirectUrl: ROUTES.SIGN_IN })}
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Sair
