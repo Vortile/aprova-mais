@@ -1,7 +1,7 @@
 import "server-only";
 
 import { redirect } from "next/navigation";
-import { auth, currentUser } from "@clerk/nextjs/server";
+import { auth, clerkClient, currentUser } from "@clerk/nextjs/server";
 import { TABLES, type Database } from "@repo/db";
 import { createAdminClient } from "@/lib/supabase/admin";
 import {
@@ -14,6 +14,7 @@ import { asSupabaseInsert, asSupabaseUpdate } from "@/lib/supabase/typed";
 import { ROUTES } from "@/lib/routes";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type ClerkUser = NonNullable<Awaited<ReturnType<typeof currentUser>>>;
 
 export type AppSession = {
   clerkUserId: string;
@@ -22,9 +23,7 @@ export type AppSession = {
   profile: ProfileRow;
 };
 
-function getPrimaryEmail(
-  user: NonNullable<Awaited<ReturnType<typeof currentUser>>>,
-) {
+function getPrimaryEmail(user: ClerkUser) {
   const primaryEmail = user.emailAddresses.find(
     (email) => email.id === user.primaryEmailAddressId,
   );
@@ -34,9 +33,7 @@ function getPrimaryEmail(
   );
 }
 
-function getDisplayName(
-  user: NonNullable<Awaited<ReturnType<typeof currentUser>>>,
-) {
+function getDisplayName(user: ClerkUser) {
   const fullName = [user.firstName, user.lastName]
     .filter(Boolean)
     .join(" ")
@@ -72,10 +69,25 @@ async function findProfileByClerkOrEmail(
   return (byEmailRows?.[0] as ProfileRow | undefined) ?? null;
 }
 
-function inferRoleFromMetadata(
-  user: NonNullable<Awaited<ReturnType<typeof currentUser>>>,
-): AppRole {
+function inferRoleFromMetadata(user: ClerkUser): AppRole {
   return getRoleFromMetadata(user.privateMetadata, user.publicMetadata);
+}
+
+async function getAuthenticatedClerkUser(
+  userId: string,
+): Promise<ClerkUser | null> {
+  const user = await currentUser();
+
+  if (user) {
+    return user;
+  }
+
+  try {
+    const client = await clerkClient();
+    return await client.users.getUser(userId);
+  } catch {
+    return null;
+  }
 }
 
 async function linkAlunoProfile(
@@ -106,7 +118,7 @@ export async function getCurrentAppSession(): Promise<AppSession | null> {
     return null;
   }
 
-  const user = await currentUser();
+  const user = await getAuthenticatedClerkUser(userId);
 
   if (!user) {
     return null;

@@ -1,35 +1,14 @@
-"use client";
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useUser } from "@clerk/nextjs";
-import { Loader2 } from "lucide-react";
+import { redirect } from "next/navigation";
+import { requireAppSession } from "@/lib/auth/session";
 import { ROUTES } from "@/lib/routes";
+import { ROLES } from "@/lib/supabase/env";
 
-export default function DashboardPage() {
-  const { isLoaded, user } = useUser();
-  const router = useRouter();
+export default async function DashboardPage() {
+  const session = await requireAppSession();
 
-  useEffect(() => {
-    if (!isLoaded) return;
+  if (session.profile.role === ROLES.ALUNO) {
+    redirect(ROUTES.ALUNO.MATERIAIS);
+  }
 
-    if (!user) {
-      router.replace(ROUTES.SIGN_IN);
-      return;
-    }
-
-    const role = (user.publicMetadata?.role as string | undefined) ?? "aluno";
-
-    if (role === "admin" || role === "professor") {
-      router.replace("/admin/alunos");
-    } else {
-      router.replace("/aluno/materiais");
-    }
-  }, [isLoaded, user, router]);
-
-  return (
-    <div className="flex min-h-svh items-center justify-center">
-      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-    </div>
-  );
+  redirect(ROUTES.ADMIN.ALUNOS);
 }
