@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { BrandLockup } from "@/components/brand-lockup";
 import { teacher, whatsappUrl } from "@/lib/teacher";
 
 export const metadata: Metadata = {
@@ -16,11 +17,11 @@ export default function PrivacidadePage() {
       {/* Nav strip */}
       <div className="px-6 py-5 border-b border-outline-variant/10">
         <div className="max-w-3xl mx-auto">
-          <Link
-            href="/"
-            className="text-xl font-black text-primary font-headline"
-          >
-            Aprova<span className="text-tertiary">+</span>
+          <Link href="/" className="inline-flex">
+            <BrandLockup
+              labelClassName="font-headline text-xl font-black"
+              logoClassName="h-8 w-8"
+            />
           </Link>
         </div>
       </div>

@@ -9,7 +9,6 @@ import {
   ClipboardList,
   DollarSign,
   ExternalLink,
-  GraduationCap,
   LayoutList,
   LogOut,
   Settings,
@@ -35,6 +34,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { BrandLockup } from "@/components/brand-lockup";
 import { ROUTES } from "@/lib/routes";
 import type { AppRole } from "@/lib/supabase/env";
 
@@ -94,9 +94,11 @@ export function AdminSidebar({
   return (
     <Sidebar>
       <SidebarContent>
-        <div className="flex items-center gap-2 px-4 py-4">
-          <GraduationCap className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-sm">Plataforma</span>
+        <div className="px-4 py-4">
+          <BrandLockup size="sm" />
+          <p className="mt-1 text-xs font-medium text-muted-foreground">
+            Plataforma
+          </p>
         </div>
         <SidebarSeparator />
         {navItems.map((group) => (

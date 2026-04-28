@@ -3,7 +3,7 @@
 import { useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, ClipboardList, GraduationCap, LogOut } from "lucide-react";
+import { BookOpen, ClipboardList, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -23,6 +23,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { BrandLockup } from "@/components/brand-lockup";
 import { ROUTES } from "@/lib/routes";
 
 const navItems = [
@@ -50,9 +51,11 @@ export function StudentSidebar({ userName, userEmail }: StudentSidebarProps) {
   return (
     <Sidebar>
       <SidebarContent>
-        <div className="flex items-center gap-2 px-4 py-4">
-          <GraduationCap className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-sm">Área do Aluno</span>
+        <div className="px-4 py-4">
+          <BrandLockup size="sm" />
+          <p className="mt-1 text-xs font-medium text-muted-foreground">
+            Área do Aluno
+          </p>
         </div>
         <SidebarSeparator />
         <SidebarGroup>

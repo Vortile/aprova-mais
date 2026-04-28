@@ -1,4 +1,5 @@
 import { MobileNav } from "@/components/mobile-nav";
+import { BrandLockup } from "@/components/brand-lockup";
 import { teacher, whatsappUrl, instagramUrl } from "@/lib/teacher";
 import { PlanosSection } from "@/components/planos-section";
 import { createBrowserClient } from "@repo/db";
@@ -48,11 +49,12 @@ export default async function WebHomePage() {
       {/* ── Top Nav ── */}
       <nav className="fixed top-0 w-full z-50 bg-[#faf9f6]/80 backdrop-blur-xl shadow-sm shadow-[#303330]/5">
         <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto w-full relative">
-          <a
-            className="text-2xl font-bold text-primary font-headline tracking-tight"
-            href="#"
-          >
-            Aprova<span className="text-tertiary font-extrabold">+</span>
+          <a className="inline-flex" href="#">
+            <BrandLockup
+              priority
+              labelClassName="font-headline text-2xl font-bold tracking-tight"
+              logoClassName="h-9 w-9"
+            />
           </a>
           <div className="hidden md:flex items-center gap-8">
             <a
@@ -427,11 +429,11 @@ export default async function WebHomePage() {
       <footer className="bg-surface-container-low w-full rounded-t-4xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center px-8 py-12 max-w-7xl mx-auto w-full">
           <div className="mb-8 md:mb-0 space-y-4">
-            <a
-              className="text-xl font-black text-primary font-headline"
-              href="#"
-            >
-              Aprova<span className="text-tertiary">+</span>
+            <a className="inline-flex" href="#">
+              <BrandLockup
+                labelClassName="font-headline text-xl font-black"
+                logoClassName="h-8 w-8"
+              />
             </a>
             <p className="text-on-surface-variant text-sm leading-relaxed max-w-xs">
               Resultado que aparece. Sou {teacher.firstName}, professor
