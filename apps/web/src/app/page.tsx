@@ -465,7 +465,7 @@ export default async function WebHomePage() {
               <div className="flex flex-col gap-2">
                 <a
                   className="text-tertiary font-semibold hover:opacity-100 transition-all text-sm"
-                  href="https://app.aprovamais.com.br"
+                  href="https://app.aprovamaiscurso-pro.com.br"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
