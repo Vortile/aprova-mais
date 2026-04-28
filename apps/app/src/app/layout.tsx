@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Plataforma do Professor",
+  title: "Plataforma Aprova+",
   description: "Plataforma de aulas particulares",
 };
 

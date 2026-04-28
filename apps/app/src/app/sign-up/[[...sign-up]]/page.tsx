@@ -5,7 +5,7 @@ import { hasAppEnv } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
 
 export const metadata: Metadata = {
-  title: "Convite | Plataforma do Professor",
+  title: "Plataforma Aprova+",
 };
 
 type SearchParams = Promise<Record<string, string | string[] | undefined>>;

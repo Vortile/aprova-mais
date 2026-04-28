@@ -12,7 +12,7 @@ import { hasAppEnv } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
 
 export const metadata: Metadata = {
-  title: "Configuração | Plataforma do Professor",
+  title: "Plataforma Aprova+",
 };
 
 export default function SetupPage() {

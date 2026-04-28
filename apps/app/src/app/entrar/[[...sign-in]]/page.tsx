@@ -5,7 +5,7 @@ import { hasAppEnv } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
 
 export const metadata: Metadata = {
-  title: "Entrar | Plataforma do Professor",
+  title: "Plataforma Aprova+",
 };
 
 export default function EntrarPage() {
