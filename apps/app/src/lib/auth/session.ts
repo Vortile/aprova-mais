@@ -73,6 +73,24 @@ function inferRoleFromMetadata(user: ClerkUser): AppRole {
   return getRoleFromMetadata(user.privateMetadata, user.publicMetadata);
 }
 
+function buildFallbackProfile(
+  userId: string,
+  user: ClerkUser,
+  email: string,
+  name: string | null,
+): ProfileRow {
+  return {
+    id: userId,
+    clerk_user_id: userId,
+    email,
+    full_name: name,
+    role: inferRoleFromMetadata(user),
+    avatar_url: user.imageUrl ?? null,
+    address: null,
+    created_at: new Date(0).toISOString(),
+  };
+}
+
 async function getAuthenticatedClerkUser(
   userId: string,
 ): Promise<ClerkUser | null> {
@@ -131,58 +149,62 @@ export async function getCurrentAppSession(): Promise<AppSession | null> {
   }
 
   const name = getDisplayName(user);
-  const supabase = createAdminClient();
-  let profile = await findProfileByClerkOrEmail(userId, email);
+  const fallbackProfile = buildFallbackProfile(userId, user, email, name);
+  let profile = fallbackProfile;
 
-  if (profile) {
+  try {
+    const supabase = createAdminClient();
     const nextRole = inferRoleFromMetadata(user);
-    const shouldUpdate =
-      profile.clerk_user_id !== userId ||
-      normalizeEmail(profile.email) !== email ||
-      profile.full_name !== name ||
-      profile.role !== nextRole;
+    const existingProfile = await findProfileByClerkOrEmail(userId, email);
 
-    if (shouldUpdate) {
+    if (existingProfile) {
+      profile = existingProfile;
+
+      const shouldUpdate =
+        profile.clerk_user_id !== userId ||
+        normalizeEmail(profile.email) !== email ||
+        profile.full_name !== name ||
+        profile.role !== nextRole;
+
+      if (shouldUpdate) {
+        const { data } = await supabase
+          .from(TABLES.PROFILES)
+          .update(
+            asSupabaseUpdate<"profiles">({
+              clerk_user_id: userId,
+              email,
+              full_name: name,
+              role: nextRole,
+            }),
+          )
+          .eq("id", profile.id)
+          .select("*")
+          .single();
+
+        profile = (data as ProfileRow | null) ?? profile;
+      }
+    } else {
       const { data } = await supabase
         .from(TABLES.PROFILES)
-        .update(
-          asSupabaseUpdate<"profiles">({
+        .insert(
+          asSupabaseInsert<"profiles">({
+            id: crypto.randomUUID(),
             clerk_user_id: userId,
             email,
             full_name: name,
             role: nextRole,
           }),
         )
-        .eq("id", profile.id)
         .select("*")
         .single();
 
-      profile = (data as ProfileRow | null) ?? profile;
+      profile = (data as ProfileRow | null) ?? fallbackProfile;
     }
-  } else {
-    const role = inferRoleFromMetadata(user);
-    const { data } = await supabase
-      .from(TABLES.PROFILES)
-      .insert(
-        asSupabaseInsert<"profiles">({
-          id: crypto.randomUUID(),
-          clerk_user_id: userId,
-          email,
-          full_name: name,
-          role,
-        }),
-      )
-      .select("*")
-      .single();
 
-    profile = data as ProfileRow | null;
+    await linkAlunoProfile(profile.id, email);
+  } catch {
+    profile = fallbackProfile;
   }
-
-  if (!profile) {
-    return null;
-  }
-
-  await linkAlunoProfile(profile.id, email);
 
   return {
     clerkUserId: userId,

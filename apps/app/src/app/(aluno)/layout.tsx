@@ -32,7 +32,16 @@ export default async function AlunoLayout({
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">{children}</div>
+        <div className="relative flex flex-1 flex-col overflow-hidden">
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80"
+            style={{ backgroundImage: "url('/background.jpg')" }}
+          />
+          <div className="relative z-10 flex flex-1 flex-col gap-4 p-4 md:p-6">
+            {children}
+          </div>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

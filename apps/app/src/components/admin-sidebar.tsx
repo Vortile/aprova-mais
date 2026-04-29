@@ -94,11 +94,8 @@ export function AdminSidebar({
   return (
     <Sidebar>
       <SidebarContent>
-        <div className="px-4 py-4">
+        <div className="px-2 pt-2 mb-0!">
           <BrandLockup size="sm" />
-          <p className="mt-1 text-xs font-medium text-muted-foreground">
-            Plataforma
-          </p>
         </div>
         <SidebarSeparator />
         {navItems.map((group) => (

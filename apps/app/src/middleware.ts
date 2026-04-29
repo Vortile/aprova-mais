@@ -34,10 +34,6 @@ async function handleAppMiddleware(auth: MiddlewareAuth, request: NextRequest) {
     return NextResponse.redirect(new URL(ROUTES.SIGN_IN, request.url));
   }
 
-  if (authState.userId && (isLoginRoute || isSignInRoute || isSignUpRoute)) {
-    return NextResponse.redirect(new URL(ROUTES.DASHBOARD, request.url));
-  }
-
   return NextResponse.next({ request });
 }
 

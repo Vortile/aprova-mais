@@ -2,16 +2,28 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { SignIn } from "@clerk/nextjs";
 import { BrandLockup } from "@/components/brand-lockup";
+import { getCurrentAppSession } from "@/lib/auth/session";
 import { hasAppEnv } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
+import { ROLES } from "@/lib/supabase/env";
 
 export const metadata: Metadata = {
   title: "Plataforma Aprova+",
 };
 
-export default function EntrarPage() {
+export default async function EntrarPage() {
   if (!hasAppEnv()) {
     redirect(ROUTES.SETUP);
+  }
+
+  const session = await getCurrentAppSession();
+
+  if (session) {
+    if (session.profile.role === ROLES.ALUNO) {
+      redirect(ROUTES.ALUNO.MATERIAIS);
+    }
+
+    redirect(ROUTES.ADMIN.ALUNOS);
   }
 
   return (
