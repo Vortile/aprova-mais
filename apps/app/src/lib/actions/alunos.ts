@@ -530,6 +530,14 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
     );
 
     if (error) {
+      console.error("[saveAluno] failed to create aluno", {
+        error,
+        profileId,
+        monthlyAmount,
+        normalizedEmail,
+        grade: values.data.grade,
+        subjectFocus,
+      });
       return { ok: false, error: "Não foi possível criar o aluno." };
     }
   }
