@@ -231,6 +231,31 @@ export interface Database {
         };
         Relationships: [];
       };
+      depoimentos: {
+        Row: {
+          id: string;
+          quote: string;
+          author: string;
+          sort_order: number;
+          active: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          quote: string;
+          author: string;
+          sort_order?: number;
+          active?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          quote?: string;
+          author?: string;
+          sort_order?: number;
+          active?: boolean;
+        };
+        Relationships: [];
+      };
       tarefa_alunos: {
         Row: {
           id: string;

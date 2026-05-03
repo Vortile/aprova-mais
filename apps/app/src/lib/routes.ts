@@ -14,6 +14,7 @@ export const ROUTES = {
     PLANOS: "/admin/planos",
     FINANCEIRO: "/admin/financeiro",
     CONFIGURACOES: "/admin/configuracoes",
+    DEPOIMENTOS: "/admin/depoimentos",
   },
   ALUNO: {
     MATERIAIS: "/aluno/materiais",

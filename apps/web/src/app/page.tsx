@@ -2,6 +2,7 @@ import { MobileNav } from "@/components/mobile-nav";
 import { BrandLockup } from "@/components/brand-lockup";
 import { teacher, whatsappUrl, instagramUrl } from "@/lib/teacher";
 import { PlanosSection } from "@/components/planos-section";
+import { DepoimentosSection } from "@/components/depoimentos-section";
 import { createClient } from "@repo/db";
 import { unstable_cache } from "next/cache";
 
@@ -42,8 +43,41 @@ type PlanoRow = {
   sort_order: number;
 };
 
+type DepoimentoRow = {
+  id: string;
+  quote: string;
+  author: string;
+  sort_order: number;
+};
+
+const getDepoimentos = unstable_cache(
+  async (): Promise<DepoimentoRow[]> => {
+    try {
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+      );
+      const { data, error } = await supabase
+        .from("depoimentos")
+        .select("id, quote, author, sort_order")
+        .eq("active", true)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true });
+      if (error || !data) return [];
+      return data;
+    } catch {
+      return [];
+    }
+  },
+  ["depoimentos"],
+  { revalidate: 60 },
+);
+
 export default async function WebHomePage() {
-  const planos = await getPlanos();
+  const [planos, depoimentos] = await Promise.all([
+    getPlanos(),
+    getDepoimentos(),
+  ]);
   return (
     <>
       {/* ── Top Nav ── */}
@@ -319,71 +353,10 @@ export default async function WebHomePage() {
         <PlanosSection planos={planos} zcalUrl={zcalUrl} />
 
         {/* ── Depoimentos ── */}
-        <section className="py-24 px-6 max-w-7xl mx-auto" id="depoimentos">
-          <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-5xl font-headline font-bold text-on-surface">
-              O que as famílias dizem
-            </h2>
-          </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-surface-container-low p-8 rounded-3xl italic text-on-surface-variant relative">
-              <span className="material-symbols-outlined text-6xl text-primary/10 absolute top-4 left-4">
-                format_quote
-              </span>
-              <p className="relative z-10 mb-6">
-                &ldquo;Meu filho tinha pavor de física. Depois de 2 meses de
-                acompanhamento, ele tirou a maior nota da sala no 9º ano.
-                Incrível a paciência do professor.&rdquo;
-              </p>
-              <cite className="not-italic block font-bold text-on-surface">
-                — Mãe do João, 9º ano
-              </cite>
-            </div>
-            <div className="bg-surface-container-low p-8 rounded-3xl italic text-on-surface-variant relative">
-              <span className="material-symbols-outlined text-6xl text-primary/10 absolute top-4 left-4">
-                format_quote
-              </span>
-              <p className="relative z-10 mb-6">
-                &ldquo;O diferencial é vir em casa. Facilitou muito nossa rotina
-                em Manaus. A didática é moderna e ele se conecta muito bem com
-                os adolescentes.&rdquo;
-              </p>
-              <cite className="not-italic block font-bold text-on-surface">
-                — Pai da Ana Clara, 1º Médio
-              </cite>
-            </div>
-            <div className="bg-surface-container-low p-8 rounded-3xl italic text-on-surface-variant relative">
-              <span className="material-symbols-outlined text-6xl text-primary/10 absolute top-4 left-4">
-                format_quote
-              </span>
-              <p className="relative z-10 mb-6">
-                &ldquo;Sempre muito pontual e dedicado. As notas em matemática
-                subiram consistentemente. Recomendo para quem busca segurança e
-                resultado.&rdquo;
-              </p>
-              <cite className="not-italic block font-bold text-on-surface">
-                — Mãe do Lucas, 8º ano
-              </cite>
-            </div>
-          </div>
-          <div className="mt-16 bg-primary text-on-primary p-8 md:p-12 rounded-[3rem] flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-            <div>
-              <h3 className="text-2xl font-bold mb-2">Transparência total</h3>
-              <p className="opacity-90">
-                Quer conversar com famílias que já estudaram com o professor?
-                Peça nossos contatos de referência.
-              </p>
-            </div>
-            <a
-              className="bg-[#25D366] text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:scale-105 transition-transform shrink-0"
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Falar pelo WhatsApp
-            </a>
-          </div>
-        </section>
+        <DepoimentosSection
+          depoimentos={depoimentos}
+          whatsappUrl={whatsappUrl}
+        />
 
         {/* ── CTA Final ── */}
         <section

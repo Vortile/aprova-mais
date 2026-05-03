@@ -11,6 +11,7 @@ import {
   ExternalLink,
   LayoutList,
   LogOut,
+  MessageSquareQuote,
   Settings,
   UserCog,
   Users,
@@ -42,6 +43,7 @@ const ADMIN_ONLY_HREFS = new Set<string>([
   ROUTES.ADMIN.PROFESSORES,
   ROUTES.ADMIN.PLANOS,
   ROUTES.ADMIN.FINANCEIRO,
+  ROUTES.ADMIN.DEPOIMENTOS,
 ]);
 
 const navItems = [
@@ -54,6 +56,11 @@ const navItems = [
       { href: ROUTES.ADMIN.TAREFAS, label: "Tarefas", icon: ClipboardList },
       { href: ROUTES.ADMIN.PLANOS, label: "Planos", icon: LayoutList },
       { href: ROUTES.ADMIN.FINANCEIRO, label: "Financeiro", icon: DollarSign },
+      {
+        href: ROUTES.ADMIN.DEPOIMENTOS,
+        label: "Depoimentos",
+        icon: MessageSquareQuote,
+      },
     ],
   },
   {
