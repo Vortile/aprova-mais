@@ -10,6 +10,7 @@ import {
   Pencil,
   User,
   UserPlus,
+  Filter,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   deleteMaterial,
   updateMaterialAssignments,
@@ -73,6 +81,21 @@ export function MateriaisClient({
     new Set(),
   );
   const [savingAssign, setSavingAssign] = useState(false);
+  const [filterSubject, setFilterSubject] = useState("all");
+  const [filterGrade, setFilterGrade] = useState("all");
+
+  const uniqueSubjects = [
+    ...new Set(materiais.map((m) => m.subject).filter(Boolean)),
+  ] as string[];
+  const uniqueGrades = [
+    ...new Set(materiais.map((m) => m.grade_level).filter(Boolean)),
+  ] as string[];
+
+  const filteredMateriais = materiais.filter(
+    (m) =>
+      (filterSubject === "all" || m.subject === filterSubject) &&
+      (filterGrade === "all" || m.grade_level === filterGrade),
+  );
 
   function handleOpenAssign(material: MaterialRow) {
     const current = new Set(assignmentsByMaterial[material.id] ?? []);
@@ -138,8 +161,9 @@ export function MateriaisClient({
     <>
       <div className="flex items-center justify-between">
         <p className="text-sm text-muted-foreground">
-          {materiais.length} material{materiais.length !== 1 ? "is" : ""}{" "}
-          cadastrado{materiais.length !== 1 ? "s" : ""}
+          {filteredMateriais.length} material
+          {filteredMateriais.length !== 1 ? "is" : ""} cadastrado
+          {filteredMateriais.length !== 1 ? "s" : ""}
         </p>
         <Button size="sm" onClick={handleAdd}>
           <Plus className="h-4 w-4 mr-1" />
@@ -147,25 +171,66 @@ export function MateriaisClient({
         </Button>
       </div>
 
-      {materiais.length === 0 ? (
+      {/* Filters */}
+      {(uniqueSubjects.length > 0 || uniqueGrades.length > 0) && (
+        <div className="flex flex-wrap items-center gap-2">
+          <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
+          {uniqueSubjects.length > 0 && (
+            <Select value={filterSubject} onValueChange={setFilterSubject}>
+              <SelectTrigger className="h-8 w-40 text-xs">
+                <SelectValue placeholder="Disciplina" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as disciplinas</SelectItem>
+                {uniqueSubjects.map((s) => (
+                  <SelectItem key={s} value={s}>
+                    {s}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+          {uniqueGrades.length > 0 && (
+            <Select value={filterGrade} onValueChange={setFilterGrade}>
+              <SelectTrigger className="h-8 w-36 text-xs">
+                <SelectValue placeholder="Série" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas as séries</SelectItem>
+                {uniqueGrades.map((g) => (
+                  <SelectItem key={g} value={g}>
+                    {g}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        </div>
+      )}
+
+      {filteredMateriais.length === 0 ? (
         <div className="flex flex-col items-center justify-center rounded-lg border border-dashed py-16 text-center">
           <FileText className="h-10 w-10 text-muted-foreground mb-3" />
           <p className="text-muted-foreground text-sm">
-            Nenhum material cadastrado.
+            {materiais.length === 0
+              ? "Nenhum material cadastrado."
+              : "Nenhum material encontrado para os filtros selecionados."}
           </p>
-          <Button
-            variant="outline"
-            size="sm"
-            className="mt-4"
-            onClick={handleAdd}
-          >
-            <Plus className="h-4 w-4 mr-1" />
-            Adicionar primeiro material
-          </Button>
+          {materiais.length === 0 && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="mt-4"
+              onClick={handleAdd}
+            >
+              <Plus className="h-4 w-4 mr-1" />
+              Adicionar primeiro material
+            </Button>
+          )}
         </div>
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {materiais.map((material) => (
+          {filteredMateriais.map((material) => (
             <Card
               key={material.id}
               className="group hover:shadow-md transition-shadow flex flex-col"

@@ -646,3 +646,55 @@ export async function deleteAluno(alunoId: string): Promise<DeleteAlunoResult> {
       : "Aluno excluído.",
   };
 }
+
+export async function resendAlunoInvite(
+  alunoId: string,
+): Promise<SaveAlunoResult> {
+  if (!alunoIdSchema.safeParse(alunoId).success) {
+    return { ok: false, error: "Aluno inválido." };
+  }
+
+  const access = await assertStaffAccess();
+
+  if ("error" in access) {
+    return { ok: false, error: access.error ?? ACTION_ERRORS.NO_PERMISSION };
+  }
+
+  const aluno = await findAluno(alunoId);
+
+  if (!aluno) {
+    return { ok: false, error: "Aluno não encontrado." };
+  }
+
+  if (aluno.profiles?.clerk_user_id) {
+    return {
+      ok: false,
+      error:
+        "Este aluno já possui uma conta ativa. O convite não é necessário.",
+    };
+  }
+
+  if (!aluno.contact_email) {
+    return {
+      ok: false,
+      error: "Este aluno não possui email cadastrado para receber o convite.",
+    };
+  }
+
+  const normalizedEmail = normalizeEmail(aluno.contact_email);
+
+  if (!normalizedEmail) {
+    return { ok: false, error: "O email cadastrado é inválido." };
+  }
+
+  try {
+    await createAlunoInvitation(
+      normalizedEmail,
+      aluno.profiles?.full_name ?? null,
+    );
+  } catch {
+    return { ok: false, error: "Não foi possível reenviar o convite." };
+  }
+
+  return { ok: true, message: "Convite reenviado com sucesso." };
+}

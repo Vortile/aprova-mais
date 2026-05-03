@@ -2,7 +2,14 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import {
+  Eye,
+  MailCheck,
+  MoreHorizontal,
+  Pencil,
+  Plus,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
@@ -36,7 +43,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { deleteAluno } from "@/lib/actions/alunos";
+import { deleteAluno, resendAlunoInvite } from "@/lib/actions/alunos";
 import { AlunoForm } from "./aluno-form";
 import type { Database } from "@repo/db";
 type AlunoRow = Database["public"]["Tables"]["alunos"]["Row"] & {
@@ -72,6 +79,7 @@ export function AlunosClient({
   const [editing, setEditing] = useState<AlunoRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AlunoRow | null>(null);
+  const [resendingId, setResendingId] = useState<string | null>(null);
 
   function handleAdd() {
     setEditing(null);
@@ -101,6 +109,17 @@ export function AlunosClient({
     router.refresh();
   }
 
+  async function handleResendInvite(aluno: AlunoRow) {
+    setResendingId(aluno.id);
+    const result = await resendAlunoInvite(aluno.id);
+    setResendingId(null);
+    if (!result.ok) {
+      toast.error(result.error);
+    } else {
+      toast.success(result.message);
+    }
+  }
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -125,6 +144,7 @@ export function AlunosClient({
               <TableHead>Conta</TableHead>
               <TableHead>Série</TableHead>
               <TableHead>Disciplinas</TableHead>
+              <TableHead>Professor</TableHead>
               <TableHead className="w-15" />
             </TableRow>
           </TableHeader>
@@ -132,15 +152,21 @@ export function AlunosClient({
             {alunos.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={6}
+                  colSpan={7}
                   className="h-32 text-center text-muted-foreground"
                 >
-                  Nenhum aluno cadastrado.
+                  {isAdmin
+                    ? "Nenhum aluno cadastrado."
+                    : "Nenhum aluno atribuído a você ainda."}
                 </TableCell>
               </TableRow>
             ) : (
               alunos.map((aluno) => (
-                <TableRow key={aluno.id}>
+                <TableRow
+                  key={aluno.id}
+                  className="cursor-pointer"
+                  onClick={() => router.push(`/admin/alunos/${aluno.id}`)}
+                >
                   <TableCell className="font-medium">
                     {aluno.profiles?.full_name ?? aluno.contact_email ?? "—"}
                   </TableCell>
@@ -187,23 +213,46 @@ export function AlunosClient({
                     </div>
                   </TableCell>
                   <TableCell>
-                    {isAdmin ? (
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-8 w-8"
-                          >
-                            <MoreHorizontal className="h-4 w-4" />
-                            <span className="sr-only">Ações</span>
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
+                    {aluno.professor_id
+                      ? (professors.find((p) => p.id === aluno.professor_id)
+                          ?.full_name ?? "—")
+                      : "—"}
+                  </TableCell>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-8 w-8">
+                          <MoreHorizontal className="h-4 w-4" />
+                          <span className="sr-only">Ações</span>
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem
+                          onClick={() =>
+                            router.push(`/admin/alunos/${aluno.id}`)
+                          }
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          Ver detalhes
+                        </DropdownMenuItem>
+                        {isAdmin && (
                           <DropdownMenuItem onClick={() => handleEdit(aluno)}>
                             <Pencil className="h-4 w-4 mr-2" />
                             Editar
                           </DropdownMenuItem>
+                        )}
+                        {aluno.profile_id && !aluno.profiles?.clerk_user_id && (
+                          <DropdownMenuItem
+                            disabled={resendingId === aluno.id}
+                            onClick={() => void handleResendInvite(aluno)}
+                          >
+                            <MailCheck className="h-4 w-4 mr-2" />
+                            {resendingId === aluno.id
+                              ? "Reenviando..."
+                              : "Reenviar convite"}
+                          </DropdownMenuItem>
+                        )}
+                        {isAdmin && (
                           <DropdownMenuItem
                             className="text-destructive focus:text-destructive"
                             disabled={deletingId === aluno.id}
@@ -214,9 +263,9 @@ export function AlunosClient({
                               ? "Excluindo..."
                               : "Excluir"}
                           </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    ) : null}
+                        )}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                   </TableCell>
                 </TableRow>
               ))

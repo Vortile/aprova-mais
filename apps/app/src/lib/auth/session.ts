@@ -231,7 +231,7 @@ export async function requireRole(role: AppRole) {
     // Redirect to the appropriate home for the user's actual role
     const home =
       session.profile.role === ROLES.ALUNO
-        ? ROUTES.ALUNO.MATERIAIS
+        ? ROUTES.ALUNO.HOME
         : ROUTES.ADMIN.ALUNOS;
     redirect(home);
   }
@@ -244,7 +244,7 @@ export async function requireStaff() {
   const session = await requireAppSession();
 
   if (session.profile.role === ROLES.ALUNO) {
-    redirect(ROUTES.ALUNO.MATERIAIS);
+    redirect(ROUTES.ALUNO.HOME);
   }
 
   return session;

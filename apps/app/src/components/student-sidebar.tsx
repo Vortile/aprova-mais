@@ -3,7 +3,7 @@
 import { useClerk } from "@clerk/nextjs";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, ClipboardList, LogOut } from "lucide-react";
+import { BookOpen, ClipboardList, LayoutDashboard, LogOut } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -27,6 +27,7 @@ import { BrandLockup } from "@/components/brand-lockup";
 import { ROUTES } from "@/lib/routes";
 
 const navItems = [
+  { href: ROUTES.ALUNO.HOME, label: "Início", icon: LayoutDashboard },
   { href: ROUTES.ALUNO.MATERIAIS, label: "Materiais", icon: BookOpen },
   { href: ROUTES.ALUNO.TAREFAS, label: "Tarefas", icon: ClipboardList },
 ];

@@ -417,6 +417,12 @@ export function TarefasClient({
             <TarefaEditForm
               tarefa={editTarget}
               materiais={materiais}
+              alunos={alunos}
+              currentAlunoIds={
+                editTarget.tarefa_alunos
+                  ?.map((e) => e.alunos?.id ?? "")
+                  .filter(Boolean) ?? []
+              }
               onSuccess={() => setEditTarget(null)}
             />
           )}

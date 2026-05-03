@@ -175,6 +175,7 @@ const updateTarefaSchema = z.object({
   description: z.string().trim(),
   dueDate: z.string().trim(),
   materialId: z.string().trim(),
+  alunoIds: z.array(z.string().uuid()).optional(),
 });
 
 export async function updateTarefa(input: unknown): Promise<ActionResult> {
@@ -193,7 +194,9 @@ export async function updateTarefa(input: unknown): Promise<ActionResult> {
     };
   }
 
-  const { error } = await createAdminClient()
+  const supabase = createAdminClient();
+
+  const { error } = await supabase
     .from(TABLES.TAREFAS)
     .update(
       asSupabaseUpdate<"tarefas">({
@@ -207,6 +210,51 @@ export async function updateTarefa(input: unknown): Promise<ActionResult> {
 
   if (error) {
     return { ok: false, error: "Não foi possível atualizar a tarefa." };
+  }
+
+  // Sync aluno assignments when provided
+  if (values.data.alunoIds !== undefined) {
+    const newIds = new Set(values.data.alunoIds);
+
+    // Fetch current assignments
+    const { data: current } = await supabase
+      .from(TABLES.TAREFA_ALUNOS)
+      .select("id, aluno_id, status")
+      .eq("tarefa_id", values.data.tarefaId);
+
+    const existing = (current ?? []) as {
+      id: string;
+      aluno_id: string;
+      status: string;
+    }[];
+
+    // Remove pending-only rows for alunos no longer in the list
+    const toRemove = existing
+      .filter((e) => !newIds.has(e.aluno_id) && e.status === "pendente")
+      .map((e) => e.id);
+
+    if (toRemove.length > 0) {
+      await supabase.from(TABLES.TAREFA_ALUNOS).delete().in("id", toRemove);
+    }
+
+    // Insert new assignments for alunos not yet in the table
+    const existingAlunoIds = new Set(existing.map((e) => e.aluno_id));
+    const toAdd = [...newIds].filter((id) => !existingAlunoIds.has(id));
+
+    if (toAdd.length > 0) {
+      const now = new Date().toISOString();
+      await supabase.from(TABLES.TAREFA_ALUNOS).insert(
+        toAdd.map((aluno_id) =>
+          asSupabaseInsert<"tarefa_alunos">({
+            tarefa_id: values.data.tarefaId,
+            aluno_id,
+            status: "pendente",
+            created_at: now,
+            updated_at: now,
+          }),
+        ),
+      );
+    }
   }
 
   revalidateTarefas();

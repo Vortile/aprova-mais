@@ -15,6 +15,7 @@ export const ROUTES = {
     DEPOIMENTOS: "/admin/depoimentos",
   },
   ALUNO: {
+    HOME: "/aluno",
     MATERIAIS: "/aluno/materiais",
     TAREFAS: "/aluno/tarefas",
   },

@@ -38,11 +38,18 @@ type MaterialRow = Pick<
   "id" | "title" | "subject"
 >;
 
+type AlunoOption = {
+  id: string;
+  grade: string | null;
+  profiles: { full_name: string | null } | null;
+};
+
 const schema = z.object({
   title: z.string().trim().min(1, "Informe o título"),
   description: z.string().trim(),
   due_date: z.string().trim(),
   material_id: z.string().trim(),
+  aluno_ids: z.array(z.string().uuid()),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -50,10 +57,14 @@ type FormValues = z.infer<typeof schema>;
 export function TarefaEditForm({
   tarefa,
   materiais,
+  alunos,
+  currentAlunoIds,
   onSuccess,
 }: {
   tarefa: TarefaForEdit;
   materiais: MaterialRow[];
+  alunos: AlunoOption[];
+  currentAlunoIds: string[];
   onSuccess: () => void;
 }) {
   const router = useRouter();
@@ -65,6 +76,7 @@ export function TarefaEditForm({
       description: tarefa.description ?? "",
       due_date: tarefa.due_date ?? "",
       material_id: tarefa.materiais?.id ?? "__none",
+      aluno_ids: currentAlunoIds,
     },
   });
 
@@ -75,6 +87,7 @@ export function TarefaEditForm({
       description: values.description,
       dueDate: values.due_date,
       materialId: values.material_id === "__none" ? "" : values.material_id,
+      alunoIds: values.aluno_ids,
     });
 
     if (!result.ok) {
@@ -166,6 +179,62 @@ export function TarefaEditForm({
             )}
           />
         </div>
+        <FormField
+          control={form.control}
+          name="aluno_ids"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Alunos atribuídos</FormLabel>
+              <FormControl>
+                <div className="max-h-56 space-y-2 overflow-y-auto rounded-md border p-3">
+                  {alunos.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">
+                      Nenhum aluno disponível.
+                    </p>
+                  ) : (
+                    alunos.map((aluno) => {
+                      const checked = field.value.includes(aluno.id);
+                      const alunoName =
+                        aluno.profiles?.full_name ?? "Aluno sem nome";
+
+                      return (
+                        <label
+                          key={aluno.id}
+                          className="flex cursor-pointer items-start gap-3 rounded-md border px-3 py-2 text-sm hover:bg-muted/40"
+                        >
+                          <input
+                            type="checkbox"
+                            className="mt-0.5 h-4 w-4 rounded border-input"
+                            checked={checked}
+                            onChange={(event) => {
+                              const nextValue = event.target.checked
+                                ? [...field.value, aluno.id]
+                                : field.value.filter(
+                                    (value) => value !== aluno.id,
+                                  );
+                              field.onChange(nextValue);
+                            }}
+                          />
+                          <span className="min-w-0">
+                            <span className="block font-medium">
+                              {alunoName}
+                            </span>
+                            {aluno.grade ? (
+                              <span className="text-xs text-muted-foreground">
+                                {aluno.grade}
+                              </span>
+                            ) : null}
+                          </span>
+                        </label>
+                      );
+                    })
+                  )}
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <div className="flex justify-end gap-2 pt-2">
           <Button type="submit" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? "Salvando..." : "Salvar alterações"}

@@ -64,7 +64,7 @@ async function handleAppMiddleware(auth: MiddlewareAuth, request: NextRequest) {
   if (authState.userId && isDashboardRoute) {
     const role = await getProfileRole(authState.userId);
     const destination =
-      role === "aluno" ? ROUTES.ALUNO.MATERIAIS : ROUTES.ADMIN.ALUNOS;
+      role === "aluno" ? ROUTES.ALUNO.HOME : ROUTES.ADMIN.ALUNOS;
     return NextResponse.redirect(new URL(destination, request.url));
   }
 
