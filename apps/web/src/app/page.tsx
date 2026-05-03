@@ -2,7 +2,7 @@ import { MobileNav } from "@/components/mobile-nav";
 import { BrandLockup } from "@/components/brand-lockup";
 import { teacher, whatsappUrl, instagramUrl } from "@/lib/teacher";
 import { PlanosSection } from "@/components/planos-section";
-import { createBrowserClient } from "@repo/db";
+import { createClient } from "@repo/db";
 import { unstable_cache } from "next/cache";
 
 const { zcalUrl } = teacher;
@@ -10,7 +10,7 @@ const { zcalUrl } = teacher;
 const getPlanos = unstable_cache(
   async (): Promise<PlanoRow[]> => {
     try {
-      const supabase = createBrowserClient(
+      const supabase = createClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
         process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
       );

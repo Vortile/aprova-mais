@@ -1,4 +1,5 @@
 export { createBrowserClient, createServerClient } from "@supabase/ssr";
+export { createClient } from "@supabase/supabase-js";
 export type { Database } from "./database.types";
 export type { SupabaseClient } from "@supabase/supabase-js";
 
