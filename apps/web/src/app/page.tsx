@@ -1,47 +1,11 @@
 import { MobileNav } from "@/components/mobile-nav";
 import { BrandLockup } from "@/components/brand-lockup";
 import { teacher, whatsappUrl, instagramUrl } from "@/lib/teacher";
-import { PlanosSection } from "@/components/planos-section";
 import { DepoimentosSection } from "@/components/depoimentos-section";
 import { createClient } from "@repo/db";
 import { unstable_cache } from "next/cache";
 
 const { zcalUrl } = teacher;
-
-const getPlanos = unstable_cache(
-  async (): Promise<PlanoRow[]> => {
-    try {
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-      );
-      const { data, error } = await supabase
-        .from("planos")
-        .select(
-          "id, name, badge, monthly_amount, features, is_featured, sort_order",
-        )
-        .eq("active", true)
-        .order("sort_order", { ascending: true })
-        .order("monthly_amount", { ascending: true });
-      if (error || !data) return [];
-      return data;
-    } catch {
-      return [];
-    }
-  },
-  ["planos"],
-  { revalidate: 60 },
-);
-
-type PlanoRow = {
-  id: string;
-  name: string;
-  badge: string | null;
-  monthly_amount: number;
-  features: string[];
-  is_featured: boolean;
-  sort_order: number;
-};
 
 type DepoimentoRow = {
   id: string;
@@ -74,10 +38,7 @@ const getDepoimentos = unstable_cache(
 );
 
 export default async function WebHomePage() {
-  const [planos, depoimentos] = await Promise.all([
-    getPlanos(),
-    getDepoimentos(),
-  ]);
+  const depoimentos = await getDepoimentos();
   return (
     <>
       {/* ── Top Nav ── */}
@@ -96,12 +57,6 @@ export default async function WebHomePage() {
               href="#como-funciona"
             >
               Como Funciona
-            </a>
-            <a
-              className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
-              href="#planos"
-            >
-              Planos
             </a>
             <a
               className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
@@ -162,12 +117,6 @@ export default async function WebHomePage() {
                 <span className="material-symbols-outlined">
                   calendar_today
                 </span>
-              </a>
-              <a
-                className="bg-surface-container-low text-primary px-8 py-4 rounded-xl font-bold text-center border border-outline-variant/20 hover:bg-surface-container transition-all"
-                href="#planos"
-              >
-                Ver Planos
               </a>
             </div>
             <div className="flex items-center gap-8 pt-6 border-t border-outline-variant/10">
@@ -348,13 +297,6 @@ export default async function WebHomePage() {
             </div>
           </div>
         </section>
-
-        {/* ── Planos ── */}
-        <PlanosSection
-          planos={planos}
-          zcalUrl={zcalUrl}
-          whatsappUrl={whatsappUrl}
-        />
 
         {/* ── Depoimentos ── */}
         <DepoimentosSection

@@ -29,13 +29,6 @@ export function MobileNav() {
             Como Funciona
           </a>
           <a
-            href="#planos"
-            className="text-on-surface font-bold text-lg"
-            onClick={() => setOpen(false)}
-          >
-            Planos
-          </a>
-          <a
             href="#depoimentos"
             className="text-on-surface font-bold text-lg"
             onClick={() => setOpen(false)}

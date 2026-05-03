@@ -10,7 +10,6 @@ export const ROUTES = {
     PROFESSORES: "/admin/professores",
     MATERIAIS: "/admin/materiais",
     TAREFAS: "/admin/tarefas",
-    PLANOS: "/admin/planos",
     FINANCEIRO: "/admin/financeiro",
     CONFIGURACOES: "/admin/configuracoes",
     DEPOIMENTOS: "/admin/depoimentos",

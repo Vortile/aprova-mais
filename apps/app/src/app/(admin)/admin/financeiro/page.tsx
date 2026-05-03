@@ -19,36 +19,26 @@ export default async function FinanceiroPage() {
 
   const supabase = createAdminClient();
 
-  const [{ data: registros }, { data: planos }, { data: alunos }] =
-    await Promise.all([
-      supabase
-        .from(TABLES.FINANCEIRO)
-        .select("*, alunos(grade, plan_id, profiles(full_name))")
-        .order("due_date", { ascending: false }),
-      supabase
-        .from(TABLES.PLANOS)
-        .select("*")
-        .order("active", { ascending: false })
-        .order("monthly_amount", { ascending: true }),
-      supabase
-        .from(TABLES.ALUNOS)
-        .select("id, monthly_amount, profiles(full_name)")
-        .order("created_at", { ascending: false }),
-    ]);
+  const [{ data: registros }, { data: alunos }] = await Promise.all([
+    supabase
+      .from(TABLES.FINANCEIRO)
+      .select("*, alunos(grade, profiles(full_name))")
+      .order("due_date", { ascending: false }),
+    supabase
+      .from(TABLES.ALUNOS)
+      .select("id, monthly_amount, profiles(full_name)")
+      .order("created_at", { ascending: false }),
+  ]);
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Financeiro</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Acompanhe os pagamentos e a projeção mensal baseada nos planos ativos.
+          Acompanhe os pagamentos e a projeção mensal das mensalidades ativas.
         </p>
       </div>
-      <FinanceiroClient
-        registros={registros ?? []}
-        planos={planos ?? []}
-        alunos={alunos ?? []}
-      />
+      <FinanceiroClient registros={registros ?? []} alunos={alunos ?? []} />
     </div>
   );
 }

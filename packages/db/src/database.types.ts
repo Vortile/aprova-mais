@@ -48,7 +48,6 @@ export interface Database {
           id: string;
           professor_id: string | null;
           profile_id: string | null;
-          plan_id: string | null;
           contact_email: string | null;
           grade: string | null;
           subject_focus: string[] | null;
@@ -61,7 +60,6 @@ export interface Database {
           id?: string;
           professor_id?: string | null;
           profile_id?: string | null;
-          plan_id?: string | null;
           contact_email?: string | null;
           grade?: string | null;
           subject_focus?: string[] | null;
@@ -73,7 +71,6 @@ export interface Database {
         Update: {
           professor_id?: string | null;
           profile_id?: string | null;
-          plan_id?: string | null;
           contact_email?: string | null;
           grade?: string | null;
           subject_focus?: string[] | null;
@@ -81,46 +78,6 @@ export interface Database {
           monthly_amount?: number | null;
           address?: string | null;
         };
-      };
-      planos: {
-        Row: {
-          id: string;
-          name: string;
-          monthly_amount: number;
-          billing_day: number | null;
-          description: string | null;
-          active: boolean;
-          badge: string | null;
-          features: string[];
-          is_featured: boolean;
-          sort_order: number;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          name: string;
-          monthly_amount: number;
-          billing_day?: number | null;
-          description?: string | null;
-          active?: boolean;
-          badge?: string | null;
-          features?: string[];
-          is_featured?: boolean;
-          sort_order?: number;
-          created_at?: string;
-        };
-        Update: {
-          name?: string;
-          monthly_amount?: number;
-          billing_day?: number | null;
-          description?: string | null;
-          active?: boolean;
-          badge?: string | null;
-          features?: string[];
-          is_featured?: boolean;
-          sort_order?: number;
-        };
-        Relationships: [];
       };
       materiais: {
         Row: {

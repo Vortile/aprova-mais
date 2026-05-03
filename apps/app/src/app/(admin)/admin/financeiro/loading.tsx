@@ -7,7 +7,7 @@ export default function FinanceiroLoading() {
       <div>
         <h1 className="text-2xl font-semibold tracking-tight">Financeiro</h1>
         <p className="text-muted-foreground text-sm mt-1">
-          Acompanhe os pagamentos e a projeção mensal baseada nos planos ativos.
+          Acompanhe os pagamentos e a projeção mensal das mensalidades ativas.
         </p>
       </div>
 

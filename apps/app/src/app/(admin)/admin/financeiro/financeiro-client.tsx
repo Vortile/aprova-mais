@@ -21,7 +21,6 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { PlanoForm } from "./plano-form";
 import { RegistroForm } from "./registro-form";
 import { marcarComoPago } from "@/lib/actions/financeiro";
 import type { Database } from "@repo/db";
@@ -29,12 +28,10 @@ import type { Database } from "@repo/db";
 type Registro = Database["public"]["Tables"]["financeiro"]["Row"] & {
   alunos: {
     grade: string | null;
-    plan_id: string | null;
     profiles: { full_name: string | null } | null;
   } | null;
 };
 
-type Plano = Database["public"]["Tables"]["planos"]["Row"];
 type AlunoResumo = Pick<
   Database["public"]["Tables"]["alunos"]["Row"],
   "id" | "monthly_amount"
@@ -56,15 +53,12 @@ function formatDate(date: string | null) {
 
 export function FinanceiroClient({
   registros,
-  planos,
   alunos,
 }: {
   registros: Registro[];
-  planos: Plano[];
   alunos: AlunoResumo[];
 }) {
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const [registroOpen, setRegistroOpen] = useState(false);
   const [markingPagoId, setMarkingPagoId] = useState<string | null>(null);
 
@@ -159,75 +153,6 @@ export function FinanceiroClient({
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold">Planos</h2>
-            <p className="text-sm text-muted-foreground">
-              Cadastre mensalidades padrão e acompanhe a receita prevista por
-              plano.
-            </p>
-          </div>
-          <Button size="sm" onClick={() => setOpen(true)}>
-            <Plus className="mr-1 h-4 w-4" />
-            Novo Plano
-          </Button>
-        </div>
-
-        <div className="rounded-lg border bg-card overflow-hidden">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Plano</TableHead>
-                <TableHead>Mensalidade base</TableHead>
-                <TableHead>Dia</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {planos.length === 0 ? (
-                <TableRow>
-                  <TableCell
-                    colSpan={6}
-                    className="h-24 text-center text-muted-foreground"
-                  >
-                    Nenhum plano cadastrado.
-                  </TableCell>
-                </TableRow>
-              ) : (
-                planos.map((plan) => {
-                  return (
-                    <TableRow key={plan.id}>
-                      <TableCell>
-                        <div className="space-y-1">
-                          <div className="font-medium">{plan.name}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {plan.description ?? "Sem descrição"}
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        {formatCurrency(plan.monthly_amount)}
-                      </TableCell>
-                      <TableCell>
-                        {plan.billing_day
-                          ? `Todo dia ${plan.billing_day}`
-                          : "—"}
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={plan.active ? "default" : "secondary"}>
-                          {plan.active ? "Ativo" : "Inativo"}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })
-              )}
-            </TableBody>
-          </Table>
-        </div>
-      </div>
-
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-3">
-          <div>
             <h2 className="text-lg font-semibold">Lançamentos</h2>
             <p className="text-sm text-muted-foreground">
               Histórico dos pagamentos registrados manualmente.
@@ -308,15 +233,6 @@ export function FinanceiroClient({
             </TableBody>
           </Table>
         </div>
-
-        <Dialog open={open} onOpenChange={setOpen}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Novo Plano</DialogTitle>
-            </DialogHeader>
-            <PlanoForm onSuccess={() => setOpen(false)} />
-          </DialogContent>
-        </Dialog>
 
         <Dialog open={registroOpen} onOpenChange={setRegistroOpen}>
           <DialogContent>

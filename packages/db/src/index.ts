@@ -6,7 +6,6 @@ export type { SupabaseClient } from "@supabase/supabase-js";
 export const TABLES = {
   PROFILES: "profiles",
   ALUNOS: "alunos",
-  PLANOS: "planos",
   MATERIAIS: "materiais",
   FINANCEIRO: "financeiro",
   TAREFAS: "tarefas",
