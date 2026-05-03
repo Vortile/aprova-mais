@@ -3,6 +3,40 @@ import { NextResponse, type NextRequest } from "next/server";
 import { ROUTES } from "@/lib/routes";
 
 type MiddlewareAuth = () => Promise<{ userId: string | null }>;
+type AppRole = "admin" | "professor" | "aluno";
+
+async function getProfileRole(clerkUserId: string): Promise<AppRole> {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!url || !key) return "aluno";
+
+  try {
+    const res = await fetch(
+      `${url}/rest/v1/profiles?clerk_user_id=eq.${encodeURIComponent(clerkUserId)}&select=role&limit=1`,
+      {
+        headers: {
+          apikey: key,
+          Authorization: `Bearer ${key}`,
+          Accept: "application/json",
+        },
+        cache: "no-store",
+      },
+    );
+
+    if (!res.ok) return "aluno";
+
+    const data = (await res.json()) as Array<{ role?: string }>;
+    const role = data?.[0]?.role;
+    if (role === "admin" || role === "professor" || role === "aluno") {
+      return role;
+    }
+  } catch {
+    // fall back to default
+  }
+
+  return "aluno";
+}
 
 async function handleAppMiddleware(auth: MiddlewareAuth, request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -25,6 +59,13 @@ async function handleAppMiddleware(auth: MiddlewareAuth, request: NextRequest) {
 
   if (!authState.userId && isProtectedRoute) {
     return NextResponse.redirect(new URL(ROUTES.SIGN_IN, request.url));
+  }
+
+  if (authState.userId && isDashboardRoute) {
+    const role = await getProfileRole(authState.userId);
+    const destination =
+      role === "aluno" ? ROUTES.ALUNO.MATERIAIS : ROUTES.ADMIN.ALUNOS;
+    return NextResponse.redirect(new URL(destination, request.url));
   }
 
   return NextResponse.next({ request });
