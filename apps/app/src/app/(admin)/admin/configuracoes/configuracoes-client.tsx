@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,13 +24,6 @@ import {
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { updateOwnProfile } from "@/lib/actions/profile";
 import type { Database } from "@repo/db";
@@ -50,13 +41,7 @@ export function ConfiguracoesClient({
 }: {
   user: { id: string; email: string; profile: Profile };
 }) {
-  const { theme, setTheme } = useTheme();
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -91,33 +76,6 @@ export function ConfiguracoesClient({
 
   return (
     <div className="max-w-2xl space-y-6">
-      <Card>
-        <CardHeader>
-          <CardTitle>Aparência</CardTitle>
-          <CardDescription>
-            Escolha entre tema claro, escuro ou seguir a preferência do sistema.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            <Label>Tema</Label>
-            <Select
-              value={mounted ? (theme ?? "light") : "light"}
-              onValueChange={(value) => setTheme(value)}
-            >
-              <SelectTrigger className="max-w-xs">
-                <SelectValue placeholder="Selecione um tema" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="light">Claro</SelectItem>
-                <SelectItem value="dark">Escuro</SelectItem>
-                <SelectItem value="system">Sistema</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </CardContent>
-      </Card>
-
       <Card>
         <CardHeader>
           <CardTitle>Perfil</CardTitle>

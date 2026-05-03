@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { requireStaff } from "@/lib/auth/session";
-import { hasAppEnv } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
 import { AdminSidebar } from "@/components/admin-sidebar";
 import {
@@ -15,10 +14,6 @@ export default async function AdminLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!hasAppEnv()) {
-    redirect(ROUTES.SETUP);
-  }
-
   const session = await requireStaff();
 
   return (

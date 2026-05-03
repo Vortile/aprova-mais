@@ -1,6 +1,5 @@
 import { redirect } from "next/navigation";
 import { requireRole } from "@/lib/auth/session";
-import { hasAppEnv } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
 import { StudentSidebar } from "@/components/student-sidebar";
 import {
@@ -15,10 +14,6 @@ export default async function AlunoLayout({
 }: {
   children: React.ReactNode;
 }) {
-  if (!hasAppEnv()) {
-    redirect(ROUTES.SETUP);
-  }
-
   const session = await requireRole("aluno");
 
   return (

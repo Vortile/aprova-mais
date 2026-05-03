@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { hasAppEnv } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
 
 export const metadata: Metadata = {
@@ -39,10 +38,6 @@ export default async function AcceptInvitePage({
 }: {
   searchParams: SearchParams;
 }) {
-  if (!hasAppEnv()) {
-    redirect(ROUTES.SETUP);
-  }
-
   const params = appendClerkParams(await searchParams);
   const ticket =
     params.get("__clerk_ticket") ?? params.get("__clerk_invitation_token");

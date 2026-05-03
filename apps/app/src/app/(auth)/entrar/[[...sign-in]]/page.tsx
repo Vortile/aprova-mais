@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { SignIn } from "@clerk/nextjs";
+import { ArrowLeft } from "lucide-react";
 import { BrandLockup } from "@/components/brand-lockup";
 import { getCurrentAppSession } from "@/lib/auth/session";
-import { hasAppEnv } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
 import { ROLES } from "@/lib/supabase/env";
 
@@ -12,10 +12,6 @@ export const metadata: Metadata = {
 };
 
 export default async function EntrarPage() {
-  if (!hasAppEnv()) {
-    redirect(ROUTES.SETUP);
-  }
-
   const session = await getCurrentAppSession();
 
   if (session) {
@@ -28,6 +24,13 @@ export default async function EntrarPage() {
 
   return (
     <main className="relative flex min-h-svh items-center justify-center overflow-hidden bg-[#f5f1e8] p-4">
+      <a
+        href="https://aprovamaiscurso-pro.com.br"
+        className="absolute left-4 top-4 z-10 flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium text-stone-600 transition-colors hover:bg-black/5 hover:text-stone-900"
+      >
+        <ArrowLeft className="size-3.5" />
+        Voltar ao site
+      </a>
       <div
         aria-hidden="true"
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80"
