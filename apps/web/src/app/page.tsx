@@ -350,7 +350,11 @@ export default async function WebHomePage() {
         </section>
 
         {/* ── Planos ── */}
-        <PlanosSection planos={planos} zcalUrl={zcalUrl} />
+        <PlanosSection
+          planos={planos}
+          zcalUrl={zcalUrl}
+          whatsappUrl={whatsappUrl}
+        />
 
         {/* ── Depoimentos ── */}
         <DepoimentosSection
