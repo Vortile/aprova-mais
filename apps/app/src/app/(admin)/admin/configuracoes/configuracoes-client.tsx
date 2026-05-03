@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -29,6 +30,12 @@ import { updateOwnProfile } from "@/lib/actions/profile";
 import type { Database } from "@repo/db";
 
 type Profile = Database["public"]["Tables"]["profiles"]["Row"] | null;
+
+const ROLE_LABELS: Record<string, string> = {
+  admin: "Administrador",
+  professor: "Professor",
+  aluno: "Aluno",
+};
 
 const schema = z.object({
   full_name: z.string().min(2, "Nome deve ter ao menos 2 caracteres"),
@@ -86,11 +93,16 @@ export function ConfiguracoesClient({
             <Avatar className="h-16 w-16">
               <AvatarFallback className="text-lg">{initials}</AvatarFallback>
             </Avatar>
-            <div>
+            <div className="space-y-1">
               <p className="font-medium">
                 {user.profile?.full_name ?? "Professor"}
               </p>
               <p className="text-sm text-muted-foreground">{user.email}</p>
+              {user.profile?.role && (
+                <Badge variant="secondary">
+                  {ROLE_LABELS[user.profile.role] ?? user.profile.role}
+                </Badge>
+              )}
             </div>
           </div>
           <Separator />
@@ -127,6 +139,58 @@ export function ConfiguracoesClient({
               </div>
             </form>
           </Form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Informações da conta</CardTitle>
+          <CardDescription>
+            Detalhes sobre sua conta na plataforma.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                Função
+              </p>
+              <div className="mt-1">
+                {user.profile?.role ? (
+                  <Badge variant="secondary">
+                    {ROLE_LABELS[user.profile.role] ?? user.profile.role}
+                  </Badge>
+                ) : (
+                  <span className="text-sm text-muted-foreground">—</span>
+                )}
+              </div>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-muted-foreground">
+                Membro desde
+              </p>
+              <p className="mt-1 text-sm">
+                {user.profile?.created_at
+                  ? new Date(user.profile.created_at).toLocaleDateString(
+                      "pt-BR",
+                      {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric",
+                      },
+                    )
+                  : "—"}
+              </p>
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-muted-foreground">
+              ID da conta
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground font-mono break-all">
+              {user.id}
+            </p>
+          </div>
         </CardContent>
       </Card>
     </div>
