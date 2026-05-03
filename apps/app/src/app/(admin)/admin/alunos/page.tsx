@@ -26,7 +26,14 @@ export default async function AlunosPage() {
     alunosQuery = alunosQuery.eq("professor_id", session.profile.id);
   }
 
-  const [{ data: alunos }] = await Promise.all([alunosQuery]);
+  const [{ data: alunos }, { data: professors }] = await Promise.all([
+    alunosQuery,
+    supabase
+      .from(TABLES.PROFILES)
+      .select("id, full_name")
+      .eq("role", ROLES.PROFESSOR)
+      .order("full_name", { ascending: true }),
+  ]);
 
   let studentCount: number | null = null;
 
@@ -82,7 +89,11 @@ export default async function AlunosPage() {
         </div>
       )}
 
-      <AlunosClient alunos={alunos ?? []} isAdmin={!isProfessor} />
+      <AlunosClient
+        alunos={alunos ?? []}
+        isAdmin={!isProfessor}
+        professors={!isProfessor ? (professors ?? []) : []}
+      />
     </div>
   );
 }

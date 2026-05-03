@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   ClipboardList,
   Download,
+  Pencil,
   Plus,
   Trash2,
 } from "lucide-react";
@@ -36,6 +37,7 @@ import {
 } from "@/components/ui/table";
 import { deleteTarefa } from "@/lib/actions/tarefas";
 import { ReviewEntregaForm } from "./review-entrega-form";
+import { TarefaEditForm } from "./tarefa-edit-form";
 import { TarefaForm } from "./tarefa-form";
 
 type MaterialRow = Pick<
@@ -128,6 +130,7 @@ export function TarefasClient({
   materiais: MaterialRow[];
 }) {
   const [open, setOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<TarefaRow | null>(null);
   const [reviewTarget, setReviewTarget] = useState<ReviewTarget | null>(null);
 
   const stats = useMemo(() => {
@@ -239,15 +242,25 @@ export function TarefasClient({
                         </CardDescription>
                       )}
                     </div>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-destructive hover:text-destructive"
-                      onClick={() => void handleDelete(tarefa.id)}
-                    >
-                      <Trash2 className="mr-1 h-4 w-4" />
-                      Excluir
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setEditTarget(tarefa)}
+                      >
+                        <Pencil className="mr-1 h-4 w-4" />
+                        Editar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="text-destructive hover:text-destructive"
+                        onClick={() => void handleDelete(tarefa.id)}
+                      >
+                        <Trash2 className="mr-1 h-4 w-4" />
+                        Excluir
+                      </Button>
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -389,6 +402,24 @@ export function TarefasClient({
               />
             </>
           ) : null}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={!!editTarget}
+        onOpenChange={(v) => !v && setEditTarget(null)}
+      >
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Editar tarefa</DialogTitle>
+          </DialogHeader>
+          {editTarget && (
+            <TarefaEditForm
+              tarefa={editTarget}
+              materiais={materiais}
+              onSuccess={() => setEditTarget(null)}
+            />
+          )}
         </DialogContent>
       </Dialog>
     </>

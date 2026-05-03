@@ -16,6 +16,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { saveAluno } from "@/lib/actions/alunos";
 import type { Database } from "@repo/db";
 
@@ -24,6 +31,11 @@ type AlunoRow = Database["public"]["Tables"]["alunos"]["Row"] & {
     Database["public"]["Tables"]["profiles"]["Row"],
     "full_name"
   > | null;
+};
+
+type ProfessorOption = {
+  id: string;
+  full_name: string | null;
 };
 
 const schema = z.object({
@@ -38,15 +50,18 @@ const schema = z.object({
   grade: z.string().min(1, "Informe a série"),
   subject_focus: z.string(),
   notes: z.string(),
+  professor_id: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 export function AlunoForm({
   aluno,
+  professors,
   onSuccess,
 }: {
   aluno: AlunoRow | null;
+  professors: ProfessorOption[];
   onSuccess: () => void;
 }) {
   const router = useRouter();
@@ -62,6 +77,7 @@ export function AlunoForm({
       grade: aluno?.grade ?? "",
       subject_focus: aluno?.subject_focus?.join(", ") ?? "",
       notes: aluno?.notes ?? "",
+      professor_id: aluno?.professor_id ?? "none",
     },
   });
 
@@ -78,6 +94,8 @@ export function AlunoForm({
       grade: values.grade,
       subjectFocus: values.subject_focus,
       notes: values.notes,
+      professorId:
+        values.professor_id === "none" ? null : (values.professor_id ?? null),
     });
 
     if (!result.ok) {
@@ -220,6 +238,36 @@ export function AlunoForm({
             </FormItem>
           )}
         />
+        {professors.length > 0 && (
+          <FormField
+            control={form.control}
+            name="professor_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Professor responsável</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Sem professor" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value="none">Sem professor</SelectItem>
+                    {professors.map((p) => (
+                      <SelectItem key={p.id} value={p.id}>
+                        {p.full_name ?? p.id}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
         <div className="flex justify-end gap-2 pt-2">
           <Button type="submit" disabled={form.formState.isSubmitting}>
             {form.formState.isSubmitting ? "Salvando..." : "Salvar"}

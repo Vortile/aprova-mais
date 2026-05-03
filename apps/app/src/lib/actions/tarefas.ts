@@ -169,6 +169,51 @@ export async function saveTarefa(input: unknown): Promise<ActionResult> {
   return { ok: true, message: "Tarefa criada." };
 }
 
+const updateTarefaSchema = z.object({
+  tarefaId: z.string().uuid(),
+  title: z.string().trim().min(1, "Informe o título"),
+  description: z.string().trim(),
+  dueDate: z.string().trim(),
+  materialId: z.string().trim(),
+});
+
+export async function updateTarefa(input: unknown): Promise<ActionResult> {
+  const values = updateTarefaSchema.safeParse(input);
+
+  if (!values.success) {
+    return { ok: false, error: "Dados inválidos para atualizar a tarefa." };
+  }
+
+  const access = await requireAdminSession();
+
+  if ("error" in access) {
+    return {
+      ok: false,
+      error: access.error ?? "Não foi possível validar sua sessão.",
+    };
+  }
+
+  const { error } = await createAdminClient()
+    .from(TABLES.TAREFAS)
+    .update(
+      asSupabaseUpdate<"tarefas">({
+        title: values.data.title,
+        description: values.data.description || null,
+        due_date: values.data.dueDate || null,
+        material_id: values.data.materialId || null,
+      }),
+    )
+    .eq("id", values.data.tarefaId);
+
+  if (error) {
+    return { ok: false, error: "Não foi possível atualizar a tarefa." };
+  }
+
+  revalidateTarefas();
+
+  return { ok: true, message: "Tarefa atualizada." };
+}
+
 export async function markTarefaInProgress(
   input: unknown,
 ): Promise<ActionResult> {

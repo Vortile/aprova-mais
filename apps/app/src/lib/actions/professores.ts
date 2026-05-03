@@ -8,13 +8,19 @@ import { TABLES, type Database } from "@repo/db";
 import { getCurrentAppSession } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { normalizeEmail, ROLES } from "@/lib/supabase/env";
-import { asSupabaseInsert } from "@/lib/supabase/typed";
+import { asSupabaseInsert, asSupabaseUpdate } from "@/lib/supabase/typed";
 import { ROUTES } from "@/lib/routes";
 import { ACTION_ERRORS } from "@/lib/errors";
 
 const saveProfessorSchema = z.object({
   fullName: z.string().trim().min(2, "Nome deve ter ao menos 2 caracteres"),
   email: z.string().trim().email("Informe um email válido"),
+  address: z.string().trim().optional(),
+});
+
+const updateProfessorSchema = z.object({
+  profileId: z.string().uuid(),
+  fullName: z.string().trim().min(2, "Nome deve ter ao menos 2 caracteres"),
   address: z.string().trim().optional(),
 });
 
@@ -199,4 +205,66 @@ export async function deleteProfessor(
   revalidatePath(ROUTES.ADMIN.PROFESSORES);
 
   return { ok: true, message: "Professor removido." };
+}
+
+export async function updateProfessor(input: unknown): Promise<ActionResult> {
+  const values = updateProfessorSchema.safeParse(input);
+
+  if (!values.success) {
+    return { ok: false, error: "Dados inválidos para atualizar o professor." };
+  }
+
+  const access = await assertAdminAccess();
+
+  if ("error" in access) {
+    return { ok: false, error: access.error ?? ACTION_ERRORS.NO_PERMISSION };
+  }
+
+  const supabase = createAdminClient();
+
+  const { data: profileRaw } = await supabase
+    .from(TABLES.PROFILES)
+    .select("*")
+    .eq("id", values.data.profileId)
+    .eq("role", ROLES.PROFESSOR)
+    .maybeSingle();
+
+  const profile = profileRaw as ProfileRow | null;
+
+  if (!profile) {
+    return { ok: false, error: "Professor não encontrado." };
+  }
+
+  const { error: updateError } = await supabase
+    .from(TABLES.PROFILES)
+    .update(
+      asSupabaseUpdate<"profiles">({
+        full_name: values.data.fullName,
+        address: values.data.address ?? null,
+      }),
+    )
+    .eq("id", profile.id);
+
+  if (updateError) {
+    return { ok: false, error: "Não foi possível atualizar o professor." };
+  }
+
+  // Sync name to Clerk if the professor has an active account
+  if (profile.clerk_user_id) {
+    try {
+      const parts = values.data.fullName.split(/\s+/).filter(Boolean);
+      await (
+        await clerkClient()
+      ).users.updateUser(profile.clerk_user_id, {
+        firstName: parts[0],
+        lastName: parts.slice(1).join(" ") || undefined,
+      });
+    } catch {
+      // Non-fatal: profile already updated in DB
+    }
+  }
+
+  revalidatePath(ROUTES.ADMIN.PROFESSORES);
+
+  return { ok: true, message: "Professor atualizado." };
 }

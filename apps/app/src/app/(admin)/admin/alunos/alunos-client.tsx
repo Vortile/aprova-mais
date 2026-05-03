@@ -46,6 +46,11 @@ type AlunoRow = Database["public"]["Tables"]["alunos"]["Row"] & {
   > | null;
 };
 
+type ProfessorOption = {
+  id: string;
+  full_name: string | null;
+};
+
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("pt-BR", {
     style: "currency",
@@ -56,9 +61,11 @@ function formatCurrency(value: number) {
 export function AlunosClient({
   alunos,
   isAdmin,
+  professors,
 }: {
   alunos: AlunoRow[];
   isAdmin: boolean;
+  professors: ProfessorOption[];
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -223,7 +230,11 @@ export function AlunosClient({
           <DialogHeader>
             <DialogTitle>{editing ? "Editar Aluno" : "Novo Aluno"}</DialogTitle>
           </DialogHeader>
-          <AlunoForm aluno={editing} onSuccess={() => setOpen(false)} />
+          <AlunoForm
+            aluno={editing}
+            professors={professors}
+            onSuccess={() => setOpen(false)}
+          />
         </DialogContent>
       </Dialog>
 

@@ -23,7 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { saveRegistroFinanceiro } from "@/lib/actions/financeiro";
+import {
+  saveRegistroFinanceiro,
+  updateRegistroFinanceiro,
+} from "@/lib/actions/financeiro";
 import type { Database } from "@repo/db";
 
 type AlunoResumo = Pick<
@@ -32,6 +35,8 @@ type AlunoResumo = Pick<
 > & {
   profiles: { full_name: string | null } | null;
 };
+
+type Registro = Database["public"]["Tables"]["financeiro"]["Row"];
 
 const schema = z.object({
   alunoId: z.string().uuid("Selecione um aluno"),
@@ -45,9 +50,11 @@ type FormValues = z.infer<typeof schema>;
 
 export function RegistroForm({
   alunos,
+  registro,
   onSuccess,
 }: {
   alunos: AlunoResumo[];
+  registro?: Registro;
   onSuccess: () => void;
 }) {
   const router = useRouter();
@@ -56,17 +63,19 @@ export function RegistroForm({
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
-      alunoId: "",
-      amount: "",
-      dueDate: "",
-      paidAt: "",
-      notes: "",
+      alunoId: registro?.aluno_id ?? "",
+      amount: registro ? String(registro.amount) : "",
+      dueDate: registro?.due_date ?? "",
+      paidAt: registro?.paid_at ? registro.paid_at.slice(0, 10) : "",
+      notes: registro?.notes ?? "",
     },
   });
 
   async function onSubmit(data: FormValues) {
     setLoading(true);
-    const result = await saveRegistroFinanceiro(data);
+    const result = registro
+      ? await updateRegistroFinanceiro({ registroId: registro.id, ...data })
+      : await saveRegistroFinanceiro(data);
     setLoading(false);
 
     if (!result.ok) {
@@ -164,7 +173,11 @@ export function RegistroForm({
         />
 
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? "Salvando..." : "Registrar Lançamento"}
+          {loading
+            ? "Salvando..."
+            : registro
+              ? "Salvar alterações"
+              : "Registrar Lançamento"}
         </Button>
       </form>
     </Form>

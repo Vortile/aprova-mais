@@ -70,6 +70,83 @@ export async function saveRegistroFinanceiro(input: unknown) {
   return { ok: true, message: "Lançamento registrado." } as const;
 }
 
+const updateRegistroSchema = z.object({
+  registroId: z.string().uuid(),
+  alunoId: z.string().uuid("Selecione um aluno"),
+  amount: amountSchema,
+  dueDate: z.string().trim().min(1, "Informe o vencimento"),
+  paidAt: z.string().trim(),
+  notes: z.string().trim(),
+});
+
+export async function updateRegistroFinanceiro(input: unknown) {
+  const values = updateRegistroSchema.safeParse(input);
+
+  if (!values.success) {
+    return {
+      ok: false,
+      error: "Dados inválidos para atualizar o lançamento.",
+    } as const;
+  }
+
+  const session = await assertAdmin();
+  if (!session) {
+    return { ok: false, error: ACTION_ERRORS.NO_PERMISSION } as const;
+  }
+
+  const { error } = await createAdminClient()
+    .from(TABLES.FINANCEIRO)
+    .update(
+      asSupabaseUpdate<"financeiro">({
+        aluno_id: values.data.alunoId,
+        amount: values.data.amount,
+        due_date: values.data.dueDate || null,
+        paid_at: values.data.paidAt
+          ? new Date(values.data.paidAt).toISOString()
+          : null,
+        notes: values.data.notes || null,
+      }),
+    )
+    .eq("id", values.data.registroId);
+
+  if (error) {
+    return {
+      ok: false,
+      error: "Não foi possível atualizar o lançamento.",
+    } as const;
+  }
+
+  revalidatePath(ROUTES.ADMIN.FINANCEIRO);
+  return { ok: true, message: "Lançamento atualizado." } as const;
+}
+
+export async function deleteRegistroFinanceiro(registroId: string) {
+  const idSchema = z.string().uuid();
+  if (!idSchema.safeParse(registroId).success) {
+    return { ok: false, error: "ID inválido." } as const;
+  }
+
+  const session = await assertAdmin();
+  if (!session) {
+    return { ok: false, error: ACTION_ERRORS.NO_PERMISSION } as const;
+  }
+
+  const { error } = await createAdminClient()
+    .from(TABLES.FINANCEIRO)
+    .delete()
+    .eq("id", registroId);
+
+  if (error) {
+    return {
+      ok: false,
+      error: "Não foi possível excluir o lançamento.",
+    } as const;
+  }
+
+  revalidatePath(ROUTES.ADMIN.FINANCEIRO);
+  return { ok: true, message: "Lançamento excluído." } as const;
+}
+
 export async function marcarComoPago(registroId: string) {
   const idSchema = z.string().uuid();
   if (!idSchema.safeParse(registroId).success) {

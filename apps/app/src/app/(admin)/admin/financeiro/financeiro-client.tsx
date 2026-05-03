@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { Pencil, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,6 +11,16 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   Table,
   TableBody,
@@ -22,7 +32,10 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { RegistroForm } from "./registro-form";
-import { marcarComoPago } from "@/lib/actions/financeiro";
+import {
+  deleteRegistroFinanceiro,
+  marcarComoPago,
+} from "@/lib/actions/financeiro";
 import type { Database } from "@repo/db";
 
 type Registro = Database["public"]["Tables"]["financeiro"]["Row"] & {
@@ -61,11 +74,27 @@ export function FinanceiroClient({
   const router = useRouter();
   const [registroOpen, setRegistroOpen] = useState(false);
   const [markingPagoId, setMarkingPagoId] = useState<string | null>(null);
+  const [editTarget, setEditTarget] = useState<Registro | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Registro | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   async function handleMarcarPago(id: string) {
     setMarkingPagoId(id);
     const result = await marcarComoPago(id);
     setMarkingPagoId(null);
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+    toast.success(result.message);
+    router.refresh();
+  }
+
+  async function handleDelete(registro: Registro) {
+    setIsDeleting(true);
+    const result = await deleteRegistroFinanceiro(registro.id);
+    setIsDeleting(false);
+    setDeleteTarget(null);
     if (!result.ok) {
       toast.error(result.error);
       return;
@@ -214,18 +243,35 @@ export function FinanceiroClient({
                       )}
                     </TableCell>
                     <TableCell>
-                      {!r.paid_at && (
+                      <div className="flex items-center gap-1">
+                        {!r.paid_at && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={markingPagoId === r.id}
+                            onClick={() => void handleMarcarPago(r.id)}
+                          >
+                            {markingPagoId === r.id
+                              ? "Salvando..."
+                              : "Marcar como pago"}
+                          </Button>
+                        )}
                         <Button
-                          size="sm"
-                          variant="outline"
-                          disabled={markingPagoId === r.id}
-                          onClick={() => void handleMarcarPago(r.id)}
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setEditTarget(r)}
                         >
-                          {markingPagoId === r.id
-                            ? "Salvando..."
-                            : "Marcar como pago"}
+                          <Pencil className="h-4 w-4" />
                         </Button>
-                      )}
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive"
+                          onClick={() => setDeleteTarget(r)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))
@@ -245,6 +291,52 @@ export function FinanceiroClient({
             />
           </DialogContent>
         </Dialog>
+
+        <Dialog
+          open={!!editTarget}
+          onOpenChange={(v) => !v && setEditTarget(null)}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Editar Lançamento</DialogTitle>
+            </DialogHeader>
+            {editTarget && (
+              <RegistroForm
+                alunos={alunos}
+                registro={editTarget}
+                onSuccess={() => setEditTarget(null)}
+              />
+            )}
+          </DialogContent>
+        </Dialog>
+
+        <AlertDialog
+          open={!!deleteTarget}
+          onOpenChange={(v) => !v && setDeleteTarget(null)}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Excluir lançamento?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta ação não pode ser desfeita. O registro de{" "}
+                <span className="font-medium">
+                  {deleteTarget?.alunos?.profiles?.full_name ?? "aluno"}
+                </span>{" "}
+                será removido permanentemente.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                disabled={isDeleting}
+                onClick={() => deleteTarget && void handleDelete(deleteTarget)}
+              >
+                {isDeleting ? "Excluindo..." : "Excluir"}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

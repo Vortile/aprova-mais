@@ -25,6 +25,7 @@ const saveAlunoSchema = z.object({
   grade: z.string().trim().min(1, "Informe a série"),
   subjectFocus: z.string().trim(),
   notes: z.string().trim(),
+  professorId: z.string().uuid().nullable().optional(),
 });
 
 const alunoIdSchema = z.string().uuid();
@@ -509,6 +510,11 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
           grade: values.data.grade,
           subject_focus: subjectFocus,
           notes: values.data.notes,
+          // Only admins can reassign the responsible professor
+          ...(session.profile.role === ROLES.ADMIN &&
+          values.data.professorId !== undefined
+            ? { professor_id: values.data.professorId }
+            : {}),
         }),
       )
       .eq("id", values.data.alunoId);
@@ -526,6 +532,7 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
         grade: values.data.grade,
         subject_focus: subjectFocus,
         notes: values.data.notes,
+        professor_id: values.data.professorId ?? null,
       }),
     );
 

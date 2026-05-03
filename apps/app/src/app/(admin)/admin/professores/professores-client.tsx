@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, MailCheck, Clock } from "lucide-react";
+import { Pencil, Plus, Trash2, MailCheck, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { deleteProfessor } from "@/lib/actions/professores";
 import { ProfessorForm } from "./professor-form";
+import { ProfessorEditForm } from "./professor-edit-form";
 import type { Database } from "@repo/db";
 
 type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
@@ -43,6 +44,7 @@ export function ProfessoresClient({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<ProfileRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ProfileRow | null>(null);
 
@@ -123,15 +125,25 @@ export function ProfessoresClient({
                     )}
                   </TableCell>
                   <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive hover:text-destructive"
-                      disabled={deletingId === professor.id}
-                      onClick={() => setDeleteTarget(professor)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <div className="flex gap-1 justify-end">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => setEditTarget(professor)}
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-destructive hover:text-destructive"
+                        disabled={deletingId === professor.id}
+                        onClick={() => setDeleteTarget(professor)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))
@@ -146,6 +158,23 @@ export function ProfessoresClient({
             <DialogTitle>Adicionar professor</DialogTitle>
           </DialogHeader>
           <ProfessorForm onSuccess={() => setOpen(false)} />
+        </DialogContent>
+      </Dialog>
+
+      <Dialog
+        open={!!editTarget}
+        onOpenChange={(v) => !v && setEditTarget(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Editar professor</DialogTitle>
+          </DialogHeader>
+          {editTarget && (
+            <ProfessorEditForm
+              professor={editTarget}
+              onSuccess={() => setEditTarget(null)}
+            />
+          )}
         </DialogContent>
       </Dialog>
 
