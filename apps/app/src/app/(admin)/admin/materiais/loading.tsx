@@ -5,8 +5,10 @@ export default function MateriaisAdminLoading() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-36" />
-        <Skeleton className="h-4 w-64 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Materiais</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Faça upload e organize seus materiais de estudo.
+        </p>
       </div>
 
       {/* Toolbar: count + button */}

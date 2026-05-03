@@ -5,8 +5,10 @@ export default function ConfiguracoesLoading() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-44" />
-        <Skeleton className="h-4 w-56 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Configurações</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Gerencie seu perfil e preferências.
+        </p>
       </div>
 
       {/* Profile card */}

@@ -5,8 +5,11 @@ export default function AlunoTarefasLoading() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-28" />
-        <Skeleton className="h-4 w-80 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Tarefas</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Veja o que está pendente, envie suas respostas e acompanhe o feedback
+          do professor.
+        </p>
       </div>
 
       {/* 4 stat cards */}

@@ -5,30 +5,6 @@ type DepoimentoRow = {
   sort_order: number;
 };
 
-const fallbackDepoimentos: DepoimentoRow[] = [
-  {
-    id: "1",
-    quote:
-      "Meu filho tinha pavor de física. Depois de 2 meses de acompanhamento, ele tirou a maior nota da sala no 9º ano. Incrível a paciência do professor.",
-    author: "— Mãe do João, 9º ano",
-    sort_order: 0,
-  },
-  {
-    id: "2",
-    quote:
-      "O diferencial é vir em casa. Facilitou muito nossa rotina em Manaus. A didática é moderna e ele se conecta muito bem com os adolescentes.",
-    author: "— Pai da Ana Clara, 1º Médio",
-    sort_order: 1,
-  },
-  {
-    id: "3",
-    quote:
-      "Sempre muito pontual e dedicado. As notas em matemática subiram consistentemente. Recomendo para quem busca segurança e resultado.",
-    author: "— Mãe do Lucas, 8º ano",
-    sort_order: 2,
-  },
-];
-
 export function DepoimentosSection({
   depoimentos,
   whatsappUrl,
@@ -36,7 +12,7 @@ export function DepoimentosSection({
   depoimentos: DepoimentoRow[];
   whatsappUrl: string;
 }) {
-  const display = depoimentos.length > 0 ? depoimentos : fallbackDepoimentos;
+  if (depoimentos.length === 0) return null;
 
   return (
     <section className="py-24 px-6 max-w-7xl mx-auto" id="depoimentos">
@@ -46,7 +22,7 @@ export function DepoimentosSection({
         </h2>
       </div>
       <div className="grid md:grid-cols-3 gap-8">
-        {display.map((dep) => (
+        {depoimentos.map((dep) => (
           <div
             key={dep.id}
             className="bg-surface-container-low p-8 rounded-3xl italic text-on-surface-variant relative"

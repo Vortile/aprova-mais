@@ -5,8 +5,10 @@ export default function PlanosLoading() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-24" />
-        <Skeleton className="h-4 w-72 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Planos</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Gerencie os planos exibidos no site e vinculados aos alunos.
+        </p>
       </div>
 
       {/* Toolbar: count + button */}

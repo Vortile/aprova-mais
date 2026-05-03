@@ -5,8 +5,10 @@ export default function TarefasAdminLoading() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-28" />
-        <Skeleton className="h-4 w-64 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Tarefas</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Crie tarefas, acompanhe entregas e devolva feedback para cada aluno.
+        </p>
       </div>
 
       {/* 4 stat cards */}

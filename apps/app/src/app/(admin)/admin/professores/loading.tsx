@@ -5,8 +5,10 @@ export default function ProfessoresLoading() {
     <div className="space-y-4">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-36" />
-        <Skeleton className="h-4 w-64 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Professores</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Gerencie os professores com acesso à plataforma.
+        </p>
       </div>
 
       {/* Toolbar: count + button */}

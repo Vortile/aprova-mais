@@ -5,8 +5,10 @@ export default function AlunosLoading() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-32" />
-        <Skeleton className="h-4 w-64 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Alunos</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Gerencie os alunos cadastrados na plataforma.
+        </p>
       </div>
 
       {/* Student limit progress card */}

@@ -6,6 +6,7 @@ alter table public.planos
   add column if not exists sort_order integer not null default 0;
 
 -- Allow public (anon) to read active plans for the marketing website
+drop policy if exists "Public can read active planos" on public.planos;
 create policy "Public can read active planos"
   on public.planos for select
   to anon

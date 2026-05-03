@@ -5,8 +5,10 @@ export default function FinanceiroLoading() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-36" />
-        <Skeleton className="h-4 w-80 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Financeiro</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Acompanhe os pagamentos e a projeção mensal baseada nos planos ativos.
+        </p>
       </div>
 
       {/* 4 stat cards */}

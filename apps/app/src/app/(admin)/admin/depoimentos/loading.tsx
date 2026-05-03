@@ -5,8 +5,11 @@ export default function DepoimentosLoading() {
     <div className="space-y-6">
       {/* Page header */}
       <div>
-        <Skeleton className="h-8 w-36" />
-        <Skeleton className="h-4 w-80 mt-2" />
+        <h1 className="text-2xl font-semibold tracking-tight">Depoimentos</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Gerencie os depoimentos exibidos na seção &ldquo;O que as famílias
+          dizem&rdquo; do site. Máximo de 3 depoimentos.
+        </p>
       </div>
 
       {/* Toolbar: count + button */}
