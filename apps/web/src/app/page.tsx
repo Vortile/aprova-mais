@@ -5,7 +5,7 @@ import { DepoimentosSection } from "@/components/depoimentos-section";
 import { createClient } from "@repo/db";
 import { unstable_cache } from "next/cache";
 
-const { zcalUrl } = teacher;
+const { zcalUrl, portalUrl } = teacher;
 
 type DepoimentoRow = {
   id: string;
@@ -72,6 +72,14 @@ export default async function WebHomePage() {
             </a>
           </div>
           <div className="flex items-center gap-4">
+            <a
+              className="hidden md:inline-block  text-on-surface px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
+              href={portalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Portal
+            </a>
             <a
               className="hidden md:inline-block bg-tertiary text-on-tertiary px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
               href={zcalUrl}

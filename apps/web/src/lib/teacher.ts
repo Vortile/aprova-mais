@@ -19,6 +19,9 @@ export const teacher = {
 
   /** Zcal scheduling link for the free trial class */
   zcalUrl: "https://zcal.co/i/LmyBoSY4",
+
+  /** Portal URL for accessing the course platform */
+  portalUrl: "https://app.aprovamaiscurso-pro.com.br/entrar",
 } as const;
 
 // ── Derived helpers (no need to edit these) ──────────────────────
