@@ -39,7 +39,7 @@ type ProfessorOption = {
 };
 
 const schema = z.object({
-  full_name: z.string().trim(),
+  full_name: z.string().trim().min(1, "Informe o nome do aluno"),
   contact_email: z
     .string()
     .trim()
@@ -81,9 +81,6 @@ export function AlunoForm({
     },
   });
 
-  const contactEmail = form.watch("contact_email").trim();
-  const canEditName = Boolean(aluno?.profile_id || contactEmail);
-
   async function onSubmit(values: FormValues) {
     const result = await saveAluno({
       alunoId: aluno?.id,
@@ -120,17 +117,9 @@ export function AlunoForm({
               <FormControl>
                 <Input
                   placeholder="Nome completo do aluno"
-                  disabled={!canEditName}
                   {...field}
                 />
               </FormControl>
-              {!canEditName && (
-                <FormDescription>
-                  O nome será salvo quando existir uma conta vinculada. Preencha
-                  o email para vincular uma conta existente ou enviar um
-                  convite.
-                </FormDescription>
-              )}
               <FormMessage />
             </FormItem>
           )}

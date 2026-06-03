@@ -31,7 +31,7 @@ import type { Database } from "@repo/db";
 
 type AlunoResumo = Pick<
   Database["public"]["Tables"]["alunos"]["Row"],
-  "id" | "monthly_amount"
+  "id" | "monthly_amount" | "contact_email"
 > & {
   profiles: { full_name: string | null } | null;
 };
@@ -106,7 +106,7 @@ export function RegistroForm({
                 <SelectContent>
                   {alunos.map((aluno) => (
                     <SelectItem key={aluno.id} value={aluno.id}>
-                      {aluno.profiles?.full_name ?? aluno.id}
+                      {aluno.profiles?.full_name ?? aluno.contact_email ?? aluno.id}
                     </SelectItem>
                   ))}
                 </SelectContent>

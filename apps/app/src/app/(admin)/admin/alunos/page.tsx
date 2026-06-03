@@ -19,7 +19,7 @@ export default async function AlunosPage() {
 
   let alunosQuery = supabase
     .from(TABLES.ALUNOS)
-    .select("*, profiles(full_name, avatar_url, clerk_user_id)")
+    .select("*, profiles!alunos_profile_id_fkey(full_name, avatar_url, clerk_user_id)")
     .order("created_at", { ascending: false });
 
   if (isProfessor && session) {

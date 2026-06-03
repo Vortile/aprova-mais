@@ -28,7 +28,7 @@ import { saveTarefa } from "@/lib/actions/tarefas";
 
 type AlunoOption = Pick<
   Database["public"]["Tables"]["alunos"]["Row"],
-  "id" | "grade"
+  "id" | "grade" | "contact_email"
 > & {
   profiles: Pick<
     Database["public"]["Tables"]["profiles"]["Row"],
@@ -185,7 +185,7 @@ export function TarefaForm({
                     alunos.map((aluno) => {
                       const checked = field.value.includes(aluno.id);
                       const alunoName =
-                        aluno.profiles?.full_name ?? "Aluno sem nome";
+                        aluno.profiles?.full_name ?? aluno.contact_email ?? "Aluno sem nome";
 
                       return (
                         <label

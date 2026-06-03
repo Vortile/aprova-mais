@@ -9,6 +9,7 @@ import {
   ClipboardList,
   DollarSign,
   ExternalLink,
+  FileText,
   LogOut,
   MessageSquareQuote,
   Settings,
@@ -52,6 +53,7 @@ const navItems = [
       { href: ROUTES.ADMIN.PROFESSORES, label: "Professores", icon: UserCog },
       { href: ROUTES.ADMIN.MATERIAIS, label: "Materiais", icon: BookOpen },
       { href: ROUTES.ADMIN.TAREFAS, label: "Tarefas", icon: ClipboardList },
+      { href: ROUTES.ADMIN.RELATORIOS, label: "Relatórios", icon: FileText },
       { href: ROUTES.ADMIN.FINANCEIRO, label: "Financeiro", icon: DollarSign },
       {
         href: ROUTES.ADMIN.DEPOIMENTOS,

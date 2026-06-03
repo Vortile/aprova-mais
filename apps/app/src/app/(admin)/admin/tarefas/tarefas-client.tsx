@@ -46,7 +46,7 @@ type MaterialRow = Pick<
 > & { download_url: string | null };
 type AlunoOption = Pick<
   Database["public"]["Tables"]["alunos"]["Row"],
-  "id" | "grade"
+  "id" | "grade" | "contact_email"
 > & {
   profiles: Pick<
     Database["public"]["Tables"]["profiles"]["Row"],
@@ -65,6 +65,7 @@ type EntregaRow = Pick<
 > & {
   alunos: {
     id: string;
+    contact_email: string | null;
     profiles: Pick<
       Database["public"]["Tables"]["profiles"]["Row"],
       "full_name"
@@ -288,7 +289,7 @@ export function TarefasClient({
                     <TableBody>
                       {entregas.map((entrega) => {
                         const alunoName =
-                          entrega.alunos?.profiles?.full_name ?? "Aluno";
+                          entrega.alunos?.profiles?.full_name ?? entrega.alunos?.contact_email ?? "Aluno";
                         const statusMeta = getStatusMeta(
                           entrega.status,
                           tarefa.due_date,

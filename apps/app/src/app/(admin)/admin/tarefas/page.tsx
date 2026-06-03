@@ -14,7 +14,7 @@ type MaterialRow = Pick<
 > & { download_url: string | null };
 type AlunoOption = Pick<
   Database["public"]["Tables"]["alunos"]["Row"],
-  "id" | "grade"
+  "id" | "grade" | "contact_email"
 > & {
   profiles: Pick<
     Database["public"]["Tables"]["profiles"]["Row"],
@@ -33,6 +33,7 @@ type EntregaRow = Pick<
 > & {
   alunos: {
     id: string;
+    contact_email: string | null;
     profiles: Pick<
       Database["public"]["Tables"]["profiles"]["Row"],
       "full_name"
@@ -55,12 +56,12 @@ export default async function TarefasPage() {
       supabase
         .from(TABLES.TAREFAS)
         .select(
-          "id, title, description, due_date, created_at, materiais(id, title, subject, file_url), tarefa_alunos(id, status, student_notes, submission_url, submitted_at, reviewed_at, teacher_feedback, alunos(id, profiles(full_name)))",
+          "id, title, description, due_date, created_at, materiais(id, title, subject, file_url), tarefa_alunos(id, status, student_notes, submission_url, submitted_at, reviewed_at, teacher_feedback, alunos(id, contact_email, profiles(full_name)))",
         )
         .order("created_at", { ascending: false }),
       supabase
         .from(TABLES.ALUNOS)
-        .select("id, grade, profiles(full_name)")
+        .select("id, grade, contact_email, profiles!alunos_profile_id_fkey(full_name)")
         .order("created_at", { ascending: false }),
       supabase
         .from(TABLES.MATERIAIS)

@@ -28,7 +28,7 @@ export default async function MateriaisPage() {
   // Fetch alunos scoped to this staff member
   let alunosQuery = supabase
     .from(TABLES.ALUNOS)
-    .select("id, contact_email, profiles(full_name)")
+    .select("id, contact_email, profiles!alunos_profile_id_fkey(full_name)")
     .order("created_at", { ascending: false });
 
   if (!isAdmin && session) {

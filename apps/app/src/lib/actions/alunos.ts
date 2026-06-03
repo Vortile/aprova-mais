@@ -382,7 +382,7 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
     };
   }
 
-  const normalizedEmail = normalizeEmail(values.data.contactEmail);
+  const normalizedEmail = normalizeEmail(values.data.contactEmail) || null;
   const fullName = values.data.fullName || null;
   const monthlyAmount = values.data.monthlyAmount
     ? parseFloat(values.data.monthlyAmount)
@@ -400,7 +400,13 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
       return { ok: false, error: "Aluno não encontrado para edição." };
     }
 
-    if (currentAluno.profile_id && !normalizedEmail) {
+    // Only require email if the profile already has one (e.g. invitation sent or active account).
+    // Name-only profiles (no email) can be edited freely without providing an email.
+    if (
+      currentAluno.profile_id &&
+      !normalizedEmail &&
+      (currentAluno.profiles?.email || currentAluno.profiles?.clerk_user_id)
+    ) {
       return {
         ok: false,
         error: "Informe o email da conta vinculada para continuar.",
@@ -495,6 +501,31 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
         ok: false,
         error: "Não foi possível atualizar o perfil do aluno.",
       };
+    }
+  } else if (fullName) {
+    // New student without email: create a name-only profile so the name is
+    // stored immediately and the student is visible everywhere in the admin.
+    const { data: newProfile, error: profileError } = await supabase
+      .from(TABLES.PROFILES)
+      .insert(
+        asSupabaseInsert<"profiles">({
+          id: crypto.randomUUID(),
+          clerk_user_id: null,
+          full_name: fullName,
+          role: "aluno",
+        }),
+      )
+      .select("id")
+      .single();
+
+    if (profileError) {
+      console.error("[saveAluno] failed to create name-only profile", { profileError });
+      return {
+        ok: false,
+        error: `DB profile error: ${profileError.message ?? profileError.code ?? JSON.stringify(profileError)}`,
+      };
+    } else if (newProfile) {
+      profileId = (newProfile as { id: string }).id;
     }
   }
 

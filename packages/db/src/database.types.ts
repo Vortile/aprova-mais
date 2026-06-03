@@ -253,6 +253,105 @@ export interface Database {
         };
         Relationships: [];
       };
+      relatorios_pedagogicos: {
+        Row: {
+          id: string;
+          professor_id: string;
+          aluno_id: string;
+          disciplinas: string[];
+          carga_horaria: string;
+          status_conteudo: string;
+          engajamento: number | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          professor_id: string;
+          aluno_id: string;
+          disciplinas: string[];
+          carga_horaria: string;
+          status_conteudo: string;
+          engajamento?: number | null;
+          created_at?: string;
+        };
+        Update: {
+          professor_id?: string;
+          aluno_id?: string;
+          disciplinas?: string[];
+          carga_horaria?: string;
+          status_conteudo?: string;
+          engajamento?: number | null;
+        };
+        Relationships: [];
+      };
+      registros_lista: {
+        Row: {
+          id: string;
+          professor_id: string;
+          aluno_id: string;
+          disciplina: string;
+          data_aula: string;
+          conteudo_ministrado: string;
+          quantidade_acertos: number;
+          total_questoes: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          professor_id: string;
+          aluno_id: string;
+          disciplina: string;
+          data_aula: string;
+          conteudo_ministrado: string;
+          quantidade_acertos: number;
+          total_questoes: number;
+          created_at?: string;
+        };
+        Update: {
+          professor_id?: string;
+          aluno_id?: string;
+          disciplina?: string;
+          data_aula?: string;
+          conteudo_ministrado?: string;
+          quantidade_acertos?: number;
+          total_questoes?: number;
+        };
+        Relationships: [];
+      };
+      notas_provas: {
+        Row: {
+          id: string;
+          professor_id: string;
+          aluno_id: string;
+          disciplina: string;
+          data_prova: string;
+          descricao: string;
+          nota: number;
+          nota_maxima: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          professor_id: string;
+          aluno_id: string;
+          disciplina: string;
+          data_prova: string;
+          descricao?: string;
+          nota: number;
+          nota_maxima?: number;
+          created_at?: string;
+        };
+        Update: {
+          professor_id?: string;
+          aluno_id?: string;
+          disciplina?: string;
+          data_prova?: string;
+          descricao?: string;
+          nota?: number;
+          nota_maxima?: number;
+        };
+        Relationships: [];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

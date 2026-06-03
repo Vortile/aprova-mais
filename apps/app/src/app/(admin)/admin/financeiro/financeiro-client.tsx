@@ -41,13 +41,14 @@ import type { Database } from "@repo/db";
 type Registro = Database["public"]["Tables"]["financeiro"]["Row"] & {
   alunos: {
     grade: string | null;
+    contact_email: string | null;
     profiles: { full_name: string | null } | null;
   } | null;
 };
 
 type AlunoResumo = Pick<
   Database["public"]["Tables"]["alunos"]["Row"],
-  "id" | "monthly_amount"
+  "id" | "monthly_amount" | "contact_email"
 > & {
   profiles: { full_name: string | null } | null;
 };
@@ -218,7 +219,7 @@ export function FinanceiroClient({
                 registros.map((r) => (
                   <TableRow key={r.id}>
                     <TableCell className="font-medium">
-                      {r.alunos?.profiles?.full_name ?? "—"}
+                      {r.alunos?.profiles?.full_name ?? r.alunos?.contact_email ?? "—"}
                     </TableCell>
                     <TableCell>{formatCurrency(r.amount)}</TableCell>
                     <TableCell>{formatDate(r.due_date)}</TableCell>
@@ -320,7 +321,7 @@ export function FinanceiroClient({
               <AlertDialogDescription>
                 Esta ação não pode ser desfeita. O registro de{" "}
                 <span className="font-medium">
-                  {deleteTarget?.alunos?.profiles?.full_name ?? "aluno"}
+                  {deleteTarget?.alunos?.profiles?.full_name ?? deleteTarget?.alunos?.contact_email ?? "aluno"}
                 </span>{" "}
                 será removido permanentemente.
               </AlertDialogDescription>
