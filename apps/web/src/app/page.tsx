@@ -139,11 +139,11 @@ export default async function WebHomePage() {
             <div className="absolute inset-0 bg-primary/5 rounded-[4rem] -rotate-3 translate-x-4"></div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              alt="Professor sorridente em ambiente de estudo"
+              alt="Professor Junior em ambiente de estudo"
               className="w-full h-full object-cover asymmetric-image-mask shadow-2xl relative z-10 grayscale-15 hover:grayscale-0 transition-all duration-700"
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBnCkt3ZhQx3A74KctAUgmmR19bEL9v8wzxtBnDgVnHnLS5ihnxt2LIucS7eUeonCqNxQsuklPSh1IU5zSAFrQ5uK2y7GeTBK1xS9sNuLJNHdcs_kmzBU5zCLP-ZteHYtPsz5sJTFflI6jkXxcvJdDroaTbF4YxjU3bGkpWE-0cC3cKcKlLg3X3NF96VFInziUYQY8Xu7XNs7m_JyxwCTKK9rCAKnasBTgaIO7VfH9VWQEuKe-SaqTrHrW5ZP1ZT1_--rlvbzvm7GWt"
+              src="/junior-professor-mestre.jpeg"
             />
-            <div className="absolute -bottom-6 -left-6 glass-card p-6 rounded-2xl shadow-xl z-20 hidden md:block border border-white/50">
+            <div className="absolute -bottom-6 -left-6 glass-card p-4 rounded-2xl shadow-xl z-20 hidden md:block border border-white/50">
               <div className="flex items-center gap-3">
                 <div className="w-12 h-12 rounded-full bg-tertiary-fixed flex items-center justify-center text-on-tertiary-fixed">
                   <span className="material-symbols-outlined">verified</span>
