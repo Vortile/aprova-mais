@@ -132,12 +132,13 @@ async function findAluno(alunoId: string) {
   const { data, error } = await supabase
     .from(TABLES.ALUNOS)
     .select(
-      "id, profile_id, contact_email, profiles(id, clerk_user_id, email, full_name, role)",
+      "id, profile_id, contact_email, profiles!alunos_profile_id_fkey(id, clerk_user_id, email, full_name, role)",
     )
     .eq("id", alunoId)
     .single();
 
   if (error) {
+    console.error("findAluno error:", error);
     return null;
   }
 
@@ -635,9 +636,16 @@ export async function deleteAluno(alunoId: string): Promise<DeleteAlunoResult> {
 
   try {
     if (aluno.profiles?.clerk_user_id) {
-      await (
-        await clerkClient()
-      ).users.deleteUser(aluno.profiles.clerk_user_id);
+      try {
+        await (
+          await clerkClient()
+        ).users.deleteUser(aluno.profiles.clerk_user_id);
+      } catch (error: any) {
+        // Ignora se o usuário já não existir no Clerk
+        if (error?.status !== 404) {
+          throw error;
+        }
+      }
     } else if (aluno.contact_email) {
       const normalizedEmail = normalizeEmail(aluno.contact_email);
 
@@ -645,11 +653,9 @@ export async function deleteAluno(alunoId: string): Promise<DeleteAlunoResult> {
         await revokePendingInvitations(normalizedEmail);
       }
     }
-  } catch {
-    return {
-      ok: false,
-      error: "Não foi possível excluir a conta vinculada do aluno.",
-    };
+  } catch (error) {
+    console.error("Erro ao excluir conta vinculada do aluno:", error);
+    // Não vamos retornar erro aqui para que o cadastro local seja excluído
   }
 
   const { error: deleteAlunoError } = await supabase
@@ -729,3 +735,4 @@ export async function resendAlunoInvite(
 
   return { ok: true, message: "Convite reenviado com sucesso." };
 }
+
