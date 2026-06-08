@@ -1,5 +1,9 @@
 "use client";
 
+import { useRef, useState } from "react";
+import { Download, Loader2 } from "lucide-react";
+import html2canvas from "html2canvas";
+import { Button } from "@/components/ui/button";
 import {
   LineChart,
   Line,
@@ -33,6 +37,31 @@ const DARK_BLUE = "#1f4e79";
 const GREEN = "#2ecc71";
 
 export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
+  const chartRef = useRef<HTMLDivElement>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  async function handleDownload() {
+    if (!chartRef.current) return;
+    
+    try {
+      setIsDownloading(true);
+      const canvas = await html2canvas(chartRef.current, {
+        scale: 2, // Retira o gráfico com maior resolução
+        backgroundColor: "#ffffff",
+      });
+      
+      const url = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.download = `Relatorio_${nomeAluno.replace(/[^a-z0-9]/gi, "_")}${disciplina ? `_${disciplina}` : ""}.png`;
+      link.href = url;
+      link.click();
+    } catch (error) {
+      console.error("Erro ao gerar imagem:", error);
+    } finally {
+      setIsDownloading(false);
+    }
+  }
+
   if (data.length === 0) {
     return (
       <div className="flex h-64 items-center justify-center rounded-lg border border-dashed">
@@ -46,14 +75,31 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
   const sorted = [...data].sort((a, b) => a.dateMs - b.dateMs);
 
   return (
-    <div className="rounded-lg border bg-card p-4">
-      <div className="mb-4 text-center">
-        <p className="text-sm font-bold text-[#1f4e79]">
-          APROVA+ • Diagnóstico Analítico 360°{" "}
-          {disciplina ? `• ${disciplina}` : ""}
-        </p>
-        <p className="text-xs text-muted-foreground">{nomeAluno}</p>
+    <div className="space-y-4">
+      <div className="flex justify-end">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleDownload}
+          disabled={isDownloading}
+        >
+          {isDownloading ? (
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          ) : (
+            <Download className="mr-2 h-4 w-4" />
+          )}
+          Baixar Gráfico (PNG)
+        </Button>
       </div>
+
+      <div ref={chartRef} className="rounded-lg border bg-card p-4">
+        <div className="mb-4 text-center">
+          <p className="text-sm font-bold text-[#1f4e79]">
+            APROVA+ • Diagnóstico Analítico 360°{" "}
+            {disciplina ? `• ${disciplina}` : ""}
+          </p>
+          <p className="text-xs text-muted-foreground">{nomeAluno}</p>
+        </div>
 
       <ResponsiveContainer width="100%" height={320}>
         <LineChart
@@ -131,6 +177,7 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
       <p className="mt-2 text-center text-xs text-muted-foreground">
         Linha amarela tracejada = meta mínima (70%)
       </p>
+    </div>
     </div>
   );
 }
