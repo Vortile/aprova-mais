@@ -86,7 +86,7 @@ export default async function AlunoDetailPage({
   const { data: alunoData } = await supabase
     .from(TABLES.ALUNOS)
     .select(
-      "*, profiles(id, full_name, email, clerk_user_id, role, avatar_url, address, created_at)",
+      "*, profiles!alunos_profile_id_fkey(id, full_name, email, clerk_user_id, role, avatar_url, address, created_at)",
     )
     .eq("id", id)
     .maybeSingle();

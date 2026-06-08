@@ -22,7 +22,7 @@ export default async function FinanceiroPage() {
   const [{ data: registros }, { data: alunos }] = await Promise.all([
     supabase
       .from(TABLES.FINANCEIRO)
-      .select("*, alunos(grade, contact_email, profiles(full_name))")
+      .select("*, alunos(grade, contact_email, profiles!alunos_profile_id_fkey(full_name))")
       .order("due_date", { ascending: false }),
     supabase
       .from(TABLES.ALUNOS)

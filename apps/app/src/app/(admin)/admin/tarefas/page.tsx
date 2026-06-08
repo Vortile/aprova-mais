@@ -56,7 +56,7 @@ export default async function TarefasPage() {
       supabase
         .from(TABLES.TAREFAS)
         .select(
-          "id, title, description, due_date, created_at, materiais(id, title, subject, file_url), tarefa_alunos(id, status, student_notes, submission_url, submitted_at, reviewed_at, teacher_feedback, alunos(id, contact_email, profiles(full_name)))",
+          "id, title, description, due_date, created_at, materiais(id, title, subject, file_url), tarefa_alunos(id, status, student_notes, submission_url, submitted_at, reviewed_at, teacher_feedback, alunos(id, contact_email, profiles!alunos_profile_id_fkey(full_name)))",
         )
         .order("created_at", { ascending: false }),
       supabase
