@@ -138,7 +138,6 @@ async function findAluno(alunoId: string) {
     .single();
 
   if (error) {
-    console.error("findAluno error:", error);
     return null;
   }
 
