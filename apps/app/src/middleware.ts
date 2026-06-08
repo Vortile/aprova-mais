@@ -49,8 +49,8 @@ async function handleAppMiddleware(auth: MiddlewareAuth, request: NextRequest) {
   if (
     pathname === ROUTES.LOGIN ||
     pathname.startsWith(ROUTES.REGISTER) ||
-    pathname.startsWith(ROUTES.SIGN_UP) ||
-    pathname.startsWith("/sign-in")
+    pathname.startsWith("/sign-in") ||
+    pathname.startsWith("/sign-up")
   ) {
     return NextResponse.redirect(new URL(ROUTES.SIGN_IN, request.url));
   }

@@ -2,7 +2,7 @@ export const ROUTES = {
   HOME: "/",
   DASHBOARD: "/dashboard",
   SIGN_IN: "/entrar",
-  SIGN_UP: "/sign-up",
+  SIGN_UP: "/cadastro",
   LOGIN: "/login",
   REGISTER: "/registrar",
   ADMIN: {
