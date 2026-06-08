@@ -45,12 +45,18 @@ async function handleAppMiddleware(auth: MiddlewareAuth, request: NextRequest) {
   const isAlunoRoute = pathname.startsWith("/aluno");
   const isProtectedRoute = isAdminRoute || isAlunoRoute || isDashboardRoute;
 
+  // Forward legacy sign-up path to the new cadastro route, preserving query parameters
+  if (pathname.startsWith("/sign-up")) {
+    const newUrl = new URL(ROUTES.SIGN_UP, request.url);
+    newUrl.search = request.nextUrl.search;
+    return NextResponse.redirect(newUrl);
+  }
+
   // All alternative / legacy paths redirect to the canonical sign-in
   if (
     pathname === ROUTES.LOGIN ||
     pathname.startsWith(ROUTES.REGISTER) ||
-    pathname.startsWith("/sign-in") ||
-    pathname.startsWith("/sign-up")
+    pathname.startsWith("/sign-in")
   ) {
     return NextResponse.redirect(new URL(ROUTES.SIGN_IN, request.url));
   }
