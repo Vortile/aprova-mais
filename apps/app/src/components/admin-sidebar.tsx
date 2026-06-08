@@ -100,8 +100,11 @@ export function AdminSidebar({
   return (
     <Sidebar>
       <SidebarContent>
-        <div className="px-2 pt-2 mb-0!">
+        <div className="px-4 py-4">
           <BrandLockup size="sm" />
+          <p className="mt-1 text-xs font-medium text-muted-foreground">
+            {isAdmin ? "Área do Administrador" : "Área do Professor"}
+          </p>
         </div>
         <SidebarSeparator />
         {navItems.map((group) => (
