@@ -14,6 +14,7 @@ import {
   Legend,
   ResponsiveContainer,
   ReferenceLine,
+  LabelList,
 } from "recharts";
 
 export type ChartDataPoint = {
@@ -152,7 +153,14 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
               dot={{ r: 5, fill: BLUE }}
               activeDot={{ r: 7 }}
               connectNulls={true}
-            />
+            >
+              <LabelList
+                dataKey="listas"
+                position="top"
+                formatter={(v: any) => (v !== null && v !== undefined ? `${v}%` : "")}
+                style={{ fontSize: 10, fill: BLUE, fontWeight: "semibold" }}
+              />
+            </Line>
             <Line
               type="monotone"
               dataKey="provas"
@@ -162,7 +170,14 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
               dot={{ r: 6, fill: DARK_BLUE }}
               activeDot={{ r: 8 }}
               connectNulls={true}
-            />
+            >
+              <LabelList
+                dataKey="provas"
+                position="top"
+                formatter={(v: any) => (v !== null && v !== undefined ? `${v}%` : "")}
+                style={{ fontSize: 10, fill: DARK_BLUE, fontWeight: "semibold" }}
+              />
+            </Line>
             <Line
               type="monotone"
               dataKey="engajamento"
@@ -172,7 +187,14 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
               strokeDasharray="5 3"
               dot={{ r: 4, fill: GREEN }}
               connectNulls={true}
-            />
+            >
+              <LabelList
+                dataKey="engajamento"
+                position="bottom"
+                formatter={(v: any) => (v !== null && v !== undefined ? `${v}%` : "")}
+                style={{ fontSize: 10, fill: GREEN, fontWeight: "semibold" }}
+              />
+            </Line>
           </LineChart>
         </ResponsiveContainer>
 
