@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -26,7 +27,7 @@ import {
   DISCIPLINAS,
   STATUS_CONTEUDO_VALUES,
 } from "@/lib/relatorios-constants";
-import { saveRelatorioPedagogico } from "@/lib/actions/relatorios";
+import { saveRelatorioPedagogico, getReportedWeeks } from "@/lib/actions/relatorios";
 
 type AlunoOption = {
   id: string;
@@ -111,6 +112,7 @@ export function RelatorioPedagogicoForm({
   onSuccess: () => void;
 }) {
   const router = useRouter();
+  const [reportedWeeks, setReportedWeeks] = useState<string[]>([]);
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -124,7 +126,27 @@ export function RelatorioPedagogicoForm({
     },
   });
 
+  const selectedAlunoId = form.watch("alunoId");
+
+  useEffect(() => {
+    if (selectedAlunoId) {
+      getReportedWeeks(selectedAlunoId).then((weeks) => {
+        setReportedWeeks(weeks);
+        // Clear week value if it is now filtered out
+        const currentWeekVal = form.getValues("dataSemana");
+        if (weeks.includes(currentWeekVal)) {
+          form.setValue("dataSemana", "");
+        }
+      });
+    } else {
+      setReportedWeeks([]);
+    }
+  }, [selectedAlunoId, form]);
+
   const recentWeeks = getRecentWeeks();
+  const availableWeeks = recentWeeks.filter(
+    (week) => !reportedWeeks.includes(week.value)
+  );
 
   async function onSubmit(values: FormValues) {
     const finalDisciplina =
@@ -192,14 +214,26 @@ export function RelatorioPedagogicoForm({
           render={({ field }) => (
             <FormItem>
               <FormLabel>Semana do Relatório *</FormLabel>
-              <Select onValueChange={field.onChange} value={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                value={field.value}
+                disabled={!selectedAlunoId}
+              >
                 <FormControl>
                   <SelectTrigger>
-                    <SelectValue placeholder="Selecione a semana correspondente" />
+                    <SelectValue
+                      placeholder={
+                        !selectedAlunoId
+                          ? "Selecione o aluno primeiro"
+                          : availableWeeks.length === 0
+                          ? "Todos os relatórios recentes preenchidos!"
+                          : "Selecione a semana correspondente"
+                      }
+                    />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent>
-                  {recentWeeks.map((week) => (
+                  {availableWeeks.map((week) => (
                     <SelectItem key={week.value} value={week.value}>
                       {week.label}
                     </SelectItem>

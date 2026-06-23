@@ -254,3 +254,17 @@ export async function saveNotaProva(input: unknown): Promise<ActionResult> {
   revalidatePath(ROUTES.ADMIN.RELATORIOS);
   return { ok: true, message: "Nota de prova salva com sucesso!" };
 }
+
+export async function getReportedWeeks(alunoId: string): Promise<string[]> {
+  const access = await requireProfessorSession();
+  if ("error" in access) return [];
+
+  const supabase = createAdminClient();
+  const { data } = await supabase
+    .from(TABLES.RELATORIOS_PEDAGOGICOS)
+    .select("data_semana")
+    .eq("aluno_id", alunoId)
+    .not("data_semana", "is", null);
+
+  return (data ?? []).map((row: any) => row.data_semana as string);
+}

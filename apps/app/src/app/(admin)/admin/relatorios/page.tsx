@@ -62,7 +62,11 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     nota: number;
     nota_maxima: number;
   };
-  type RelatorioRow = { created_at: string; engajamento: number | null };
+  type RelatorioRow = {
+    created_at: string;
+    data_semana: string | null;
+    engajamento: number | null;
+  };
 
   if (selectedAlunoId) {
     const [{ data: rawListas }, { data: rawProvas }, { data: rawRelatorios }] =
@@ -79,7 +83,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
           .order("data_prova", { ascending: true }),
         supabase
           .from(TABLES.RELATORIOS_PEDAGOGICOS)
-          .select("created_at, engajamento")
+          .select("created_at, data_semana, engajamento")
           .eq("aluno_id", selectedAlunoId)
           .not("engajamento", "is", null)
           .order("created_at", { ascending: true }),
@@ -136,7 +140,9 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     }
 
     for (const row of relatorios ?? []) {
-      const dt = new Date(row.created_at);
+      // Use data_semana (with 12h set to avoid timezone offsets) or fallback to created_at
+      const dateStr = row.data_semana ? `${row.data_semana}T12:00:00` : row.created_at;
+      const dt = new Date(dateStr);
       const pt = getOrCreate(dt);
       pt.engajamento = row.engajamento as number;
     }
