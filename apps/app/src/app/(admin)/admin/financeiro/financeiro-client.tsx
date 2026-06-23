@@ -219,7 +219,9 @@ export function FinanceiroClient({
                 registros.map((r) => (
                   <TableRow key={r.id}>
                     <TableCell className="font-medium">
-                      {r.alunos?.profiles?.full_name ?? r.alunos?.contact_email ?? "—"}
+                      {r.alunos?.profiles?.full_name ??
+                        r.alunos?.contact_email ??
+                        "—"}
                     </TableCell>
                     <TableCell>{formatCurrency(r.amount)}</TableCell>
                     <TableCell>{formatDate(r.due_date)}</TableCell>
@@ -321,7 +323,9 @@ export function FinanceiroClient({
               <AlertDialogDescription>
                 Esta ação não pode ser desfeita. O registro de{" "}
                 <span className="font-medium">
-                  {deleteTarget?.alunos?.profiles?.full_name ?? deleteTarget?.alunos?.contact_email ?? "aluno"}
+                  {deleteTarget?.alunos?.profiles?.full_name ??
+                    deleteTarget?.alunos?.contact_email ??
+                    "aluno"}
                 </span>{" "}
                 será removido permanentemente.
               </AlertDialogDescription>

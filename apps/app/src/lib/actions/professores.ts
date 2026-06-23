@@ -135,8 +135,6 @@ export async function saveProfessor(input: unknown): Promise<ActionResult> {
   }
 
   // Create Clerk invitation
-  const client = await clerkClient();
-
   await revokePendingInvitations(normalizedEmail);
 
   await client.invitations.createInvitation({

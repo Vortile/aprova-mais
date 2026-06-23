@@ -189,7 +189,9 @@ export function TarefaForm({
                     alunos.map((aluno) => {
                       const checked = field.value.includes(aluno.id);
                       const alunoName =
-                        aluno.profiles?.full_name ?? aluno.contact_email ?? "Aluno sem nome";
+                        aluno.profiles?.full_name ??
+                        aluno.contact_email ??
+                        "Aluno sem nome";
 
                       return (
                         <label
@@ -237,9 +239,13 @@ export function TarefaForm({
         <div className="flex justify-end">
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting || isPending || alunos.length === 0}
+            disabled={
+              form.formState.isSubmitting || isPending || alunos.length === 0
+            }
           >
-            {form.formState.isSubmitting || isPending ? "Salvando..." : "Criar tarefa"}
+            {form.formState.isSubmitting || isPending
+              ? "Salvando..."
+              : "Criar tarefa"}
           </Button>
         </div>
       </form>

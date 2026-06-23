@@ -203,8 +203,13 @@ export async function updateTarefa(input: unknown): Promise<ActionResult> {
       .eq("id", values.data.tarefaId)
       .single();
 
-    if (!existingTarefa || existingTarefa.created_by !== access.session.profile.id) {
-      return { ok: false, error: "Você não tem permissão para alterar esta tarefa." };
+    const tarefaRow = existingTarefa as { created_by: string | null } | null;
+
+    if (!tarefaRow || tarefaRow.created_by !== access.session.profile.id) {
+      return {
+        ok: false,
+        error: "Você não tem permissão para alterar esta tarefa.",
+      };
     }
   }
 
@@ -417,18 +422,25 @@ export async function reviewTarefa(input: unknown): Promise<ActionResult> {
       .eq("id", values.data.entregaId)
       .single();
 
-    if (!entrega) {
+    const entregaRow = entrega as { aluno_id: string } | null;
+
+    if (!entregaRow) {
       return { ok: false, error: "Entrega não encontrada." };
     }
 
     const { data: aluno } = await supabase
       .from(TABLES.ALUNOS)
       .select("professor_id")
-      .eq("id", entrega.aluno_id)
+      .eq("id", entregaRow.aluno_id)
       .single();
 
-    if (!aluno || aluno.professor_id !== access.session.profile.id) {
-      return { ok: false, error: "Você não tem permissão para revisar a entrega deste aluno." };
+    const alunoRow = aluno as { professor_id: string | null } | null;
+
+    if (!alunoRow || alunoRow.professor_id !== access.session.profile.id) {
+      return {
+        ok: false,
+        error: "Você não tem permissão para revisar a entrega deste aluno.",
+      };
     }
   }
 
@@ -479,8 +491,13 @@ export async function deleteTarefa(input: unknown): Promise<ActionResult> {
       .eq("id", tarefaId.data)
       .single();
 
-    if (!existingTarefa || existingTarefa.created_by !== access.session.profile.id) {
-      return { ok: false, error: "Você não tem permissão para remover esta tarefa." };
+    const tarefaRow = existingTarefa as { created_by: string | null } | null;
+
+    if (!tarefaRow || tarefaRow.created_by !== access.session.profile.id) {
+      return {
+        ok: false,
+        error: "Você não tem permissão para remover esta tarefa.",
+      };
     }
   }
 

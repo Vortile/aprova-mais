@@ -38,10 +38,7 @@ const schema = z.object({
   }),
   dataAula: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
   conteudoMinistrado: z.string().trim().min(1, "Informe o conteúdo ministrado"),
-  quantidadeAcertos: z.coerce
-    .number()
-    .int()
-    .min(0, "Não pode ser negativo"),
+  quantidadeAcertos: z.coerce.number().int().min(0, "Não pode ser negativo"),
   totalQuestoes: z.coerce
     .number()
     .int()
@@ -109,7 +106,9 @@ export function RegistroListaForm({
                 <SelectContent>
                   {alunos.map((aluno) => (
                     <SelectItem key={aluno.id} value={aluno.id}>
-                      {aluno.profiles?.full_name ?? aluno.contact_email ?? "Sem nome"}
+                      {aluno.profiles?.full_name ??
+                        aluno.contact_email ??
+                        "Sem nome"}
                     </SelectItem>
                   ))}
                 </SelectContent>

@@ -240,8 +240,13 @@ export function TarefaEditForm({
           )}
         />
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="submit" disabled={form.formState.isSubmitting || isPending}>
-            {form.formState.isSubmitting || isPending ? "Salvando..." : "Salvar alterações"}
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting || isPending}
+          >
+            {form.formState.isSubmitting || isPending
+              ? "Salvando..."
+              : "Salvar alterações"}
           </Button>
         </div>
       </form>

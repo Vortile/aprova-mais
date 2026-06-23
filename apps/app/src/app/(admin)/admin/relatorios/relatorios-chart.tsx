@@ -42,14 +42,14 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
 
   async function handleDownload() {
     if (!chartRef.current) return;
-    
+
     try {
       setIsDownloading(true);
       const canvas = await html2canvas(chartRef.current, {
         scale: 2, // Retira o gráfico com maior resolução
         backgroundColor: "#ffffff",
       });
-      
+
       const url = canvas.toDataURL("image/png");
       const link = document.createElement("a");
       link.download = `Relatorio_${nomeAluno.replace(/[^a-z0-9]/gi, "_")}${disciplina ? `_${disciplina}` : ""}.png`;
@@ -101,83 +101,83 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
           <p className="text-xs text-muted-foreground">{nomeAluno}</p>
         </div>
 
-      <ResponsiveContainer width="100%" height={320}>
-        <LineChart
-          data={sorted}
-          margin={{ top: 10, right: 24, left: 0, bottom: 10 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
-          <XAxis
-            dataKey="date"
-            tick={{ fontSize: 11, fill: "#555" }}
-            label={{
-              value: "Linha do Tempo",
-              position: "insideBottom",
-              offset: -4,
-              fontSize: 11,
-              fill: "#555",
-            }}
-          />
-          <YAxis
-            domain={[0, 110]}
-            tickFormatter={(v) => `${v}%`}
-            tick={{ fontSize: 11, fill: "#555" }}
-            label={{
-              value: "Aproveitamento (%)",
-              angle: -90,
-              position: "insideLeft",
-              offset: 12,
-              fontSize: 11,
-              fill: "#555",
-            }}
-          />
-          <Tooltip
-            formatter={(value, name) => [
-              `${Number(value).toFixed(0)}%`,
-              name,
-            ]}
-            contentStyle={{ fontSize: 12 }}
-          />
-          <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
-          <ReferenceLine y={70} stroke="#f59e0b" strokeDasharray="4 4" />
+        <ResponsiveContainer width="100%" height={320}>
+          <LineChart
+            data={sorted}
+            margin={{ top: 10, right: 24, left: 0, bottom: 10 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis
+              dataKey="date"
+              tick={{ fontSize: 11, fill: "#555" }}
+              label={{
+                value: "Linha do Tempo",
+                position: "insideBottom",
+                offset: -4,
+                fontSize: 11,
+                fill: "#555",
+              }}
+            />
+            <YAxis
+              domain={[0, 110]}
+              tickFormatter={(v) => `${v}%`}
+              tick={{ fontSize: 11, fill: "#555" }}
+              label={{
+                value: "Aproveitamento (%)",
+                angle: -90,
+                position: "insideLeft",
+                offset: 12,
+                fontSize: 11,
+                fill: "#555",
+              }}
+            />
+            <Tooltip
+              formatter={(value, name) => [
+                `${Number(value).toFixed(0)}%`,
+                name,
+              ]}
+              contentStyle={{ fontSize: 12 }}
+            />
+            <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
+            <ReferenceLine y={70} stroke="#f59e0b" strokeDasharray="4 4" />
 
-          <Line
-            type="monotone"
-            dataKey="listas"
-            name="Listas de Exercícios (Treino)"
-            stroke={BLUE}
-            strokeWidth={2}
-            dot={{ r: 5, fill: BLUE }}
-            activeDot={{ r: 7 }}
-            connectNulls={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="provas"
-            name="Provas da Escola (Resultado Oficial)"
-            stroke={DARK_BLUE}
-            strokeWidth={3}
-            dot={{ r: 6, fill: DARK_BLUE }}
-            activeDot={{ r: 8 }}
-            connectNulls={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="engajamento"
-            name="Índice de Engajamento e Foco"
-            stroke={GREEN}
-            strokeWidth={1.5}
-            strokeDasharray="5 3"
-            dot={{ r: 4, fill: GREEN }}
-            connectNulls={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+            <Line
+              type="monotone"
+              dataKey="listas"
+              name="Listas de Exercícios (Treino)"
+              stroke={BLUE}
+              strokeWidth={2}
+              dot={{ r: 5, fill: BLUE }}
+              activeDot={{ r: 7 }}
+              connectNulls={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="provas"
+              name="Provas da Escola (Resultado Oficial)"
+              stroke={DARK_BLUE}
+              strokeWidth={3}
+              dot={{ r: 6, fill: DARK_BLUE }}
+              activeDot={{ r: 8 }}
+              connectNulls={false}
+            />
+            <Line
+              type="monotone"
+              dataKey="engajamento"
+              name="Índice de Engajamento e Foco"
+              stroke={GREEN}
+              strokeWidth={1.5}
+              strokeDasharray="5 3"
+              dot={{ r: 4, fill: GREEN }}
+              connectNulls={false}
+            />
+          </LineChart>
+        </ResponsiveContainer>
 
-      <p className="mt-2 text-center text-xs text-muted-foreground">
-        Linha amarela tracejada = meta mínima (70%)
-      </p>
-    </div>
+        <p className="mt-2 text-center text-xs text-muted-foreground">
+          Linha amarela tracejada = meta mínima (70%)
+        </p>
+      </div>
     </div>
   );
 }

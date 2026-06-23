@@ -97,8 +97,13 @@ export function ProfessorForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="submit" disabled={form.formState.isSubmitting || isPending}>
-            {form.formState.isSubmitting || isPending ? "Enviando..." : "Enviar convite"}
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting || isPending}
+          >
+            {form.formState.isSubmitting || isPending
+              ? "Enviando..."
+              : "Enviar convite"}
           </Button>
         </div>
       </form>

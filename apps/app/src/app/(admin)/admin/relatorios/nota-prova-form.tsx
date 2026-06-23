@@ -103,7 +103,9 @@ export function NotaProvaForm({
                 <SelectContent>
                   {alunos.map((aluno) => (
                     <SelectItem key={aluno.id} value={aluno.id}>
-                      {aluno.profiles?.full_name ?? aluno.contact_email ?? "Sem nome"}
+                      {aluno.profiles?.full_name ??
+                        aluno.contact_email ??
+                        "Sem nome"}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -159,7 +161,10 @@ export function NotaProvaForm({
             <FormItem>
               <FormLabel>Descrição da prova *</FormLabel>
               <FormControl>
-                <Input placeholder="Ex: Prova bimestral de Matemática — 1º bimestre" {...field} />
+                <Input
+                  placeholder="Ex: Prova bimestral de Matemática — 1º bimestre"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

@@ -69,7 +69,9 @@ export default async function TarefasPage() {
 
   let alunosQuery = supabase
     .from(TABLES.ALUNOS)
-    .select("id, grade, contact_email, profiles!alunos_profile_id_fkey(full_name)")
+    .select(
+      "id, grade, contact_email, profiles!alunos_profile_id_fkey(full_name)",
+    )
     .order("created_at", { ascending: false });
 
   let materiaisQuery = supabase
@@ -84,11 +86,7 @@ export default async function TarefasPage() {
   }
 
   const [{ data: tarefas }, { data: alunos }, { data: materiais }] =
-    await Promise.all([
-      tarefasQuery,
-      alunosQuery,
-      materiaisQuery,
-    ]);
+    await Promise.all([tarefasQuery, alunosQuery, materiaisQuery]);
 
   const tarefasWithUrls = await Promise.all(
     ((tarefas ?? []) as TarefaRow[]).map(async (tarefa) => ({

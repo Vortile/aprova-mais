@@ -119,10 +119,7 @@ export function AlunoForm({
             <FormItem>
               <FormLabel>Nome</FormLabel>
               <FormControl>
-                <Input
-                  placeholder="Nome completo do aluno"
-                  {...field}
-                />
+                <Input placeholder="Nome completo do aluno" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -262,8 +259,13 @@ export function AlunoForm({
           />
         )}
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="submit" disabled={form.formState.isSubmitting || isPending}>
-            {form.formState.isSubmitting || isPending ? "Salvando..." : "Salvar"}
+          <Button
+            type="submit"
+            disabled={form.formState.isSubmitting || isPending}
+          >
+            {form.formState.isSubmitting || isPending
+              ? "Salvando..."
+              : "Salvar"}
           </Button>
         </div>
       </form>

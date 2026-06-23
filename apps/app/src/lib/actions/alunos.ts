@@ -404,7 +404,10 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
       session.profile.role !== ROLES.ADMIN &&
       currentAluno.professor_id !== session.profile.id
     ) {
-      return { ok: false, error: "Você não tem permissão para editar este aluno." };
+      return {
+        ok: false,
+        error: "Você não tem permissão para editar este aluno.",
+      };
     }
 
     // Only require email if the profile already has one (e.g. invitation sent or active account).
@@ -526,7 +529,9 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
       .single();
 
     if (profileError) {
-      console.error("[saveAluno] failed to create name-only profile", { profileError });
+      console.error("[saveAluno] failed to create name-only profile", {
+        profileError,
+      });
       return {
         ok: false,
         error: `DB profile error: ${profileError.message ?? profileError.code ?? JSON.stringify(profileError)}`,
@@ -642,7 +647,10 @@ export async function deleteAluno(alunoId: string): Promise<DeleteAlunoResult> {
     adminAccess.session.profile.role !== ROLES.ADMIN &&
     aluno.professor_id !== adminAccess.session.profile.id
   ) {
-    return { ok: false, error: "Você não tem permissão para excluir este aluno." };
+    return {
+      ok: false,
+      error: "Você não tem permissão para excluir este aluno.",
+    };
   }
 
   const supabase = createAdminClient();
@@ -720,7 +728,10 @@ export async function resendAlunoInvite(
     access.session.profile.role !== ROLES.ADMIN &&
     aluno.professor_id !== access.session.profile.id
   ) {
-    return { ok: false, error: "Você não tem permissão para reenviar o convite deste aluno." };
+    return {
+      ok: false,
+      error: "Você não tem permissão para reenviar o convite deste aluno.",
+    };
   }
 
   if (aluno.profiles?.clerk_user_id) {
@@ -755,4 +766,3 @@ export async function resendAlunoInvite(
 
   return { ok: true, message: "Convite reenviado com sucesso." };
 }
-

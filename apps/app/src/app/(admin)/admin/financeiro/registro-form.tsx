@@ -106,7 +106,9 @@ export function RegistroForm({
                 <SelectContent>
                   {alunos.map((aluno) => (
                     <SelectItem key={aluno.id} value={aluno.id}>
-                      {aluno.profiles?.full_name ?? aluno.contact_email ?? aluno.id}
+                      {aluno.profiles?.full_name ??
+                        aluno.contact_email ??
+                        aluno.id}
                     </SelectItem>
                   ))}
                 </SelectContent>

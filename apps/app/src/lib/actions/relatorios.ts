@@ -7,9 +7,14 @@ import { getCurrentAppSession } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ACTION_ERRORS } from "@/lib/errors";
 import { ROUTES } from "@/lib/routes";
-import { DISCIPLINAS, STATUS_CONTEUDO_VALUES } from "@/lib/relatorios-constants";
+import {
+  DISCIPLINAS,
+  STATUS_CONTEUDO_VALUES,
+} from "@/lib/relatorios-constants";
 
-type ActionResult = { ok: true; message: string } | { ok: false; error: string };
+type ActionResult =
+  | { ok: true; message: string }
+  | { ok: false; error: string };
 
 const relatorioPedagogicoSchema = z.object({
   alunoId: z.string().uuid("Selecione um aluno válido"),
@@ -45,10 +50,7 @@ const registroListaSchema = z.object({
   }),
   dataAula: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
   conteudoMinistrado: z.string().trim().min(1, "Informe o conteúdo ministrado"),
-  quantidadeAcertos: z
-    .number()
-    .int()
-    .min(0, "Não pode ser negativo"),
+  quantidadeAcertos: z.number().int().min(0, "Não pode ser negativo"),
   totalQuestoes: z
     .number()
     .int()
@@ -77,7 +79,10 @@ export async function saveRelatorioPedagogico(
 
   const parsed = relatorioPedagogicoSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.errors[0]?.message ?? "Dados inválidos." };
+    return {
+      ok: false,
+      error: parsed.error.errors[0]?.message ?? "Dados inválidos.",
+    };
   }
 
   const { alunoId, disciplinas, cargaHoraria, statusConteudo } = parsed.data;
@@ -93,7 +98,10 @@ export async function saveRelatorioPedagogico(
     .limit(1);
 
   if (!alunoCheck?.length && access.session.profile.role !== "admin") {
-    return { ok: false, error: "Você não tem permissão para reportar sobre este aluno." };
+    return {
+      ok: false,
+      error: "Você não tem permissão para reportar sobre este aluno.",
+    };
   }
 
   const { error } = await supabase.from(TABLES.RELATORIOS_PEDAGOGICOS).insert({
@@ -120,7 +128,10 @@ export async function saveRegistroLista(input: unknown): Promise<ActionResult> {
 
   const parsed = registroListaSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.errors[0]?.message ?? "Dados inválidos." };
+    return {
+      ok: false,
+      error: parsed.error.errors[0]?.message ?? "Dados inválidos.",
+    };
   }
 
   const {
@@ -133,7 +144,10 @@ export async function saveRegistroLista(input: unknown): Promise<ActionResult> {
   } = parsed.data;
 
   if (quantidadeAcertos > totalQuestoes) {
-    return { ok: false, error: "Acertos não pode ser maior que o total de questões." };
+    return {
+      ok: false,
+      error: "Acertos não pode ser maior que o total de questões.",
+    };
   }
 
   const supabase = createAdminClient();
@@ -147,7 +161,10 @@ export async function saveRegistroLista(input: unknown): Promise<ActionResult> {
     .limit(1);
 
   if (!alunoCheck?.length && access.session.profile.role !== "admin") {
-    return { ok: false, error: "Você não tem permissão para reportar sobre este aluno." };
+    return {
+      ok: false,
+      error: "Você não tem permissão para reportar sobre este aluno.",
+    };
   }
 
   const { error } = await supabase.from(TABLES.REGISTROS_LISTA).insert({
@@ -175,10 +192,14 @@ export async function saveNotaProva(input: unknown): Promise<ActionResult> {
 
   const parsed = notaProvaSchema.safeParse(input);
   if (!parsed.success) {
-    return { ok: false, error: parsed.error.errors[0]?.message ?? "Dados inválidos." };
+    return {
+      ok: false,
+      error: parsed.error.errors[0]?.message ?? "Dados inválidos.",
+    };
   }
 
-  const { alunoId, disciplina, dataProva, descricao, nota, notaMaxima } = parsed.data;
+  const { alunoId, disciplina, dataProva, descricao, nota, notaMaxima } =
+    parsed.data;
 
   if (nota > notaMaxima) {
     return { ok: false, error: "Nota não pode ser maior que a nota máxima." };
@@ -196,7 +217,10 @@ export async function saveNotaProva(input: unknown): Promise<ActionResult> {
     .limit(1);
 
   if (!alunoCheck?.length && access.session.profile.role !== "admin") {
-    return { ok: false, error: "Você não tem permissão para reportar sobre este aluno." };
+    return {
+      ok: false,
+      error: "Você não tem permissão para reportar sobre este aluno.",
+    };
   }
 
   const { error } = await supabase.from(TABLES.NOTAS_PROVAS).insert({

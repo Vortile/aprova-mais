@@ -44,14 +44,24 @@ const TIME_FILTERS: { label: string; value: TimeFilter }[] = [
   { label: "Todo período", value: "all" },
 ];
 
-function filterByTime(data: ChartDataPoint[], filter: TimeFilter): ChartDataPoint[] {
+function filterByTime(
+  data: ChartDataPoint[],
+  filter: TimeFilter,
+): ChartDataPoint[] {
   if (filter === "all") return data;
   const now = Date.now();
-  const cutoff = filter === "1m" ? now - 30 * 24 * 60 * 60 * 1000 : now - 90 * 24 * 60 * 60 * 1000;
+  const cutoff =
+    filter === "1m"
+      ? now - 30 * 24 * 60 * 60 * 1000
+      : now - 90 * 24 * 60 * 60 * 1000;
   return data.filter((d) => d.dateMs >= cutoff);
 }
 
-export function RelatoriosClient({ alunos, selectedAlunoId, chartData }: Props) {
+export function RelatoriosClient({
+  alunos,
+  selectedAlunoId,
+  chartData,
+}: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -72,7 +82,8 @@ export function RelatoriosClient({ alunos, selectedAlunoId, chartData }: Props) 
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Relatórios</h1>
           <p className="text-muted-foreground text-sm mt-1">
-            Registre relatórios pedagógicos semanais e listas de atividades dos alunos.
+            Registre relatórios pedagógicos semanais e listas de atividades dos
+            alunos.
           </p>
         </div>
         <Button onClick={() => setOpen(true)} disabled={alunos.length === 0}>
@@ -91,7 +102,9 @@ export function RelatoriosClient({ alunos, selectedAlunoId, chartData }: Props) 
         <>
           {/* Aluno selector */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium shrink-0">Visualizar aluno:</span>
+            <span className="text-sm font-medium shrink-0">
+              Visualizar aluno:
+            </span>
             <Select
               value={selectedAlunoId ?? ""}
               onValueChange={handleAlunoChange}
@@ -103,7 +116,9 @@ export function RelatoriosClient({ alunos, selectedAlunoId, chartData }: Props) 
               <SelectContent>
                 {alunos.map((aluno) => (
                   <SelectItem key={aluno.id} value={aluno.id}>
-                    {aluno.profiles?.full_name ?? aluno.contact_email ?? "Sem nome"}
+                    {aluno.profiles?.full_name ??
+                      aluno.contact_email ??
+                      "Sem nome"}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -115,7 +130,9 @@ export function RelatoriosClient({ alunos, selectedAlunoId, chartData }: Props) 
             <div className="space-y-3">
               {/* Time filter */}
               <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground shrink-0">Período:</span>
+                <span className="text-xs text-muted-foreground shrink-0">
+                  Período:
+                </span>
                 <div className="flex gap-1">
                   {TIME_FILTERS.map((f) => (
                     <button
@@ -135,7 +152,11 @@ export function RelatoriosClient({ alunos, selectedAlunoId, chartData }: Props) 
 
               <RelatoriosChart
                 data={filterByTime(chartData, timeFilter)}
-                nomeAluno={selectedAluno.profiles?.full_name ?? selectedAluno.contact_email ?? "Aluno"}
+                nomeAluno={
+                  selectedAluno.profiles?.full_name ??
+                  selectedAluno.contact_email ??
+                  "Aluno"
+                }
               />
             </div>
           )}
@@ -143,7 +164,8 @@ export function RelatoriosClient({ alunos, selectedAlunoId, chartData }: Props) 
           {!selectedAluno && (
             <div className="rounded-lg border border-dashed p-8 text-center">
               <p className="text-muted-foreground text-sm">
-                Selecione um aluno acima para visualizar o gráfico de desempenho.
+                Selecione um aluno acima para visualizar o gráfico de
+                desempenho.
               </p>
             </div>
           )}
@@ -188,10 +210,7 @@ export function RelatoriosClient({ alunos, selectedAlunoId, chartData }: Props) 
             </TabsContent>
 
             <TabsContent value="prova" className="mt-4">
-              <NotaProvaForm
-                alunos={alunos}
-                onSuccess={() => setOpen(false)}
-              />
+              <NotaProvaForm alunos={alunos} onSuccess={() => setOpen(false)} />
             </TabsContent>
           </Tabs>
         </DialogContent>

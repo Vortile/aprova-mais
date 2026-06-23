@@ -50,7 +50,11 @@ export default async function RelatoriosPage({ searchParams }: Props) {
   // Fetch chart data for selected aluno
   let chartData: ChartDataPoint[] = [];
 
-  type ListaRow = { data_aula: string; quantidade_acertos: number; total_questoes: number };
+  type ListaRow = {
+    data_aula: string;
+    quantidade_acertos: number;
+    total_questoes: number;
+  };
   type ProvaRow = { data_prova: string; nota: number; nota_maxima: number };
   type RelatorioRow = { created_at: string; engajamento: number | null };
 
@@ -97,9 +101,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
           : 0;
       const pt = getOrCreate(dt);
       pt.listas =
-        pt.listas !== undefined
-          ? Math.round((pt.listas + pct) / 2)
-          : pct;
+        pt.listas !== undefined ? Math.round((pt.listas + pct) / 2) : pct;
     }
 
     for (const row of provas ?? []) {
@@ -110,9 +112,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
           : 0;
       const pt = getOrCreate(dt);
       pt.provas =
-        pt.provas !== undefined
-          ? Math.round((pt.provas + pct) / 2)
-          : pct;
+        pt.provas !== undefined ? Math.round((pt.provas + pct) / 2) : pct;
     }
 
     for (const row of relatorios ?? []) {
@@ -122,7 +122,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     }
 
     chartData = Array.from(pointMap.values()).sort(
-      (a, b) => a.dateMs - b.dateMs
+      (a, b) => a.dateMs - b.dateMs,
     );
   }
 
@@ -134,4 +134,3 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     />
   );
 }
-

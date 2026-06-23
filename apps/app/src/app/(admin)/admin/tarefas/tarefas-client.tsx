@@ -289,7 +289,9 @@ export function TarefasClient({
                     <TableBody>
                       {entregas.map((entrega) => {
                         const alunoName =
-                          entrega.alunos?.profiles?.full_name ?? entrega.alunos?.contact_email ?? "Aluno";
+                          entrega.alunos?.profiles?.full_name ??
+                          entrega.alunos?.contact_email ??
+                          "Aluno";
                         const statusMeta = getStatusMeta(
                           entrega.status,
                           tarefa.due_date,

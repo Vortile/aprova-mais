@@ -23,7 +23,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DISCIPLINAS, STATUS_CONTEUDO_VALUES } from "@/lib/relatorios-constants";
+import {
+  DISCIPLINAS,
+  STATUS_CONTEUDO_VALUES,
+} from "@/lib/relatorios-constants";
 import { saveRelatorioPedagogico } from "@/lib/actions/relatorios";
 
 type AlunoOption = {
@@ -101,7 +104,9 @@ export function RelatorioPedagogicoForm({
                 <SelectContent>
                   {alunos.map((aluno) => (
                     <SelectItem key={aluno.id} value={aluno.id}>
-                      {aluno.profiles?.full_name ?? aluno.contact_email ?? "Sem nome"}
+                      {aluno.profiles?.full_name ??
+                        aluno.contact_email ??
+                        "Sem nome"}
                     </SelectItem>
                   ))}
                 </SelectContent>
