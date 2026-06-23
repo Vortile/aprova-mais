@@ -113,6 +113,10 @@ export function NotaProvaForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="bg-[#1f4e79]/5 border border-[#1f4e79]/20 rounded-lg p-3 text-xs text-slate-700 leading-relaxed">
+          <strong>Nota de Prova:</strong> Destinado ao registro das notas formais obtidas pelo aluno nas avaliações oficiais da escola. Serve para acompanhar o progresso escolar direto e identificar gargalos disciplinares registrando a matéria, a data da prova, uma breve descrição da avaliação, a nota tirada e o valor máximo da prova.
+        </div>
+
         <FormField
           control={form.control}
           name="alunoId"

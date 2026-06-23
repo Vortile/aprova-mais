@@ -34,9 +34,48 @@ type AlunoOption = {
   profiles: { full_name: string | null } | null;
 };
 
+function getRecentWeeks() {
+  const weeks = [];
+  const now = new Date();
+  
+  // Find current Monday
+  const currentDay = now.getUTCDay(); // 0 is Sunday, 1 is Monday, etc.
+  const diffToMonday = currentDay === 0 ? -6 : 1 - currentDay;
+  const currentMonday = new Date(now);
+  currentMonday.setUTCDate(now.getUTCDate() + diffToMonday);
+  currentMonday.setUTCHours(12, 0, 0, 0); // avoid timezone shifts
+  
+  for (let i = 0; i < 6; i++) {
+    const monday = new Date(currentMonday);
+    monday.setUTCDate(currentMonday.getUTCDate() - i * 7);
+    
+    const sunday = new Date(monday);
+    sunday.setUTCDate(monday.getUTCDate() + 6);
+    
+    const value = monday.toISOString().split("T")[0]; // YYYY-MM-DD
+    
+    const formatDate = (d: Date) => {
+      const day = String(d.getUTCDate()).padStart(2, "0");
+      const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+      return `${day}/${month}`;
+    };
+    
+    let label = `Semana de ${formatDate(monday)} a ${formatDate(sunday)}`;
+    if (i === 0) {
+      label += " (Esta semana)";
+    } else if (i === 1) {
+      label += " (Semana passada)";
+    }
+    
+    weeks.push({ value, label });
+  }
+  return weeks;
+}
+
 const schema = z
   .object({
     alunoId: z.string().uuid("Selecione um aluno"),
+    dataSemana: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Selecione uma semana"),
     disciplina: z.string().trim().min(1, "Selecione uma disciplina"),
     disciplinaPersonalizada: z.string().trim().optional(),
     cargaHoraria: z.string().trim().min(1, "Informe a carga horária"),
@@ -76,6 +115,7 @@ export function RelatorioPedagogicoForm({
     resolver: zodResolver(schema),
     defaultValues: {
       alunoId: "",
+      dataSemana: "",
       disciplina: "",
       disciplinaPersonalizada: "",
       cargaHoraria: "",
@@ -83,6 +123,8 @@ export function RelatorioPedagogicoForm({
       engajamento: 70,
     },
   });
+
+  const recentWeeks = getRecentWeeks();
 
   async function onSubmit(values: FormValues) {
     const finalDisciplina =
@@ -92,6 +134,7 @@ export function RelatorioPedagogicoForm({
 
     const result = await saveRelatorioPedagogico({
       alunoId: values.alunoId,
+      dataSemana: values.dataSemana,
       disciplinas: [finalDisciplina],
       cargaHoraria: values.cargaHoraria,
       statusConteudo: values.statusConteudo,
@@ -112,6 +155,10 @@ export function RelatorioPedagogicoForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="bg-[#1f4e79]/5 border border-[#1f4e79]/20 rounded-lg p-3 text-xs text-slate-700 leading-relaxed">
+          <strong>Relatório Pedagógico Semanal:</strong> Destinado ao registro do desenvolvimento geral do aluno. Serve para reportar a disciplina estudada na semana, a carga horária de aula executada, o status do cumprimento do conteúdo pedagógico escolar e uma avaliação do nível de engajamento e foco do estudante.
+        </div>
+
         <FormField
           control={form.control}
           name="alunoId"
@@ -130,6 +177,31 @@ export function RelatorioPedagogicoForm({
                       {aluno.profiles?.full_name ??
                         aluno.contact_email ??
                         "Sem nome"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="dataSemana"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Semana do Relatório *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a semana correspondente" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {recentWeeks.map((week) => (
+                    <SelectItem key={week.value} value={week.value}>
+                      {week.label}
                     </SelectItem>
                   ))}
                 </SelectContent>

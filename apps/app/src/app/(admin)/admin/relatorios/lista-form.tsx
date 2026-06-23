@@ -119,6 +119,10 @@ export function RegistroListaForm({
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <div className="bg-[#1f4e79]/5 border border-[#1f4e79]/20 rounded-lg p-3 text-xs text-slate-700 leading-relaxed">
+          <strong>Registro de Lista de Atividade:</strong> Destinado ao acompanhamento do desempenho prático e quantitativo do estudante em listas de exercícios. Serve para monitorar a retenção do aprendizado registrando o conteúdo trabalhado, a data de aplicação, a quantidade de acertos obtidos e o número total de questões da lista.
+        </div>
+
         <FormField
           control={form.control}
           name="alunoId"
