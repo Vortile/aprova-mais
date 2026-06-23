@@ -21,9 +21,9 @@ export type ChartDataPoint = {
   date: string;
   /** Milliseconds epoch — used for sort only */
   dateMs: number;
-  listas?: number;
-  provas?: number;
-  engajamento?: number;
+  listas?: number | null;
+  provas?: number | null;
+  engajamento?: number | null;
   listasPorDisciplina?: Record<string, number>;
   provasPorDisciplina?: Record<string, number>;
 };
@@ -151,7 +151,7 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
               strokeWidth={2}
               dot={{ r: 5, fill: BLUE }}
               activeDot={{ r: 7 }}
-              connectNulls={false}
+              connectNulls={true}
             />
             <Line
               type="monotone"
@@ -161,7 +161,7 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
               strokeWidth={3}
               dot={{ r: 6, fill: DARK_BLUE }}
               activeDot={{ r: 8 }}
-              connectNulls={false}
+              connectNulls={true}
             />
             <Line
               type="monotone"
@@ -171,7 +171,7 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
               strokeWidth={1.5}
               strokeDasharray="5 3"
               dot={{ r: 4, fill: GREEN }}
-              connectNulls={false}
+              connectNulls={true}
             />
           </LineChart>
         </ResponsiveContainer>

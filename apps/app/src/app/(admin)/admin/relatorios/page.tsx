@@ -95,10 +95,26 @@ export default async function RelatoriosPage({ searchParams }: Props) {
 
     const pointMap = new Map<string, ChartDataPoint>();
 
+    function getMonday(date: Date): Date {
+      const d = new Date(date);
+      const day = d.getUTCDay();
+      const diffToMonday = day === 0 ? -6 : 1 - day;
+      d.setUTCDate(d.getUTCDate() + diffToMonday);
+      d.setUTCHours(12, 0, 0, 0); // standardize to UTC 12:00 to avoid any timezone shifts
+      return d;
+    }
+
     function getOrCreate(date: Date): ChartDataPoint {
-      const label = `${String(date.getUTCDate()).padStart(2, "0")}/${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
+      const mondayDate = getMonday(date);
+      const label = `${String(mondayDate.getUTCDate()).padStart(2, "0")}/${String(mondayDate.getUTCMonth() + 1).padStart(2, "0")}`;
       if (!pointMap.has(label)) {
-        pointMap.set(label, { date: label, dateMs: date.getTime() });
+        pointMap.set(label, {
+          date: label,
+          dateMs: mondayDate.getTime(),
+          listas: null,
+          provas: null,
+          engajamento: null,
+        });
       }
       return pointMap.get(label)!;
     }
@@ -119,7 +135,9 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       
       // Keep aggregate as fallback fallback
       pt.listas =
-        pt.listas !== undefined ? Math.round((pt.listas + pct) / 2) : pct;
+        pt.listas !== null && pt.listas !== undefined
+          ? Math.round((pt.listas + pct) / 2)
+          : pct;
     }
 
     for (const row of provas ?? []) {
@@ -136,11 +154,13 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       pt.provasPorDisciplina[row.disciplina] = pct;
 
       pt.provas =
-        pt.provas !== undefined ? Math.round((pt.provas + pct) / 2) : pct;
+        pt.provas !== null && pt.provas !== undefined
+          ? Math.round((pt.provas + pct) / 2)
+          : pct;
     }
 
     for (const row of relatorios ?? []) {
-      // Use data_semana (with 12h set to avoid timezone offsets) or fallback to created_at
+      // Parse data_semana or fallback to created_at, then get Monday of that week
       const dateStr = row.data_semana ? `${row.data_semana}T12:00:00` : row.created_at;
       const dt = new Date(dateStr);
       const pt = getOrCreate(dt);
