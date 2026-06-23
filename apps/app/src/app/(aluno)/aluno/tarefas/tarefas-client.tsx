@@ -221,15 +221,56 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
                       </div>
                     ) : null}
                     {entrega.submission_url ? (
-                      <div className="text-sm">
-                        <a
-                          href={entrega.submission_url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="text-primary underline-offset-4 hover:underline"
-                        >
-                          Abrir link enviado
-                        </a>
+                      <div className="space-y-2 text-sm">
+                        <p className="font-medium text-slate-800">Arquivos enviados</p>
+                        {(() => {
+                          const url = entrega.submission_url;
+                          let filePaths: string[] = [];
+                          try {
+                            if (url.startsWith("[")) {
+                              filePaths = JSON.parse(url) as string[];
+                            } else {
+                              filePaths = url.split(",").map(f => f.trim()).filter(Boolean);
+                            }
+                          } catch {
+                            filePaths = [url];
+                          }
+
+                          return (
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
+                              {filePaths.map((path, idx) => {
+                                const isImage = /\.(jpe?g|png|gif|webp)$/i.test(path);
+                                const fileName = path.split("/").pop() || "arquivo";
+                                const downloadUrl = isImage || path.startsWith("entregas/")
+                                  ? `/api/submission-download?path=${encodeURIComponent(path)}`
+                                  : path;
+
+                                return (
+                                  <a
+                                    key={idx}
+                                    href={downloadUrl}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center gap-2 p-2 rounded-lg border bg-white hover:bg-slate-50 transition-colors shadow-xs"
+                                  >
+                                    {isImage ? (
+                                      <span className="w-8 h-8 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                        📸
+                                      </span>
+                                    ) : (
+                                      <span className="w-8 h-8 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                        📄
+                                      </span>
+                                    )}
+                                    <span className="text-xs truncate font-medium text-slate-700 flex-1">
+                                      {fileName.length > 25 ? `${fileName.slice(0, 22)}...` : fileName}
+                                    </span>
+                                  </a>
+                                );
+                              })}
+                            </div>
+                          );
+                        })()}
                       </div>
                     ) : null}
                     {entrega.teacher_feedback ? (
