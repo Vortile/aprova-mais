@@ -52,10 +52,16 @@ export default async function RelatoriosPage({ searchParams }: Props) {
 
   type ListaRow = {
     data_aula: string;
+    disciplina: string;
     quantidade_acertos: number;
     total_questoes: number;
   };
-  type ProvaRow = { data_prova: string; nota: number; nota_maxima: number };
+  type ProvaRow = {
+    data_prova: string;
+    disciplina: string;
+    nota: number;
+    nota_maxima: number;
+  };
   type RelatorioRow = { created_at: string; engajamento: number | null };
 
   if (selectedAlunoId) {
@@ -63,12 +69,12 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       await Promise.all([
         supabase
           .from(TABLES.REGISTROS_LISTA)
-          .select("data_aula, quantidade_acertos, total_questoes")
+          .select("data_aula, disciplina, quantidade_acertos, total_questoes")
           .eq("aluno_id", selectedAlunoId)
           .order("data_aula", { ascending: true }),
         supabase
           .from(TABLES.NOTAS_PROVAS)
-          .select("data_prova, nota, nota_maxima")
+          .select("data_prova, disciplina, nota, nota_maxima")
           .eq("aluno_id", selectedAlunoId)
           .order("data_prova", { ascending: true }),
         supabase
@@ -100,6 +106,14 @@ export default async function RelatoriosPage({ searchParams }: Props) {
           ? Math.round((row.quantidade_acertos / row.total_questoes) * 100)
           : 0;
       const pt = getOrCreate(dt);
+      
+      // Store lists by subject to display separately or filter
+      if (!pt.listasPorDisciplina) {
+        pt.listasPorDisciplina = {};
+      }
+      pt.listasPorDisciplina[row.disciplina] = pct;
+      
+      // Keep aggregate as fallback fallback
       pt.listas =
         pt.listas !== undefined ? Math.round((pt.listas + pct) / 2) : pct;
     }
@@ -111,6 +125,12 @@ export default async function RelatoriosPage({ searchParams }: Props) {
           ? Math.round((row.nota / row.nota_maxima) * 100)
           : 0;
       const pt = getOrCreate(dt);
+
+      if (!pt.provasPorDisciplina) {
+        pt.provasPorDisciplina = {};
+      }
+      pt.provasPorDisciplina[row.disciplina] = pct;
+
       pt.provas =
         pt.provas !== undefined ? Math.round((pt.provas + pct) / 2) : pct;
     }

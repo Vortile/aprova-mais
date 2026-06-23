@@ -24,6 +24,8 @@ export type ChartDataPoint = {
   listas?: number;
   provas?: number;
   engajamento?: number;
+  listasPorDisciplina?: Record<string, number>;
+  provasPorDisciplina?: Record<string, number>;
 };
 
 interface Props {

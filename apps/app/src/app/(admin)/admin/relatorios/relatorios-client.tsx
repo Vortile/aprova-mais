@@ -66,14 +66,39 @@ export function RelatoriosClient({
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("3m");
+  const [subjectFilter, setSubjectFilter] = useState<string>("all");
 
   const selectedAluno = alunos.find((a) => a.id === selectedAlunoId) ?? null;
 
   function handleAlunoChange(id: string) {
     startTransition(() => {
+      setSubjectFilter("all");
       router.push(`/admin/relatorios?alunoId=${id}`);
     });
   }
+
+  // Find all subjects present in the data to build filter options
+  const availableSubjects = Array.from(
+    new Set(
+      chartData.flatMap((d) => [
+        ...Object.keys(d.listasPorDisciplina ?? {}),
+        ...Object.keys(d.provasPorDisciplina ?? {}),
+      ]),
+    ),
+  ).sort();
+
+  // Map data depending on selected subject filter
+  const filteredChartData = chartData.map((d) => {
+    if (subjectFilter === "all") {
+      return d;
+    }
+    
+    // Create new point with only this subject's results
+    const filteredPoint = { ...d };
+    filteredPoint.listas = d.listasPorDisciplina?.[subjectFilter] ?? undefined;
+    filteredPoint.provas = d.provasPorDisciplina?.[subjectFilter] ?? undefined;
+    return filteredPoint;
+  });
 
   return (
     <div className="space-y-6">
@@ -128,35 +153,63 @@ export function RelatoriosClient({
           {/* Chart */}
           {selectedAluno && (
             <div className="space-y-3">
-              {/* Time filter */}
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground shrink-0">
-                  Período:
-                </span>
-                <div className="flex gap-1">
-                  {TIME_FILTERS.map((f) => (
-                    <button
-                      key={f.value}
-                      onClick={() => setTimeFilter(f.value)}
-                      className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                        timeFilter === f.value
-                          ? "bg-[#1f4e79] text-white"
-                          : "bg-muted text-muted-foreground hover:bg-muted/80"
-                      }`}
-                    >
-                      {f.label}
-                    </button>
-                  ))}
+              <div className="flex flex-wrap items-center justify-between gap-3 bg-muted/40 p-3 rounded-lg border">
+                {/* Time filter */}
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-700 shrink-0">
+                    Período:
+                  </span>
+                  <div className="flex gap-1">
+                    {TIME_FILTERS.map((f) => (
+                      <button
+                        key={f.value}
+                        onClick={() => setTimeFilter(f.value)}
+                        className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                          timeFilter === f.value
+                            ? "bg-[#1f4e79] text-white"
+                            : "bg-muted text-muted-foreground hover:bg-muted/80"
+                        }`}
+                      >
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
+
+                {/* Subject filter */}
+                {availableSubjects.length > 0 && (
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-semibold text-slate-700 shrink-0">
+                      Filtrar por Matéria:
+                    </span>
+                    <Select
+                      value={subjectFilter}
+                      onValueChange={setSubjectFilter}
+                    >
+                      <SelectTrigger className="h-8 w-44 text-xs">
+                        <SelectValue placeholder="Todas as matérias" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">Todas as matérias</SelectItem>
+                        {availableSubjects.map((subject) => (
+                          <SelectItem key={subject} value={subject}>
+                            {subject}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
               </div>
 
               <RelatoriosChart
-                data={filterByTime(chartData, timeFilter)}
+                data={filterByTime(filteredChartData, timeFilter)}
                 nomeAluno={
                   selectedAluno.profiles?.full_name ??
                   selectedAluno.contact_email ??
                   "Aluno"
                 }
+                disciplina={subjectFilter !== "all" ? subjectFilter : undefined}
               />
             </div>
           )}
