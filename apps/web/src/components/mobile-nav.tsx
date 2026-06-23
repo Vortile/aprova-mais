@@ -5,7 +5,11 @@ import { teacher } from "@/lib/teacher";
 
 const { zcalUrl, portalUrl } = teacher;
 
-export function MobileNav() {
+interface MobileNavProps {
+  showDepoimentos?: boolean;
+}
+
+export function MobileNav({ showDepoimentos = true }: MobileNavProps) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -28,13 +32,15 @@ export function MobileNav() {
           >
             Como Funciona
           </a>
-          <a
-            href="#depoimentos"
-            className="text-on-surface font-bold text-lg"
-            onClick={() => setOpen(false)}
-          >
-            Depoimentos
-          </a>
+          {showDepoimentos && (
+            <a
+              href="#depoimentos"
+              className="text-on-surface font-bold text-lg"
+              onClick={() => setOpen(false)}
+            >
+              Depoimentos
+            </a>
+          )}
           <a
             href="#contato"
             className="text-on-surface font-bold text-lg"

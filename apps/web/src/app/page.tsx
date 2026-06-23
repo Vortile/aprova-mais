@@ -58,12 +58,14 @@ export default async function WebHomePage() {
             >
               Como Funciona
             </a>
-            <a
-              className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
-              href="#depoimentos"
-            >
-              Depoimentos
-            </a>
+            {depoimentos.length > 0 && (
+              <a
+                className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
+                href="#depoimentos"
+              >
+                Depoimentos
+              </a>
+            )}
             <a
               className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
               href="#contato"
@@ -88,7 +90,7 @@ export default async function WebHomePage() {
             >
               Aula Grátis
             </a>
-            <MobileNav />
+            <MobileNav showDepoimentos={depoimentos.length > 0} />
           </div>
         </div>
       </nav>
