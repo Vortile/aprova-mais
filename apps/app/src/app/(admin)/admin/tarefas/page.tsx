@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { TABLES, type Database } from "@repo/db";
 import { getMaterialDownloadUrl } from "@/lib/materials";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getCurrentAppSession } from "@/lib/auth/session";
+import { ROLES } from "@/lib/supabase/env";
+import { ROUTES } from "@/lib/routes";
 import { TarefasClient } from "./tarefas-client";
 
 export const dynamic = "force-dynamic";
@@ -49,24 +53,41 @@ type TarefaRow = Pick<
 };
 
 export default async function TarefasPage() {
+  const session = await getCurrentAppSession();
+  if (!session) redirect(ROUTES.SIGN_IN);
+  if (session.profile.role === ROLES.ALUNO) redirect(ROUTES.ALUNO.HOME);
+
   const supabase = createAdminClient();
+  const isAdmin = session.profile.role === ROLES.ADMIN;
+
+  let tarefasQuery = supabase
+    .from(TABLES.TAREFAS)
+    .select(
+      "id, title, description, due_date, created_at, materiais(id, title, subject, file_url), tarefa_alunos(id, status, student_notes, submission_url, submitted_at, reviewed_at, teacher_feedback, alunos(id, contact_email, profiles!alunos_profile_id_fkey(full_name)))",
+    )
+    .order("created_at", { ascending: false });
+
+  let alunosQuery = supabase
+    .from(TABLES.ALUNOS)
+    .select("id, grade, contact_email, profiles!alunos_profile_id_fkey(full_name)")
+    .order("created_at", { ascending: false });
+
+  let materiaisQuery = supabase
+    .from(TABLES.MATERIAIS)
+    .select("id, title, subject, file_url")
+    .order("created_at", { ascending: false });
+
+  if (!isAdmin) {
+    tarefasQuery = tarefasQuery.eq("created_by", session.profile.id);
+    alunosQuery = alunosQuery.eq("professor_id", session.profile.id);
+    materiaisQuery = materiaisQuery.eq("uploaded_by", session.profile.id);
+  }
 
   const [{ data: tarefas }, { data: alunos }, { data: materiais }] =
     await Promise.all([
-      supabase
-        .from(TABLES.TAREFAS)
-        .select(
-          "id, title, description, due_date, created_at, materiais(id, title, subject, file_url), tarefa_alunos(id, status, student_notes, submission_url, submitted_at, reviewed_at, teacher_feedback, alunos(id, contact_email, profiles!alunos_profile_id_fkey(full_name)))",
-        )
-        .order("created_at", { ascending: false }),
-      supabase
-        .from(TABLES.ALUNOS)
-        .select("id, grade, contact_email, profiles!alunos_profile_id_fkey(full_name)")
-        .order("created_at", { ascending: false }),
-      supabase
-        .from(TABLES.MATERIAIS)
-        .select("id, title, subject, file_url")
-        .order("created_at", { ascending: false }),
+      tarefasQuery,
+      alunosQuery,
+      materiaisQuery,
     ]);
 
   const tarefasWithUrls = await Promise.all(

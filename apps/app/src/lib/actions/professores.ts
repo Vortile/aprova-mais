@@ -100,6 +100,19 @@ export async function saveProfessor(input: unknown): Promise<ActionResult> {
 
   const supabase = createAdminClient();
 
+  // Check if Clerk has a user with this email already
+  const client = await clerkClient();
+  const clerkUsers = await client.users.getUserList({
+    emailAddress: [normalizedEmail],
+  });
+
+  if (clerkUsers.data.length > 0) {
+    return {
+      ok: false,
+      error: "Este email já está cadastrado no sistema (Clerk).",
+    };
+  }
+
   // Check if a profile with this email already exists
   const { data: existingRaw } = await supabase
     .from(TABLES.PROFILES)

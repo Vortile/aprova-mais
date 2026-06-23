@@ -196,6 +196,18 @@ export async function updateTarefa(input: unknown): Promise<ActionResult> {
 
   const supabase = createAdminClient();
 
+  if (access.session.profile.role !== ROLES.ADMIN) {
+    const { data: existingTarefa } = await supabase
+      .from(TABLES.TAREFAS)
+      .select("created_by")
+      .eq("id", values.data.tarefaId)
+      .single();
+
+    if (!existingTarefa || existingTarefa.created_by !== access.session.profile.id) {
+      return { ok: false, error: "Você não tem permissão para alterar esta tarefa." };
+    }
+  }
+
   const { error } = await supabase
     .from(TABLES.TAREFAS)
     .update(
@@ -396,8 +408,32 @@ export async function reviewTarefa(input: unknown): Promise<ActionResult> {
     };
   }
 
+  const supabase = createAdminClient();
+
+  if (access.session.profile.role !== ROLES.ADMIN) {
+    const { data: entrega } = await supabase
+      .from(TABLES.TAREFA_ALUNOS)
+      .select("aluno_id")
+      .eq("id", values.data.entregaId)
+      .single();
+
+    if (!entrega) {
+      return { ok: false, error: "Entrega não encontrada." };
+    }
+
+    const { data: aluno } = await supabase
+      .from(TABLES.ALUNOS)
+      .select("professor_id")
+      .eq("id", entrega.aluno_id)
+      .single();
+
+    if (!aluno || aluno.professor_id !== access.session.profile.id) {
+      return { ok: false, error: "Você não tem permissão para revisar a entrega deste aluno." };
+    }
+  }
+
   const now = new Date().toISOString();
-  const { error } = await createAdminClient()
+  const { error } = await supabase
     .from(TABLES.TAREFA_ALUNOS)
     .update(
       asSupabaseUpdate<"tarefa_alunos">({
@@ -434,7 +470,21 @@ export async function deleteTarefa(input: unknown): Promise<ActionResult> {
     };
   }
 
-  const { error } = await createAdminClient()
+  const supabase = createAdminClient();
+
+  if (access.session.profile.role !== ROLES.ADMIN) {
+    const { data: existingTarefa } = await supabase
+      .from(TABLES.TAREFAS)
+      .select("created_by")
+      .eq("id", tarefaId.data)
+      .single();
+
+    if (!existingTarefa || existingTarefa.created_by !== access.session.profile.id) {
+      return { ok: false, error: "Você não tem permissão para remover esta tarefa." };
+    }
+  }
+
+  const { error } = await supabase
     .from(TABLES.TAREFAS)
     .delete()
     .eq("id", tarefaId.data);

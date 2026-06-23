@@ -41,7 +41,7 @@ type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
 type AlunoRow = Database["public"]["Tables"]["alunos"]["Row"];
 type AlunoWithProfileRow = Pick<
   AlunoRow,
-  "id" | "profile_id" | "contact_email"
+  "id" | "profile_id" | "contact_email" | "professor_id"
 > & {
   profiles: Pick<
     ProfileRow,
@@ -132,7 +132,7 @@ async function findAluno(alunoId: string) {
   const { data, error } = await supabase
     .from(TABLES.ALUNOS)
     .select(
-      "id, profile_id, contact_email, profiles!alunos_profile_id_fkey(id, clerk_user_id, email, full_name, role)",
+      "id, profile_id, contact_email, professor_id, profiles!alunos_profile_id_fkey(id, clerk_user_id, email, full_name, role)",
     )
     .eq("id", alunoId)
     .single();
@@ -400,6 +400,13 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
       return { ok: false, error: "Aluno não encontrado para edição." };
     }
 
+    if (
+      session.profile.role !== ROLES.ADMIN &&
+      currentAluno.professor_id !== session.profile.id
+    ) {
+      return { ok: false, error: "Você não tem permissão para editar este aluno." };
+    }
+
     // Only require email if the profile already has one (e.g. invitation sent or active account).
     // Name-only profiles (no email) can be edited freely without providing an email.
     if (
@@ -631,6 +638,13 @@ export async function deleteAluno(alunoId: string): Promise<DeleteAlunoResult> {
     return { ok: false, error: "Aluno não encontrado." };
   }
 
+  if (
+    adminAccess.session.profile.role !== ROLES.ADMIN &&
+    aluno.professor_id !== adminAccess.session.profile.id
+  ) {
+    return { ok: false, error: "Você não tem permissão para excluir este aluno." };
+  }
+
   const supabase = createAdminClient();
 
   try {
@@ -700,6 +714,13 @@ export async function resendAlunoInvite(
 
   if (!aluno) {
     return { ok: false, error: "Aluno não encontrado." };
+  }
+
+  if (
+    access.session.profile.role !== ROLES.ADMIN &&
+    aluno.professor_id !== access.session.profile.id
+  ) {
+    return { ok: false, error: "Você não tem permissão para reenviar o convite deste aluno." };
   }
 
   if (aluno.profiles?.clerk_user_id) {

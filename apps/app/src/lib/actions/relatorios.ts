@@ -187,6 +187,18 @@ export async function saveNotaProva(input: unknown): Promise<ActionResult> {
   const supabase = createAdminClient();
   const professorId = access.session.profile.id;
 
+  // Ensure the professor is allowed to report on this aluno
+  const { data: alunoCheck } = await supabase
+    .from(TABLES.ALUNOS)
+    .select("id")
+    .eq("id", alunoId)
+    .eq("professor_id", professorId)
+    .limit(1);
+
+  if (!alunoCheck?.length && access.session.profile.role !== "admin") {
+    return { ok: false, error: "Você não tem permissão para reportar sobre este aluno." };
+  }
+
   const { error } = await supabase.from(TABLES.NOTAS_PROVAS).insert({
     professor_id: professorId,
     aluno_id: alunoId,
