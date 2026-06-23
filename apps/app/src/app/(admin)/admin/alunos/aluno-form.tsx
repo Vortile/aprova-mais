@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -65,6 +66,7 @@ export function AlunoForm({
   onSuccess: () => void;
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -101,8 +103,10 @@ export function AlunoForm({
     }
 
     toast.success(result.message);
-    router.refresh();
-    onSuccess();
+    startTransition(() => {
+      router.refresh();
+      onSuccess();
+    });
   }
 
   return (
@@ -258,8 +262,8 @@ export function AlunoForm({
           />
         )}
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? "Salvando..." : "Salvar"}
+          <Button type="submit" disabled={form.formState.isSubmitting || isPending}>
+            {form.formState.isSubmitting || isPending ? "Salvando..." : "Salvar"}
           </Button>
         </div>
       </form>

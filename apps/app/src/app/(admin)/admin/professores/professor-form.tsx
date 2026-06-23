@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,6 +28,7 @@ type FormValues = z.infer<typeof schema>;
 
 export function ProfessorForm({ onSuccess }: { onSuccess: () => void }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -42,8 +44,10 @@ export function ProfessorForm({ onSuccess }: { onSuccess: () => void }) {
     }
 
     toast.success(result.message);
-    router.refresh();
-    onSuccess();
+    startTransition(() => {
+      router.refresh();
+      onSuccess();
+    });
   }
 
   return (
@@ -93,8 +97,8 @@ export function ProfessorForm({ onSuccess }: { onSuccess: () => void }) {
           )}
         />
         <div className="flex justify-end gap-2 pt-2">
-          <Button type="submit" disabled={form.formState.isSubmitting}>
-            {form.formState.isSubmitting ? "Enviando..." : "Enviar convite"}
+          <Button type="submit" disabled={form.formState.isSubmitting || isPending}>
+            {form.formState.isSubmitting || isPending ? "Enviando..." : "Enviar convite"}
           </Button>
         </div>
       </form>

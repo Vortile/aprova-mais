@@ -1,5 +1,6 @@
 "use client";
 
+import { useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -60,6 +61,7 @@ export function TarefaForm({
   onSuccess: () => void;
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -86,8 +88,10 @@ export function TarefaForm({
     }
 
     toast.success(result.message);
-    router.refresh();
-    onSuccess();
+    startTransition(() => {
+      router.refresh();
+      onSuccess();
+    });
   }
 
   return (
@@ -233,9 +237,9 @@ export function TarefaForm({
         <div className="flex justify-end">
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting || alunos.length === 0}
+            disabled={form.formState.isSubmitting || isPending || alunos.length === 0}
           >
-            {form.formState.isSubmitting ? "Salvando..." : "Criar tarefa"}
+            {form.formState.isSubmitting || isPending ? "Salvando..." : "Criar tarefa"}
           </Button>
         </div>
       </form>

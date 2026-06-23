@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,6 +44,7 @@ export function MaterialForm({
   material?: EditingMaterial | null;
 }) {
   const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const isEditing = Boolean(material);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -102,8 +103,10 @@ export function MaterialForm({
       }
 
       toast.success(result.message);
-      router.refresh();
-      onSuccess();
+      startTransition(() => {
+        router.refresh();
+        onSuccess();
+      });
       return;
     }
 
@@ -145,8 +148,10 @@ export function MaterialForm({
     }
 
     toast.success(result.message);
-    router.refresh();
-    onSuccess();
+    startTransition(() => {
+      router.refresh();
+      onSuccess();
+    });
   }
 
   return (
@@ -278,9 +283,9 @@ export function MaterialForm({
         <div className="flex justify-end pt-2">
           <Button
             type="submit"
-            disabled={form.formState.isSubmitting || isUploading}
+            disabled={form.formState.isSubmitting || isUploading || isPending}
           >
-            {form.formState.isSubmitting || isUploading ? (
+            {form.formState.isSubmitting || isUploading || isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Salvando...
