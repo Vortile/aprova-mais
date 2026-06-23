@@ -23,7 +23,7 @@ const saveTarefaSchema = z.object({
 const entregaSchema = z.object({
   entregaId: z.string().uuid(),
   studentNotes: z.string().trim(),
-  submissionUrl: z.string().trim().url("URL inválida").or(z.literal("")),
+  submissionUrl: z.string().trim(),
 });
 
 const entregaIdSchema = z.object({

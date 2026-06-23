@@ -374,28 +374,71 @@ export function TarefasClient({
               </DialogHeader>
               <div className="space-y-4 rounded-lg border bg-muted/20 p-4 text-sm">
                 <div>
-                  <p className="font-medium">Resposta do aluno</p>
-                  <p className="mt-1 whitespace-pre-wrap text-muted-foreground">
+                  <p className="font-medium text-slate-800">Resposta do aluno</p>
+                  <p className="mt-1 whitespace-pre-wrap text-muted-foreground leading-relaxed">
                     {reviewTarget.entrega.student_notes ||
                       "Nenhuma observação enviada."}
                   </p>
                 </div>
                 <div>
-                  <p className="font-medium">Link enviado</p>
-                  {reviewTarget.entrega.submission_url ? (
-                    <a
-                      href={reviewTarget.entrega.submission_url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="mt-1 inline-flex text-primary underline-offset-4 hover:underline"
-                    >
-                      Abrir entrega
-                    </a>
-                  ) : (
-                    <p className="mt-1 text-muted-foreground">
-                      Nenhum link informado.
-                    </p>
-                  )}
+                  <p className="font-medium text-slate-800">Fotos/Arquivos enviados pelo aluno</p>
+                  {(() => {
+                    const url = reviewTarget.entrega.submission_url;
+                    if (!url) {
+                      return <p className="mt-1 text-muted-foreground">Nenhum arquivo enviado.</p>;
+                    }
+                    
+                    let filePaths: string[] = [];
+                    try {
+                      if (url.startsWith("[")) {
+                        filePaths = JSON.parse(url) as string[];
+                      } else {
+                        filePaths = url.split(",").map(f => f.trim()).filter(Boolean);
+                      }
+                    } catch {
+                      filePaths = [url];
+                    }
+
+                    return (
+                      <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {filePaths.map((path, idx) => {
+                          const isImage = /\.(jpe?g|png|gif|webp)$/i.test(path);
+                          const fileName = path.split("/").pop() || "arquivo";
+                          // Construct a clean, accessible link using the material-download pattern or direct if needed
+                          // For simplicity, we can fetch/show materials directly or render them
+                          const directUrl = `/api/material-upload?path=${encodeURIComponent(path)}`; // actually getMaterialDownloadUrl can be called if we are in server-component, but here in client we can use a router handler or a button, wait, materials download can use a signed URL or we can provide a small helper or a direct link since the bucket 'aprova+' handles downloads.
+                          // Wait, since we are in client, can we create an endpoint to download? Or just open them?
+                          // Let's redirect to a download API route or we can provide a small server action or API route.
+                          // Let's check how materials-download handles it. It creates a signed URL.
+                          // Let's create an API route under `/api/submission-download?path=...` or similar. Let's create this API route to sign and redirect!
+                          const downloadUrl = `/api/submission-download?path=${encodeURIComponent(path)}`;
+                          
+                          return (
+                            <a
+                              key={idx}
+                              href={downloadUrl}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="flex items-center gap-2 p-2 rounded-lg border bg-white hover:bg-slate-50 transition-colors shadow-xs"
+                            >
+                              {isImage ? (
+                                <span className="w-8 h-8 rounded-md bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                  📸
+                                </span>
+                              ) : (
+                                <span className="w-8 h-8 rounded-md bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                  📄
+                                </span>
+                              )}
+                              <span className="text-xs truncate font-medium text-slate-700 flex-1">
+                                {fileName.length > 25 ? `${fileName.slice(0, 22)}...` : fileName}
+                              </span>
+                            </a>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
                 </div>
               </div>
               <ReviewEntregaForm
