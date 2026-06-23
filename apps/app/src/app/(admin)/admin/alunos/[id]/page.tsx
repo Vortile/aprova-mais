@@ -240,7 +240,7 @@ export default async function AlunoDetailPage({
               </div>
             </div>
           )}
-          {aluno.monthly_amount != null && (
+          {isAdmin && aluno.monthly_amount != null && (
             <div className="flex items-start gap-2">
               <DollarSign className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
               <div>

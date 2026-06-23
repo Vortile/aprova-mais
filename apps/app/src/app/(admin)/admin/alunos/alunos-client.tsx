@@ -140,7 +140,7 @@ export function AlunosClient({
           <TableHeader>
             <TableRow>
               <TableHead>Nome</TableHead>
-              <TableHead>Mensalidade</TableHead>
+              {isAdmin && <TableHead>Mensalidade</TableHead>}
               <TableHead>Conta</TableHead>
               <TableHead>Série</TableHead>
               <TableHead>Disciplinas</TableHead>
@@ -152,7 +152,7 @@ export function AlunosClient({
             {alunos.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={isAdmin ? 7 : 6}
                   className="h-32 text-center text-muted-foreground"
                 >
                   {isAdmin
@@ -170,13 +170,15 @@ export function AlunosClient({
                   <TableCell className="font-medium">
                     {aluno.profiles?.full_name ?? aluno.contact_email ?? "—"}
                   </TableCell>
-                  <TableCell>
-                    {aluno.monthly_amount != null ? (
-                      formatCurrency(aluno.monthly_amount)
-                    ) : (
-                      <span className="text-muted-foreground text-sm">—</span>
-                    )}
-                  </TableCell>
+                  {isAdmin && (
+                    <TableCell>
+                      {aluno.monthly_amount != null ? (
+                        formatCurrency(aluno.monthly_amount)
+                      ) : (
+                        <span className="text-muted-foreground text-sm">—</span>
+                      )}
+                    </TableCell>
+                  )}
                   <TableCell>
                     <div className="space-y-1">
                       <div className="text-sm">
