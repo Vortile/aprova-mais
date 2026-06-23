@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Form,
   FormControl,
@@ -35,21 +34,33 @@ type AlunoOption = {
   profiles: { full_name: string | null } | null;
 };
 
-const schema = z.object({
-  alunoId: z.string().uuid("Selecione um aluno"),
-  disciplinas: z
-    .array(z.enum(DISCIPLINAS))
-    .min(1, "Selecione ao menos uma disciplina"),
-  cargaHoraria: z.string().trim().min(1, "Informe a carga horária"),
-  statusConteudo: z.enum(STATUS_CONTEUDO_VALUES, {
-    errorMap: () => ({ message: "Selecione um status" }),
-  }),
-  engajamento: z.coerce
-    .number()
-    .int()
-    .min(0, "Mínimo 0")
-    .max(100, "Máximo 100"),
-});
+const schema = z
+  .object({
+    alunoId: z.string().uuid("Selecione um aluno"),
+    disciplina: z.string().trim().min(1, "Selecione uma disciplina"),
+    disciplinaPersonalizada: z.string().trim().optional(),
+    cargaHoraria: z.string().trim().min(1, "Informe a carga horária"),
+    statusConteudo: z.enum(STATUS_CONTEUDO_VALUES, {
+      errorMap: () => ({ message: "Selecione um status" }),
+    }),
+    engajamento: z.coerce
+      .number()
+      .int()
+      .min(0, "Mínimo 0")
+      .max(100, "Máximo 100"),
+  })
+  .refine(
+    (data) => {
+      if (data.disciplina === "Outras") {
+        return !!data.disciplinaPersonalizada;
+      }
+      return true;
+    },
+    {
+      message: "Informe qual é a outra disciplina",
+      path: ["disciplinaPersonalizada"],
+    },
+  );
 
 type FormValues = z.infer<typeof schema>;
 
@@ -65,7 +76,8 @@ export function RelatorioPedagogicoForm({
     resolver: zodResolver(schema),
     defaultValues: {
       alunoId: "",
-      disciplinas: [],
+      disciplina: "",
+      disciplinaPersonalizada: "",
       cargaHoraria: "",
       statusConteudo: undefined,
       engajamento: 70,
@@ -73,7 +85,18 @@ export function RelatorioPedagogicoForm({
   });
 
   async function onSubmit(values: FormValues) {
-    const result = await saveRelatorioPedagogico(values);
+    const finalDisciplina =
+      values.disciplina === "Outras" && values.disciplinaPersonalizada
+        ? values.disciplinaPersonalizada
+        : values.disciplina;
+
+    const result = await saveRelatorioPedagogico({
+      alunoId: values.alunoId,
+      disciplinas: [finalDisciplina],
+      cargaHoraria: values.cargaHoraria,
+      statusConteudo: values.statusConteudo,
+      engajamento: values.engajamento,
+    });
 
     if (!result.ok) {
       toast.error(result.error);
@@ -118,43 +141,47 @@ export function RelatorioPedagogicoForm({
 
         <FormField
           control={form.control}
-          name="disciplinas"
-          render={() => (
+          name="disciplina"
+          render={({ field }) => (
             <FormItem>
-              <FormLabel>Disciplinas ministradas nesta semana *</FormLabel>
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                {DISCIPLINAS.map((disciplina) => (
-                  <FormField
-                    key={disciplina}
-                    control={form.control}
-                    name="disciplinas"
-                    render={({ field }) => (
-                      <FormItem className="flex items-center gap-2 space-y-0">
-                        <FormControl>
-                          <Checkbox
-                            checked={field.value?.includes(disciplina)}
-                            onCheckedChange={(checked) => {
-                              const current = field.value ?? [];
-                              field.onChange(
-                                checked
-                                  ? [...current, disciplina]
-                                  : current.filter((d) => d !== disciplina),
-                              );
-                            }}
-                          />
-                        </FormControl>
-                        <FormLabel className="font-normal cursor-pointer">
-                          {disciplina}
-                        </FormLabel>
-                      </FormItem>
-                    )}
-                  />
-                ))}
-              </div>
+              <FormLabel>Disciplina *</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Selecione a disciplina" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {DISCIPLINAS.map((d) => (
+                    <SelectItem key={d} value={d}>
+                      {d}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {form.watch("disciplina") === "Outras" && (
+          <FormField
+            control={form.control}
+            name="disciplinaPersonalizada"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Qual disciplina? *</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Ex: Fisicuturismo, Redação, etc."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}

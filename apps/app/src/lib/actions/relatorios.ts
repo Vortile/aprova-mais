@@ -19,7 +19,7 @@ type ActionResult =
 const relatorioPedagogicoSchema = z.object({
   alunoId: z.string().uuid("Selecione um aluno válido"),
   disciplinas: z
-    .array(z.enum(DISCIPLINAS))
+    .array(z.string().trim().min(1))
     .min(1, "Selecione ao menos uma disciplina"),
   cargaHoraria: z.string().trim().min(1, "Informe a carga horária"),
   statusConteudo: z.enum(STATUS_CONTEUDO_VALUES, {
@@ -34,9 +34,7 @@ const relatorioPedagogicoSchema = z.object({
 
 const notaProvaSchema = z.object({
   alunoId: z.string().uuid("Selecione um aluno válido"),
-  disciplina: z.enum(DISCIPLINAS, {
-    errorMap: () => ({ message: "Selecione uma disciplina" }),
-  }),
+  disciplina: z.string().trim().min(1, "Selecione uma disciplina"),
   dataProva: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
   descricao: z.string().trim().min(1, "Descreva a prova"),
   nota: z.coerce.number().min(0, "Nota não pode ser negativa"),
@@ -45,9 +43,7 @@ const notaProvaSchema = z.object({
 
 const registroListaSchema = z.object({
   alunoId: z.string().uuid("Selecione um aluno válido"),
-  disciplina: z.enum(DISCIPLINAS, {
-    errorMap: () => ({ message: "Selecione uma disciplina" }),
-  }),
+  disciplina: z.string().trim().min(1, "Selecione uma disciplina"),
   dataAula: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
   conteudoMinistrado: z.string().trim().min(1, "Informe o conteúdo ministrado"),
   quantidadeAcertos: z.number().int().min(0, "Não pode ser negativo"),

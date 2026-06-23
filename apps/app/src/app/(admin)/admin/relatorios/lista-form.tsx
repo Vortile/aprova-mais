@@ -31,19 +31,34 @@ type AlunoOption = {
   profiles: { full_name: string | null } | null;
 };
 
-const schema = z.object({
-  alunoId: z.string().uuid("Selecione um aluno"),
-  disciplina: z.enum(DISCIPLINAS, {
-    errorMap: () => ({ message: "Selecione uma disciplina" }),
-  }),
-  dataAula: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
-  conteudoMinistrado: z.string().trim().min(1, "Informe o conteúdo ministrado"),
-  quantidadeAcertos: z.coerce.number().int().min(0, "Não pode ser negativo"),
-  totalQuestoes: z.coerce
-    .number()
-    .int()
-    .min(1, "Total de questões deve ser ao menos 1"),
-});
+const schema = z
+  .object({
+    alunoId: z.string().uuid("Selecione um aluno"),
+    disciplina: z.string().trim().min(1, "Selecione uma disciplina"),
+    disciplinaPersonalizada: z.string().trim().optional(),
+    dataAula: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
+    conteudoMinistrado: z
+      .string()
+      .trim()
+      .min(1, "Informe o conteúdo ministrado"),
+    quantidadeAcertos: z.coerce.number().int().min(0, "Não pode ser negativo"),
+    totalQuestoes: z.coerce
+      .number()
+      .int()
+      .min(1, "Total de questões deve ser ao menos 1"),
+  })
+  .refine(
+    (data) => {
+      if (data.disciplina === "Outras") {
+        return !!data.disciplinaPersonalizada;
+      }
+      return true;
+    },
+    {
+      message: "Informe qual é a outra disciplina",
+      path: ["disciplinaPersonalizada"],
+    },
+  );
 
 type FormValues = z.infer<typeof schema>;
 
@@ -59,7 +74,8 @@ export function RegistroListaForm({
     resolver: zodResolver(schema),
     defaultValues: {
       alunoId: "",
-      disciplina: undefined,
+      disciplina: "",
+      disciplinaPersonalizada: "",
       dataAula: "",
       conteudoMinistrado: "",
       quantidadeAcertos: 0,
@@ -75,7 +91,19 @@ export function RegistroListaForm({
       return;
     }
 
-    const result = await saveRegistroLista(values);
+    const finalDisciplina =
+      values.disciplina === "Outras" && values.disciplinaPersonalizada
+        ? values.disciplinaPersonalizada
+        : values.disciplina;
+
+    const result = await saveRegistroLista({
+      alunoId: values.alunoId,
+      disciplina: finalDisciplina,
+      dataAula: values.dataAula,
+      conteudoMinistrado: values.conteudoMinistrado,
+      quantidadeAcertos: values.quantidadeAcertos,
+      totalQuestoes: values.totalQuestoes,
+    });
 
     if (!result.ok) {
       toast.error(result.error);
@@ -142,6 +170,25 @@ export function RegistroListaForm({
             </FormItem>
           )}
         />
+
+        {form.watch("disciplina") === "Outras" && (
+          <FormField
+            control={form.control}
+            name="disciplinaPersonalizada"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Qual disciplina? *</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Ex: Fisicuturismo, Redação, etc."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}

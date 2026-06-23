@@ -31,16 +31,28 @@ type AlunoOption = {
   profiles: { full_name: string | null } | null;
 };
 
-const schema = z.object({
-  alunoId: z.string().uuid("Selecione um aluno"),
-  disciplina: z.enum(DISCIPLINAS, {
-    errorMap: () => ({ message: "Selecione uma disciplina" }),
-  }),
-  dataProva: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
-  descricao: z.string().trim().min(1, "Descreva a prova"),
-  nota: z.coerce.number().min(0, "Nota não pode ser negativa"),
-  notaMaxima: z.coerce.number().min(0.1, "Nota máxima deve ser maior que 0"),
-});
+const schema = z
+  .object({
+    alunoId: z.string().uuid("Selecione um aluno"),
+    disciplina: z.string().trim().min(1, "Selecione uma disciplina"),
+    disciplinaPersonalizada: z.string().trim().optional(),
+    dataProva: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Data inválida"),
+    descricao: z.string().trim().min(1, "Descreva a prova"),
+    nota: z.coerce.number().min(0, "Nota não pode ser negativa"),
+    notaMaxima: z.coerce.number().min(0.1, "Nota máxima deve ser maior que 0"),
+  })
+  .refine(
+    (data) => {
+      if (data.disciplina === "Outras") {
+        return !!data.disciplinaPersonalizada;
+      }
+      return true;
+    },
+    {
+      message: "Informe qual é a outra disciplina",
+      path: ["disciplinaPersonalizada"],
+    },
+  );
 
 type FormValues = z.infer<typeof schema>;
 
@@ -56,7 +68,8 @@ export function NotaProvaForm({
     resolver: zodResolver(schema),
     defaultValues: {
       alunoId: "",
-      disciplina: undefined,
+      disciplina: "",
+      disciplinaPersonalizada: "",
       dataProva: "",
       descricao: "",
       nota: 0,
@@ -72,7 +85,19 @@ export function NotaProvaForm({
       return;
     }
 
-    const result = await saveNotaProva(values);
+    const finalDisciplina =
+      values.disciplina === "Outras" && values.disciplinaPersonalizada
+        ? values.disciplinaPersonalizada
+        : values.disciplina;
+
+    const result = await saveNotaProva({
+      alunoId: values.alunoId,
+      disciplina: finalDisciplina,
+      dataProva: values.dataProva,
+      descricao: values.descricao,
+      nota: values.nota,
+      notaMaxima: values.notaMaxima,
+    });
 
     if (!result.ok) {
       toast.error(result.error);
@@ -139,6 +164,25 @@ export function NotaProvaForm({
             </FormItem>
           )}
         />
+
+        {form.watch("disciplina") === "Outras" && (
+          <FormField
+            control={form.control}
+            name="disciplinaPersonalizada"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Qual disciplina? *</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Ex: Fisicuturismo, Redação, etc."
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
