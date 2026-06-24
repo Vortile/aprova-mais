@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -36,19 +37,36 @@ interface Props {
   chartData: ChartDataPoint[];
 }
 
-type TimeFilter = "1m" | "3m" | "all";
+type TimeFilter = "1m" | "3m" | "custom" | "all";
 
 const TIME_FILTERS: { label: string; value: TimeFilter }[] = [
   { label: "Último mês", value: "1m" },
   { label: "Últimos 3 meses", value: "3m" },
+  { label: "Período personalizado", value: "custom" },
   { label: "Todo período", value: "all" },
 ];
 
 function filterByTime(
   data: ChartDataPoint[],
   filter: TimeFilter,
+  startDateStr?: string,
+  endDateStr?: string,
 ): ChartDataPoint[] {
   if (filter === "all") return data;
+  
+  if (filter === "custom") {
+    let filtered = data;
+    if (startDateStr) {
+      const startMs = new Date(`${startDateStr}T00:00:00Z`).getTime();
+      filtered = filtered.filter((d) => d.dateMs >= startMs);
+    }
+    if (endDateStr) {
+      const endMs = new Date(`${endDateStr}T23:59:59Z`).getTime();
+      filtered = filtered.filter((d) => d.dateMs <= endMs);
+    }
+    return filtered;
+  }
+
   const now = Date.now();
   const cutoff =
     filter === "1m"
@@ -67,6 +85,8 @@ export function RelatoriosClient({
   const [isPending, startTransition] = useTransition();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("3m");
   const [subjectFilter, setSubjectFilter] = useState<string>("all");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
 
   const selectedAluno = alunos.find((a) => a.id === selectedAlunoId) ?? null;
 
@@ -153,57 +173,96 @@ export function RelatoriosClient({
           {/* Chart */}
           {selectedAluno && (
             <div className="space-y-3">
-              <div className="flex flex-wrap items-center justify-between gap-3 bg-muted/40 p-3 rounded-lg border">
-                {/* Time filter */}
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-slate-700 shrink-0">
-                    Período:
-                  </span>
-                  <div className="flex gap-1">
-                    {TIME_FILTERS.map((f) => (
-                      <button
-                        key={f.value}
-                        onClick={() => setTimeFilter(f.value)}
-                        className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                          timeFilter === f.value
-                            ? "bg-[#1f4e79] text-white"
-                            : "bg-muted text-muted-foreground hover:bg-muted/80"
-                        }`}
-                      >
-                        {f.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Subject filter */}
-                {availableSubjects.length > 0 && (
+              <div className="flex flex-col gap-3 bg-muted/40 p-3 rounded-lg border">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  {/* Time filter */}
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-semibold text-slate-700 shrink-0">
-                      Filtrar por Matéria:
+                      Período:
                     </span>
-                    <Select
-                      value={subjectFilter}
-                      onValueChange={setSubjectFilter}
-                    >
-                      <SelectTrigger className="h-8 w-44 text-xs">
-                        <SelectValue placeholder="Todas as matérias" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">Todas as matérias</SelectItem>
-                        {availableSubjects.map((subject) => (
-                          <SelectItem key={subject} value={subject}>
-                            {subject}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <div className="flex flex-wrap gap-1">
+                      {TIME_FILTERS.map((f) => (
+                        <button
+                          key={f.value}
+                          onClick={() => setTimeFilter(f.value)}
+                          className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                            timeFilter === f.value
+                              ? "bg-[#1f4e79] text-white"
+                              : "bg-muted text-muted-foreground hover:bg-muted/80"
+                          }`}
+                        >
+                          {f.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Subject filter */}
+                  {availableSubjects.length > 0 && (
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-700 shrink-0">
+                        Filtrar por Matéria:
+                      </span>
+                      <Select
+                        value={subjectFilter}
+                        onValueChange={setSubjectFilter}
+                      >
+                        <SelectTrigger className="h-8 w-44 text-xs">
+                          <SelectValue placeholder="Todas as matérias" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="all">Todas as matérias</SelectItem>
+                          {availableSubjects.map((subject) => (
+                            <SelectItem key={subject} value={subject}>
+                              {subject}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+                </div>
+
+                {/* Custom Date Inputs (shown only if custom filter is selected) */}
+                {timeFilter === "custom" && (
+                  <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-muted-foreground/10">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-700">De:</span>
+                      <Input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="h-8 text-xs w-36"
+                      />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-700">Até:</span>
+                      <Input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="h-8 text-xs w-36"
+                      />
+                    </div>
+                    {(startDate || endDate) && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setStartDate("");
+                          setEndDate("");
+                        }}
+                        className="h-7 text-xs px-2"
+                      >
+                        Limpar datas
+                      </Button>
+                    )}
                   </div>
                 )}
               </div>
 
               <RelatoriosChart
-                data={filterByTime(filteredChartData, timeFilter)}
+                data={filterByTime(filteredChartData, timeFilter, startDate, endDate)}
                 nomeAluno={
                   selectedAluno.profiles?.full_name ??
                   selectedAluno.contact_email ??
