@@ -4,6 +4,7 @@ import { teacher, whatsappUrl, instagramUrl } from "@/lib/teacher";
 import { DepoimentosSection } from "@/components/depoimentos-section";
 import { createClient } from "@repo/db";
 import { unstable_cache } from "next/cache";
+import Image from "next/image";
 
 const { zcalUrl, portalUrl } = teacher;
 
@@ -58,6 +59,18 @@ export default async function WebHomePage() {
             >
               Como Funciona
             </a>
+            <a
+              className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
+              href="#materias"
+            >
+              Matérias
+            </a>
+            <a
+              className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
+              href="#plataforma"
+            >
+              Plataforma
+            </a>
             {depoimentos.length > 0 && (
               <a
                 className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
@@ -88,7 +101,7 @@ export default async function WebHomePage() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Aula Grátis
+              Aula Diagnóstico
             </a>
             <MobileNav showDepoimentos={depoimentos.length > 0} />
           </div>
@@ -108,7 +121,7 @@ export default async function WebHomePage() {
               </span>
             </div>
             <h1 className="text-4xl md:text-6xl font-headline font-bold text-on-surface leading-[1.1] tracking-tight">
-              Seu filho entendendo física e matemática{" "}
+              Seu filho entendendo ciências e letras{" "}
               <span className="text-primary italic">de verdade</span>
             </h1>
             <p className="text-lg md:text-xl text-on-surface-variant max-w-xl leading-relaxed">
@@ -123,10 +136,16 @@ export default async function WebHomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Quero a Aula Grátis
+                Agendar Aula Diagnóstico
                 <span className="material-symbols-outlined">
                   calendar_today
                 </span>
+              </a>
+              <a
+                className="bg-surface-container text-primary border border-outline-variant/10 px-8 py-4 rounded-xl font-bold text-center hover:bg-surface-container-high transition-all active:scale-95 flex items-center justify-center gap-2"
+                href="#materias"
+              >
+                Nossas Matérias
               </a>
             </div>
             <div className="flex items-center gap-8 pt-6 border-t border-outline-variant/10">
@@ -159,9 +178,9 @@ export default async function WebHomePage() {
                   <span className="material-symbols-outlined">verified</span>
                 </div>
                 <div>
-                  <p className="font-bold text-primary">Formado em Física</p>
+                  <p className="font-bold text-primary">Deuticilam Júnior</p>
                   <p className="text-xs text-on-surface-variant">
-                    Qualidade acadêmica real
+                    Fundador &amp; Formado em Física
                   </p>
                 </div>
               </div>
@@ -246,65 +265,238 @@ export default async function WebHomePage() {
                 src="/junior-professor.png"
               />
               <div className="absolute -top-4 -right-4 bg-tertiary text-on-tertiary px-6 py-4 rounded-2xl font-bold shadow-lg">
-                +10 anos de experiência
+                Excelência Acadêmica
               </div>
             </div>
           </div>
           <div className="order-1 md:order-2 space-y-6">
             <h2 className="text-3xl md:text-5xl font-headline font-bold text-on-surface">
-              Dedicado ao sucesso do seu filho
+              Sobre a Equipe Aprova+
             </h2>
             <p className="text-lg text-on-surface-variant leading-relaxed">
-              Sou formado em Física com especialização no ensino de ciências
-              exatas. Meu método não foca apenas na resolução de exercícios, mas
-              em despertar a curiosidade e a confiança do aluno. Atendo do
-              Fundamental I ao Ensino Médio.
+              Nossa equipe é formada por um grupo especializado de professores
+              focados em ciências exatas e linguagens. O que nos une é um{" "}
+              <strong>método educacional único e padronizado</strong>,
+              garantindo a mesma qualidade excepcional em todas as disciplinas.
             </p>
-            <div className="flex flex-wrap gap-3">
+            <p className="text-lg text-on-surface-variant leading-relaxed">
+              Nosso compromisso com a excelência acadêmica reflete-se no
+              reconhecimento científico, com contribuições publicadas em
+              veículos de prestígio internacional como a{" "}
+              <a
+                href="https://www.nature.com/articles/s41598-018-21968-9"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-primary transition-colors"
+              >
+                Nature Scientific Reports
+              </a>
+              . Aplicamos esse mesmo rigor e dedicação no acompanhamento escolar
+              do seu filho.
+            </p>
+            <div className="flex flex-wrap gap-3 pt-4">
               <span className="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-sm font-bold">
-                Formado em Física
+                Ciências Exatas e Linguagens
               </span>
               <span className="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-sm font-bold">
-                Ensino Fundamental e Médio
-              </span>
-              <span className="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-sm font-bold">
-                Método Personalizado
+                Método Unificado
               </span>
             </div>
-            <div className="pt-6">
-              <p className="text-on-surface font-semibold mb-4">
-                Experiência comprovada em:
+          </div>
+        </section>
+
+        {/* ── Matérias & Foco ── */}
+        <section
+          className="bg-surface-container-low py-24 px-6 rounded-[3.5rem] md:rounded-[4rem] my-8 md:my-12"
+          id="materias"
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-16 space-y-4">
+              <h2 className="text-3xl md:text-5xl font-headline font-bold text-on-surface">
+                Matérias & Foco
+              </h2>
+              <p className="text-on-surface-variant max-w-2xl mx-auto">
+                Cobertura completa nas principais disciplinas para garantir um
+                desenvolvimento acadêmico sólido.
               </p>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3 text-on-surface-variant">
-                  <span
-                    className="material-symbols-outlined text-primary"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    check_circle
-                  </span>
-                  Preparação para provas e vestibulares
-                </li>
-                <li className="flex items-center gap-3 text-on-surface-variant">
-                  <span
-                    className="material-symbols-outlined text-primary"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    check_circle
-                  </span>
-                  Recuperação paralela e final
-                </li>
-                <li className="flex items-center gap-3 text-on-surface-variant">
-                  <span
-                    className="material-symbols-outlined text-primary"
-                    style={{ fontVariationSettings: "'FILL' 1" }}
-                  >
-                    check_circle
-                  </span>
-                  Reforço contínuo em Exatas e Inglês
-                </li>
-              </ul>
             </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+              {/* Português */}
+              <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col items-start">
+                <div className="w-14 h-14 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center mb-6">
+                  <span className="material-symbols-outlined text-3xl">
+                    menu_book
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-on-surface">
+                  Português
+                </h3>
+                <p className="text-on-surface-variant leading-relaxed text-sm">
+                  Desenvolvimento da leitura crítica, interpretação de textos e
+                  excelência na escrita e redação.
+                </p>
+              </div>
+
+              {/* Matemática */}
+              <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col items-start">
+                <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-6">
+                  <span className="material-symbols-outlined text-3xl">
+                    calculate
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-on-surface">
+                  Matemática
+                </h3>
+                <p className="text-on-surface-variant leading-relaxed text-sm">
+                  Construção do raciocínio lógico e resolução de problemas,
+                  desmistificando os números de forma prática.
+                </p>
+              </div>
+
+              {/* Física */}
+              <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col items-start">
+                <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mb-6">
+                  <span className="material-symbols-outlined text-3xl">
+                    science
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-on-surface">
+                  Física
+                </h3>
+                <p className="text-on-surface-variant leading-relaxed text-sm">
+                  Compreensão dos fenômenos naturais com abordagem focada em
+                  aplicações do mundo real.
+                </p>
+              </div>
+
+              {/* Química */}
+              <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col items-start">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center mb-6">
+                  <span className="material-symbols-outlined text-3xl">
+                    biotech
+                  </span>
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-on-surface">
+                  Química
+                </h3>
+                <p className="text-on-surface-variant leading-relaxed text-sm">
+                  Estudo das transformações da matéria de maneira visual,
+                  facilitando o entendimento de conceitos complexos.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── Plataforma Exclusiva ── */}
+        <section
+          className="py-24 px-6 max-w-7xl mx-auto grid lg:grid-cols-12 gap-16 items-center"
+          id="plataforma"
+        >
+          <div className="lg:col-span-5 space-y-8">
+            <h2 className="text-3xl md:text-5xl font-headline font-bold text-on-surface leading-tight">
+              Plataforma Exclusiva
+            </h2>
+            <p className="text-lg text-on-surface-variant leading-relaxed">
+              Uma inovação exclusiva em Manaus. Nossa plataforma digital
+              complementa o ensino presencial, oferecendo acompanhamento
+              contínuo e escalável do desenvolvimento do aluno.
+            </p>
+
+            <ul className="space-y-6">
+              <li className="flex gap-4">
+                <span
+                  className="material-symbols-outlined text-primary text-2xl font-bold shrink-0 mt-0.5"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  check_circle
+                </span>
+                <div>
+                  <h4 className="font-bold text-on-surface text-lg">
+                    Acompanhamento de Tarefas
+                  </h4>
+                  <p className="text-on-surface-variant text-sm mt-1">
+                    Organização e controle de atividades personalizadas para
+                    cada estudante.
+                  </p>
+                </div>
+              </li>
+              <li className="flex gap-4">
+                <span
+                  className="material-symbols-outlined text-primary text-2xl font-bold shrink-0 mt-0.5"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  check_circle
+                </span>
+                <div>
+                  <h4 className="font-bold text-on-surface text-lg">
+                    Materiais Compartilhados
+                  </h4>
+                  <p className="text-on-surface-variant text-sm mt-1">
+                    Acesso a resumos, listas de exercícios e conteúdos extras
+                    direcionados.
+                  </p>
+                </div>
+              </li>
+              <li className="flex gap-4">
+                <span
+                  className="material-symbols-outlined text-primary text-2xl font-bold shrink-0 mt-0.5"
+                  style={{ fontVariationSettings: "'FILL' 1" }}
+                >
+                  check_circle
+                </span>
+                <div>
+                  <h4 className="font-bold text-on-surface text-lg">
+                    Monitoramento de Progresso
+                  </h4>
+                  <p className="text-on-surface-variant text-sm mt-1">
+                    Gráficos e relatórios de desempenho para pais e alunos
+                    acompanharem a evolução.
+                  </p>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <div className="lg:col-span-7 flex justify-center bg-transparent items-center w-full">
+            {/* Screenshot directly with relative/aspect layout for image and rounded details */}
+            <div className="w-full bg-transparent overflow-hidden shadow-xl relative aspect-16/10">
+              <Image
+                src="/plataforma.png"
+                alt="Screenshot do painel do aluno Aprova+"
+                fill
+                quality={20}
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* ── Banner WhatsApp Transparência Total ── */}
+        <section className="max-w-7xl mx-auto px-6 pb-24">
+          <div className="bg-[#1d6875] text-white p-8 md:p-12 rounded-[2.5rem] md:rounded-[3.5rem] flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left shadow-lg">
+            <div className="space-y-2">
+              <h3 className="text-2xl md:text-3xl font-headline font-bold">
+                Transparência total
+              </h3>
+              <p className="opacity-90 text-sm md:text-base leading-relaxed">
+                Quer conversar com famílias que já estudaram conosco? Peça
+                nossos contatos de referência.
+              </p>
+            </div>
+            <a
+              className="bg-[#32d74b] hover:bg-[#25D366] text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 transition-all duration-300 shrink-0 shadow-md"
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="material-symbols-outlined text-xl font-bold">
+                chat
+              </span>
+              Falar pelo WhatsApp
+            </a>
           </div>
         </section>
 
@@ -339,7 +531,7 @@ export default async function WebHomePage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Agendar Aula Grátis
+                Agendar Aula Diagnóstico
               </a>
               <a
                 className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all"
@@ -365,8 +557,8 @@ export default async function WebHomePage() {
               />
             </a>
             <p className="text-on-surface-variant text-sm leading-relaxed max-w-xs">
-              Resultado que aparece. Sou {teacher.firstName}, professor
-              particular em Manaus.
+              Resultado que aparece. Educação personalizada no coração de
+              Manaus.
             </p>
           </div>
           <div className="flex flex-col md:flex-row gap-8 md:gap-12">

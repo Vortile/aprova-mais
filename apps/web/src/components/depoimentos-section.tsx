@@ -37,23 +37,6 @@ export function DepoimentosSection({
           </div>
         ))}
       </div>
-      <div className="mt-16 bg-primary text-on-primary p-8 md:p-12 rounded-[3rem] flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left">
-        <div>
-          <h3 className="text-2xl font-bold mb-2">Transparência total</h3>
-          <p className="opacity-90">
-            Quer conversar com famílias que já estudaram com o professor? Peça
-            nossos contatos de referência.
-          </p>
-        </div>
-        <a
-          className="bg-[#25D366] text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2 hover:scale-105 transition-transform shrink-0"
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Falar pelo WhatsApp
-        </a>
-      </div>
     </section>
   );
 }

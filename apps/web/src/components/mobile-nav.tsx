@@ -32,6 +32,20 @@ export function MobileNav({ showDepoimentos = true }: MobileNavProps) {
           >
             Como Funciona
           </a>
+          <a
+            href="#materias"
+            className="text-on-surface font-bold text-lg"
+            onClick={() => setOpen(false)}
+          >
+            Matérias
+          </a>
+          <a
+            href="#plataforma"
+            className="text-on-surface font-bold text-lg"
+            onClick={() => setOpen(false)}
+          >
+            Plataforma
+          </a>
           {showDepoimentos && (
             <a
               href="#depoimentos"
@@ -63,7 +77,7 @@ export function MobileNav({ showDepoimentos = true }: MobileNavProps) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Aula Grátis
+            Aula Diagnóstico
           </a>
         </div>
       )}
