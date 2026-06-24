@@ -95,22 +95,21 @@ export default async function RelatoriosPage({ searchParams }: Props) {
 
     const pointMap = new Map<string, ChartDataPoint>();
 
-    function getMonday(date: Date): Date {
-      const d = new Date(date);
-      const day = d.getUTCDay();
-      const diffToMonday = day === 0 ? -6 : 1 - day;
-      d.setUTCDate(d.getUTCDate() + diffToMonday);
-      d.setUTCHours(12, 0, 0, 0); // standardize to UTC 12:00 to avoid any timezone shifts
-      return d;
+    function parseToUTCDate(dateInput: string): Date {
+      if (dateInput.includes("T")) {
+        const d = new Date(dateInput);
+        return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 12, 0, 0, 0));
+      }
+      const [year, month, day] = dateInput.split("-").map(Number);
+      return new Date(Date.UTC(year, month - 1, day, 12, 0, 0, 0));
     }
 
     function getOrCreate(date: Date): ChartDataPoint {
-      const mondayDate = getMonday(date);
-      const label = `${String(mondayDate.getUTCDate()).padStart(2, "0")}/${String(mondayDate.getUTCMonth() + 1).padStart(2, "0")}`;
+      const label = `${String(date.getUTCDate()).padStart(2, "0")}/${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
       if (!pointMap.has(label)) {
         pointMap.set(label, {
           date: label,
-          dateMs: mondayDate.getTime(),
+          dateMs: date.getTime(),
           listas: null,
           provas: null,
           engajamento: null,
@@ -120,7 +119,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     }
 
     for (const row of listas ?? []) {
-      const dt = new Date(row.data_aula);
+      const dt = parseToUTCDate(row.data_aula);
       const pct =
         row.total_questoes > 0
           ? Math.round((row.quantidade_acertos / row.total_questoes) * 100)
@@ -131,7 +130,11 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       if (!pt.listasPorDisciplina) {
         pt.listasPorDisciplina = {};
       }
-      pt.listasPorDisciplina[row.disciplina] = pct;
+      const existingListPct = pt.listasPorDisciplina[row.disciplina];
+      pt.listasPorDisciplina[row.disciplina] =
+        existingListPct !== undefined
+          ? Math.round((existingListPct + pct) / 2)
+          : pct;
       
       // Keep aggregate as fallback fallback
       pt.listas =
@@ -141,7 +144,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     }
 
     for (const row of provas ?? []) {
-      const dt = new Date(row.data_prova);
+      const dt = parseToUTCDate(row.data_prova);
       const pct =
         row.nota_maxima > 0
           ? Math.round((row.nota / row.nota_maxima) * 100)
@@ -151,7 +154,11 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       if (!pt.provasPorDisciplina) {
         pt.provasPorDisciplina = {};
       }
-      pt.provasPorDisciplina[row.disciplina] = pct;
+      const existingProvaPct = pt.provasPorDisciplina[row.disciplina];
+      pt.provasPorDisciplina[row.disciplina] =
+        existingProvaPct !== undefined
+          ? Math.round((existingProvaPct + pct) / 2)
+          : pct;
 
       pt.provas =
         pt.provas !== null && pt.provas !== undefined
@@ -160,9 +167,9 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     }
 
     for (const row of relatorios ?? []) {
-      // Parse data_semana or fallback to created_at, then get Monday of that week
-      const dateStr = row.data_semana ? `${row.data_semana}T12:00:00` : row.created_at;
-      const dt = new Date(dateStr);
+      // Parse data_semana or fallback to created_at
+      const dateStr = row.data_semana ? row.data_semana : row.created_at;
+      const dt = parseToUTCDate(dateStr);
       const pt = getOrCreate(dt);
       
       pt.engajamento =

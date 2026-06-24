@@ -82,6 +82,56 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
 
   const sorted = [...data].sort((a, b) => a.dateMs - b.dateMs);
 
+  // Custom label renderer to handle overlapping values elegantly
+  const renderCustomLabel = (key: "listas" | "provas" | "engajamento", color: string) => {
+    return (props: any) => {
+      const { x, y, value, index } = props;
+      if (value === null || value === undefined) return null;
+
+      const point = sorted[index];
+      if (!point) return null;
+
+      let dx = 0;
+      let dy = 0;
+      let anchor: "start" | "middle" | "end" = "middle";
+
+      // Default positioning
+      if (key === "engajamento") {
+        dy = 14; // default bottom
+      } else {
+        dy = -10; // default top
+      }
+
+      // Check for collisions at this index
+      const valListas = showListas ? point.listas : null;
+      const valProvas = showProvas ? point.provas : null;
+
+      // Case 1: Listas and Provas collide on the same value (and are both shown)
+      if (key === "listas" && valListas !== null && valProvas !== null && valListas === valProvas) {
+        dx = -12;
+        dy = -4;
+        anchor = "end";
+      } else if (key === "provas" && valListas !== null && valProvas !== null && valListas === valProvas) {
+        dx = 12;
+        dy = -4;
+        anchor = "start";
+      }
+
+      return (
+        <text
+          x={Number(x) + dx}
+          y={Number(y) + dy}
+          fill={color}
+          fontSize={10}
+          fontWeight="600"
+          textAnchor={anchor}
+        >
+          {value}%
+        </text>
+      );
+    };
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-4">
@@ -210,27 +260,6 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
             <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
             <ReferenceLine y={70} stroke="#f59e0b" strokeDasharray="4 4" />
 
-            {showListas && (
-              <Line
-                type="monotone"
-                dataKey="listas"
-                name="Listas de Exercícios (Treino)"
-                stroke={BLUE}
-                strokeWidth={2}
-                dot={{ r: 5, fill: BLUE }}
-                activeDot={{ r: 7 }}
-                connectNulls={true}
-              >
-                <LabelList
-                  dataKey="listas"
-                  position="top"
-                  formatter={(v: any) =>
-                    v !== null && v !== undefined ? `${v}%` : ""
-                  }
-                  style={{ fontSize: 10, fill: BLUE, fontWeight: "semibold" }}
-                />
-              </Line>
-            )}
             {showProvas && (
               <Line
                 type="monotone"
@@ -238,21 +267,30 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
                 name="Provas da Escola (Resultado Oficial)"
                 stroke={DARK_BLUE}
                 strokeWidth={3}
-                dot={{ r: 6, fill: DARK_BLUE }}
-                activeDot={{ r: 8 }}
+                dot={{ r: 7, fill: DARK_BLUE }}
+                activeDot={{ r: 9 }}
                 connectNulls={true}
               >
                 <LabelList
                   dataKey="provas"
-                  position="top"
-                  formatter={(v: any) =>
-                    v !== null && v !== undefined ? `${v}%` : ""
-                  }
-                  style={{
-                    fontSize: 10,
-                    fill: DARK_BLUE,
-                    fontWeight: "semibold",
-                  }}
+                  content={renderCustomLabel("provas", DARK_BLUE)}
+                />
+              </Line>
+            )}
+            {showListas && (
+              <Line
+                type="monotone"
+                dataKey="listas"
+                name="Listas de Exercícios (Treino)"
+                stroke={BLUE}
+                strokeWidth={2}
+                dot={{ r: 5, fill: "#ffffff", stroke: BLUE, strokeWidth: 2 }}
+                activeDot={{ r: 7 }}
+                connectNulls={true}
+              >
+                <LabelList
+                  dataKey="listas"
+                  content={renderCustomLabel("listas", BLUE)}
                 />
               </Line>
             )}
@@ -269,11 +307,7 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
               >
                 <LabelList
                   dataKey="engajamento"
-                  position="bottom"
-                  formatter={(v: any) =>
-                    v !== null && v !== undefined ? `${v}%` : ""
-                  }
-                  style={{ fontSize: 10, fill: GREEN, fontWeight: "semibold" }}
+                  content={renderCustomLabel("engajamento", GREEN)}
                 />
               </Line>
             )}
