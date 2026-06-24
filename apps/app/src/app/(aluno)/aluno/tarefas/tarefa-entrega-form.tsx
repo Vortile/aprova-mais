@@ -98,18 +98,35 @@ export function TarefaEntregaForm({
         const isImage = rawFile.type.startsWith("image/");
         
         if (isImage) {
-          // Compress using browser-image-compression
-          const options = {
-            maxSizeMB: 1.5, // Max size is 1.5MB (massively smaller than raw camera files!)
-            maxWidthOrHeight: 1920, // max dimension
-            useWebWorker: true,
-          };
-          
           toast.info(`Otimizando "${rawFile.name}"...`);
-          fileToStore = await imageCompression(rawFile, options);
+          try {
+            const options = {
+              maxSizeMB: 1.5, // Max size is 1.5MB (massively smaller than raw camera files!)
+              maxWidthOrHeight: 1920, // max dimension
+              useWebWorker: true,
+            };
+            fileToStore = await imageCompression(rawFile, options);
+          } catch (workerError: any) {
+            console.warn("Compression with web worker failed, retrying without web worker...", workerError);
+            try {
+              const options = {
+                maxSizeMB: 1.5,
+                maxWidthOrHeight: 1920,
+                useWebWorker: false,
+              };
+              fileToStore = await imageCompression(rawFile, options);
+            } catch (fallbackError: any) {
+              console.error("Compression failed completely, using original file...", fallbackError);
+              toast.warning(`Não foi possível otimizar "${rawFile.name}", enviando o arquivo original.`);
+              fileToStore = rawFile;
+            }
+          }
         }
 
-        const localId = `${Date.now()}-${crypto.randomUUID()}`;
+        const uuid = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const localId = `${Date.now()}-${uuid}`;
         newLocalFiles.push({
           id: localId,
           file: fileToStore,
