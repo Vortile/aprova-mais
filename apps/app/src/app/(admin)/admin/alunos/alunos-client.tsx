@@ -277,8 +277,8 @@ export function AlunosClient({
       </div>
 
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent>
-          <DialogHeader>
+        <DialogContent className="max-h-[90vh] sm:max-w-lg flex flex-col p-0 gap-0 max-sm:fixed max-sm:inset-0 max-sm:w-screen max-sm:h-screen max-sm:max-w-none max-sm:max-h-none max-sm:rounded-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:top-0 max-sm:left-0">
+          <DialogHeader className="p-6 pb-4 border-b text-left shrink-0 max-sm:pt-[calc(1.25rem+env(safe-area-inset-top))]">
             <DialogTitle>{editing ? "Editar Aluno" : "Novo Aluno"}</DialogTitle>
           </DialogHeader>
           <AlunoForm

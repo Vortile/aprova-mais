@@ -111,73 +111,107 @@ export function AlunoForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-        <FormField
-          control={form.control}
-          name="full_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Nome</FormLabel>
-              <FormControl>
-                <Input placeholder="Nome completo do aluno" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="contact_email"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Email da conta</FormLabel>
-              <FormControl>
-                <Input
-                  type="email"
-                  placeholder="aluno@exemplo.com"
-                  {...field}
-                />
-              </FormControl>
-              <FormDescription>
-                Use este email para vincular uma conta existente, enviar um
-                convite ou alterar o email de login do aluno.
-              </FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="grid grid-cols-2 gap-4">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="flex flex-col flex-1 overflow-hidden space-y-0"
+      >
+        <div className="space-y-4 flex-1 overflow-y-auto p-6">
           <FormField
             control={form.control}
-            name="monthly_amount"
+            name="full_name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Mensalidade (R$)</FormLabel>
+                <FormLabel>Nome</FormLabel>
+                <FormControl>
+                  <Input placeholder="Nome completo do aluno" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="contact_email"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Email da conta</FormLabel>
                 <FormControl>
                   <Input
-                    type="number"
-                    min="0"
-                    step="0.01"
-                    placeholder="Ex: 350.00"
+                    type="email"
+                    placeholder="aluno@exemplo.com"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>
-                  Valor acordado com este aluno.
+                  Use este email para vincular uma conta existente, enviar um
+                  convite ou alterar o email de login do aluno.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+          <div className="grid grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="monthly_amount"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mensalidade (R$)</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      placeholder="Ex: 350.00"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormDescription>
+                    Valor acordado com este aluno.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="grade"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Série / Ano</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Ex: 8º Ano, Ensino Médio 1..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
           <FormField
             control={form.control}
-            name="grade"
+            name="address"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Série / Ano</FormLabel>
+                <FormLabel>Endereço</FormLabel>
+                <FormControl>
+                  <Input placeholder="Rua, número, bairro, cidade" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="subject_focus"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Disciplinas</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Ex: 8º Ano, Ensino Médio 1..."
+                    placeholder="Ex: Matemática, Física (separar por vírgula)"
                     {...field}
                   />
                 </FormControl>
@@ -185,80 +219,51 @@ export function AlunoForm({
               </FormItem>
             )}
           />
-        </div>
-        <FormField
-          control={form.control}
-          name="address"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Endereço</FormLabel>
-              <FormControl>
-                <Input placeholder="Rua, número, bairro, cidade" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="subject_focus"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Disciplinas</FormLabel>
-              <FormControl>
-                <Input
-                  placeholder="Ex: Matemática, Física (separar por vírgula)"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="notes"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Observações</FormLabel>
-              <FormControl>
-                <Input placeholder="Notas sobre o aluno..." {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        {professors.length > 0 && (
           <FormField
             control={form.control}
-            name="professor_id"
+            name="notes"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Professor responsável</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl>
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Sem professor" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent>
-                    <SelectItem value="none">Sem professor</SelectItem>
-                    {professors.map((p) => (
-                      <SelectItem key={p.id} value={p.id}>
-                        {p.full_name ?? p.id}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <FormLabel>Observações</FormLabel>
+                <FormControl>
+                  <Input placeholder="Notas sobre o aluno..." {...field} />
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
-        )}
-        <div className="flex justify-end gap-2 pt-2">
+          {professors.length > 0 && (
+            <FormField
+              control={form.control}
+              name="professor_id"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Professor responsável</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Sem professor" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="none">Sem professor</SelectItem>
+                      {professors.map((p) => (
+                        <SelectItem key={p.id} value={p.id}>
+                          {p.full_name ?? p.id}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+        </div>
+        <div className="flex justify-end gap-2 p-6 border-t bg-background shrink-0 pb-[calc(1.5rem+env(safe-area-inset-bottom))] sm:pb-6">
           <Button
             type="submit"
             disabled={form.formState.isSubmitting || isPending}

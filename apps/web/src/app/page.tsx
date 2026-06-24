@@ -124,10 +124,36 @@ export default async function WebHomePage() {
               Seu filho entendendo ciências e letras{" "}
               <span className="text-primary italic">de verdade</span>
             </h1>
+            <div className="flex flex-wrap gap-2 pt-1">
+              <span className="px-3.5 py-1.5 rounded-full bg-rose-100 text-rose-800 text-xs font-bold border border-rose-200/50 shadow-sm flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm">
+                  menu_book
+                </span>
+                Português
+              </span>
+              <span className="px-3.5 py-1.5 rounded-full bg-blue-100 text-blue-800 text-xs font-bold border border-blue-200/50 shadow-sm flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm">
+                  calculate
+                </span>
+                Matemática
+              </span>
+              <span className="px-3.5 py-1.5 rounded-full bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200/50 shadow-sm flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm">
+                  science
+                </span>
+                Física
+              </span>
+              <span className="px-3.5 py-1.5 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold border border-emerald-200/50 shadow-sm flex items-center gap-1.5">
+                <span className="material-symbols-outlined text-sm">
+                  biotech
+                </span>
+                Química
+              </span>
+            </div>
             <p className="text-lg md:text-xl text-on-surface-variant max-w-xl leading-relaxed">
               Acompanhamento presencial em Manaus, personalizado para cada
-              aluno. Aulas particulares com profissional formado em Física e
-              anos de experiência.
+              aluno. Aulas particulares com profissionais formados especialistas
+              e anos de experiência.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <a
@@ -274,15 +300,11 @@ export default async function WebHomePage() {
               Sobre a Equipe Aprova+
             </h2>
             <p className="text-lg text-on-surface-variant leading-relaxed">
-              Nossa equipe é formada por um grupo especializado de professores
-              focados em ciências exatas e linguagens. O que nos une é um{" "}
-              <strong>método educacional único e padronizado</strong>,
-              garantindo a mesma qualidade excepcional em todas as disciplinas.
-            </p>
-            <p className="text-lg text-on-surface-variant leading-relaxed">
-              Nosso compromisso com a excelência acadêmica reflete-se no
-              reconhecimento científico, com contribuições publicadas em
-              veículos de prestígio internacional como a{" "}
+              A Equipe Aprova+ foi fundada e é liderada pelo{" "}
+              <strong>Prof. Deuticilam Junior</strong>, bacharel em Física e
+              mestre em Física da Matéria Condensada pela UFAM (Universidade
+              Federal do Amazonas). Com reconhecimento científico internacional,
+              ele possui pesquisas publicadas em veículos de prestígio como a{" "}
               <a
                 href="https://www.nature.com/articles/s41598-018-21968-9"
                 target="_blank"
@@ -291,8 +313,15 @@ export default async function WebHomePage() {
               >
                 Nature Scientific Reports
               </a>
-              . Aplicamos esse mesmo rigor e dedicação no acompanhamento escolar
-              do seu filho.
+              .
+            </p>
+            <p className="text-lg text-on-surface-variant leading-relaxed">
+              Sob a sua coordenação, nossa equipe especializada de professores
+              em ciências exatas e linguagens atua de forma unificada. O que nos
+              une é um <strong>método educacional único e padronizado</strong>,
+              aplicando o mesmo rigor acadêmico e dedicação no acompanhamento
+              escolar do seu filho para garantir uma qualidade excepcional em
+              todas as disciplinas.
             </p>
             <div className="flex flex-wrap gap-3 pt-4">
               <span className="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-sm font-bold">
@@ -301,6 +330,126 @@ export default async function WebHomePage() {
               <span className="px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container text-sm font-bold">
                 Método Unificado
               </span>
+            </div>
+          </div>
+        </section>
+
+        {/* ── O Método Aprova+ ── */}
+        <section
+          className="bg-surface-container-lowest py-24 px-6 rounded-[3.5rem] md:rounded-[4rem] my-8 md:my-12"
+          id="metodo"
+        >
+          <div className="max-w-7xl mx-auto">
+            <div className="grid lg:grid-cols-12 gap-16 items-center">
+              <div className="lg:col-span-5 space-y-6">
+                <span className="px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container text-xs font-bold tracking-wider uppercase">
+                  Metodologia Exclusiva
+                </span>
+                <h2 className="text-3xl md:text-5xl font-headline font-bold text-on-surface leading-tight">
+                  O Método <br className="hidden md:inline" />
+                  <span className="text-primary">Aprova+</span>
+                </h2>
+                <p className="text-lg text-on-surface-variant leading-relaxed">
+                  Criado pelo Prof. Deuticilam Junior a partir de anos de
+                  experiência com ensino domiciliar, nosso método é estruturado
+                  para gerar alto desempenho e independência total. Não queremos
+                  que o aluno dependa de nós para sempre, mas sim que aprenda a
+                  aprender.
+                </p>
+                <div className="bg-surface p-6 rounded-3xl border border-outline/5 shadow-sm space-y-4">
+                  <div className="flex gap-4 items-start">
+                    <div className="w-10 h-10 rounded-xl bg-tertiary-container flex items-center justify-center text-on-tertiary-container shrink-0">
+                      <span className="material-symbols-outlined text-xl">
+                        psychology
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-on-surface">
+                        Equipe Altamente Treinada
+                      </h4>
+                      <p className="text-on-surface-variant text-sm mt-1">
+                        Todos os nossos professores passam por um rigoroso
+                        treinamento no método do fundador, garantindo uma
+                        abordagem unificada e focada em resultados reais de alto
+                        desempenho.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-7 grid sm:grid-cols-2 gap-6">
+                {/* Pilar 1: Sintese e Foco */}
+                <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm space-y-4 hover:-translate-y-1 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-secondary-container text-on-secondary-container flex items-center justify-center">
+                    <span className="material-symbols-outlined text-2xl">
+                      summarize
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-on-surface">
+                    Síntese Direcionada
+                  </h3>
+                  <p className="text-on-surface-variant text-sm leading-relaxed">
+                    Sintetizamos o que foi abordado na escola focando
+                    estritamente no que é mais relevante e na maior dificuldade
+                    do aluno, otimizando ao máximo o tempo de estudo.
+                  </p>
+                </div>
+
+                {/* Pilar 2: Prática e Autonomia */}
+                <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm space-y-4 hover:-translate-y-1 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-primary-container text-on-primary-container flex items-center justify-center">
+                    <span className="material-symbols-outlined text-2xl">
+                      assignment_turned_in
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-on-surface">
+                    Base & Autonomia
+                  </h3>
+                  <p className="text-on-surface-variant text-sm leading-relaxed">
+                    O aprendizado inicia com um resumo conceitual, seguido da
+                    observação do professor resolvendo questões modelo.
+                    Intensificamos as listas de exercícios para que o aluno
+                    ganhe confiança e total autonomia, sem depender de ninguém
+                    para fazer sozinho.
+                  </p>
+                </div>
+
+                {/* Pilar 3: Aprendizado Lúdico */}
+                <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm space-y-4 hover:-translate-y-1 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-2xl">
+                      sentiment_satisfied
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-on-surface">
+                    Método Lúdico
+                  </h3>
+                  <p className="text-on-surface-variant text-sm leading-relaxed">
+                    Utilizamos métodos lúdicos de ensino e uma linguagem
+                    totalmente acessível que descomplica temas complexos das
+                    exatas e de linguagens, aproximando-os da realidade do
+                    aluno.
+                  </p>
+                </div>
+
+                {/* Pilar 4: Atalhos e Macetes */}
+                <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm space-y-4 hover:-translate-y-1 transition-transform duration-300">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                    <span className="material-symbols-outlined text-2xl">
+                      tips_and_updates
+                    </span>
+                  </div>
+                  <h3 className="text-xl font-bold text-on-surface">
+                    Dicas e Macetes
+                  </h3>
+                  <p className="text-on-surface-variant text-sm leading-relaxed">
+                    Ao resumirmos o conteúdo, ensinamos macetes exclusivos,
+                    dicas práticas e diferenciais de raciocínio que facilitam
+                    incrivelmente a absorção rápida do assunto.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -518,7 +667,7 @@ export default async function WebHomePage() {
               </span>
             </div>
             <h2 className="text-4xl md:text-6xl font-headline font-bold">
-              A primeira aula é por nossa conta
+              A primeira Aula Diagnóstico é por nossa conta
             </h2>
             <p className="text-xl opacity-70">
               Sem compromisso. O professor vai até você para diagnosticar as

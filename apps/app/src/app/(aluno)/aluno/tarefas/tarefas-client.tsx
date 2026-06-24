@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   CheckCircle2,
   ClipboardList,
@@ -91,6 +92,19 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
   const [selectedEntrega, setSelectedEntrega] = useState<EntregaRow | null>(
     null,
   );
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const queryEntregaId = searchParams.get("entregaId");
+
+  useEffect(() => {
+    if (queryEntregaId) {
+      const entrega = entregas.find((e) => e.id === queryEntregaId);
+      if (entrega) {
+        setSelectedEntrega(entrega);
+      }
+    }
+  }, [queryEntregaId, entregas]);
 
   const stats = useMemo(
     () => ({
@@ -293,7 +307,15 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
 
       <Dialog
         open={Boolean(selectedEntrega)}
-        onOpenChange={(nextOpen) => !nextOpen && setSelectedEntrega(null)}
+        onOpenChange={(nextOpen) => {
+          if (!nextOpen) {
+            setSelectedEntrega(null);
+            const params = new URLSearchParams(window.location.search);
+            params.delete("entregaId");
+            const newQuery = params.toString() ? `?${params.toString()}` : "";
+            router.replace(`${window.location.pathname}${newQuery}`);
+          }
+        }}
       >
         <DialogContent className="max-w-2xl">
           {selectedEntrega?.tarefas ? (
@@ -308,7 +330,13 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
                 entregaId={selectedEntrega.id}
                 initialNotes={selectedEntrega.student_notes}
                 initialUrl={selectedEntrega.submission_url}
-                onSuccess={() => setSelectedEntrega(null)}
+                onSuccess={() => {
+                  setSelectedEntrega(null);
+                  const params = new URLSearchParams(window.location.search);
+                  params.delete("entregaId");
+                  const newQuery = params.toString() ? `?${params.toString()}` : "";
+                  router.replace(`${window.location.pathname}${newQuery}`);
+                }}
               />
             </>
           ) : null}

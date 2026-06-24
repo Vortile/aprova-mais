@@ -15,20 +15,21 @@ const siteUrl = "https://aprovamais.com.br";
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Aprova+ | Aulas Particulares em Manaus — Física e Matemática",
+    default: "Aprova+ | Aulas Particulares em Manaus — Ciências e Letras",
     template: "%s | Aprova+",
   },
   description:
-    "Aulas particulares presenciais em Manaus de Física, Matemática e Inglês para o Ensino Fundamental e Médio. Professor formado em Física, atendimento a domicílio. Primeira aula grátis.",
+    "Aulas particulares presenciais em Manaus de Português, Matemática, Física e Química para o Ensino Fundamental e Médio. Aulas com profissionais formados especialistas, atendimento a domicílio. Primeira aula grátis.",
   keywords: [
     "aulas particulares Manaus",
     "professor particular Manaus",
     "reforço escolar Manaus",
     "aulas de física Manaus",
     "aulas de matemática Manaus",
-    "aulas de inglês Manaus",
+    "aulas de português Manaus",
+    "aulas de química Manaus",
     "aulas a domicílio Manaus",
-    "professor de física Manaus",
+    "professores particulares Manaus",
     "reforço Ensino Médio Manaus",
     "reforço Ensino Fundamental Manaus",
     "vestibular Manaus",
@@ -46,9 +47,10 @@ export const metadata: Metadata = {
     locale: "pt_BR",
     url: siteUrl,
     siteName: "Aprova+",
-    title: "Aprova+ | Aulas Particulares em Manaus — Física e Matemática",
+    title:
+      "Aprova+ | Aulas Particulares em Manaus — Português, Matemática, Física e Química",
     description:
-      "Aulas particulares presenciais em Manaus de Física, Matemática e Inglês. Professor formado em Física, atendimento a domicílio. Primeira aula grátis.",
+      "Aulas particulares presenciais em Manaus de Português, Matemática, Física e Química. Aulas com profissionais formados especialistas, atendimento a domicílio. Primeira aula grátis.",
     images: [
       {
         url: "/og-image.png",
@@ -62,7 +64,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Aprova+ | Aulas Particulares em Manaus",
     description:
-      "Física, Matemática e Inglês a domicílio em Manaus. Primeira aula grátis.",
+      "Português, Matemática, Física e Química a domicílio em Manaus. Primeira aula grátis.",
     images: ["/og-image.png"],
   },
   robots: {

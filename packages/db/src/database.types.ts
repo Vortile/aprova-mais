@@ -79,6 +79,41 @@ export interface Database {
           address?: string | null;
         };
       };
+      aluno_contatos: {
+        Row: {
+          id: string;
+          aluno_id: string;
+          nome: string;
+          telefone: string;
+          papel: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          aluno_id: string;
+          nome: string;
+          telefone: string;
+          papel: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          aluno_id?: string;
+          nome?: string;
+          telefone?: string;
+          papel?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "aluno_contatos_aluno_id_fkey";
+            columns: ["aluno_id"];
+            isOneToOne: false;
+            referencedRelation: "alunos";
+            referencedColumns: ["id"];
+          }
+        ];
+      };
       materiais: {
         Row: {
           id: string;

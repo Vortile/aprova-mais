@@ -116,7 +116,11 @@ export function RelatorioPedagogicoForm({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
         <div className="bg-[#1f4e79]/5 border border-[#1f4e79]/20 rounded-lg p-3 text-xs text-slate-700 leading-relaxed">
-          <strong>Relatório Pedagógico:</strong> Destinado ao registro do desenvolvimento geral do aluno. Serve para reportar a disciplina estudada, a data do relatório, a carga horária de aula executada, o status do cumprimento do conteúdo pedagógico escolar e uma avaliação do nível de engajamento e foco do estudante.
+          <strong>Relatório Pedagógico:</strong> Destinado ao registro do
+          desenvolvimento geral do aluno. Serve para reportar a disciplina
+          estudada, a data do relatório, a carga horária de aula executada, o
+          status do cumprimento do conteúdo pedagógico escolar e uma avaliação
+          do nível de engajamento e foco do estudante.
         </div>
 
         <FormField
@@ -194,7 +198,7 @@ export function RelatorioPedagogicoForm({
                 <FormLabel>Qual disciplina? *</FormLabel>
                 <FormControl>
                   <Input
-                    placeholder="Ex: Fisicuturismo, Redação, etc."
+                    placeholder="Ex: Redação, Filosofia, etc."
                     {...field}
                   />
                 </FormControl>

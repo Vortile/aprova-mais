@@ -267,9 +267,10 @@ export default async function AlunoHomePage() {
               const StatusIcon = statusMeta.icon;
 
               return (
-                <div
+                <Link
                   key={entrega.id}
-                  className="flex items-center justify-between rounded-lg border bg-card px-4 py-3 gap-4"
+                  href={`${ROUTES.ALUNO.TAREFAS}?entregaId=${entrega.id}`}
+                  className="flex items-center justify-between rounded-lg border bg-card px-4 py-3 gap-4 hover:bg-muted/50 transition-colors"
                 >
                   <div className="flex items-center gap-3 min-w-0">
                     <StatusIcon className="h-4 w-4 text-muted-foreground shrink-0" />
@@ -293,7 +294,7 @@ export default async function AlunoHomePage() {
                   <Badge variant={statusMeta.variant} className="shrink-0">
                     {statusMeta.label}
                   </Badge>
-                </div>
+                </Link>
               );
             })}
           </div>

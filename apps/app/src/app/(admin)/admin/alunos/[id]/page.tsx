@@ -20,6 +20,7 @@ import { getMaterialDownloadUrl } from "@/lib/materials";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AlunoContatosCard } from "../aluno-contatos-card";
 import {
   Table,
   TableBody,
@@ -115,7 +116,7 @@ export default async function AlunoDetailPage({
   }
 
   // Parallel data fetching
-  const [tarefaAlunosResult, alunoMateriaisResult, financeiroResult] =
+  const [tarefaAlunosResult, alunoMateriaisResult, financeiroResult, contatosResult] =
     await Promise.all([
       supabase
         .from(TABLES.TAREFA_ALUNOS)
@@ -138,7 +139,14 @@ export default async function AlunoDetailPage({
             .eq("aluno_id", id)
             .order("due_date", { ascending: false })
         : Promise.resolve({ data: null }),
+      supabase
+        .from("aluno_contatos")
+        .select("*")
+        .eq("aluno_id", id)
+        .order("created_at", { ascending: true }),
     ]);
+
+  const contatos = (contatosResult.data ?? []) as Database["public"]["Tables"]["aluno_contatos"]["Row"][];
 
   type TarefaEntrega = {
     id: string;
@@ -278,6 +286,13 @@ export default async function AlunoDetailPage({
           )}
         </CardContent>
       </Card>
+
+      {/* Contatos e Responsáveis */}
+      <AlunoContatosCard
+        alunoId={id}
+        contatos={contatos}
+        isAdmin={isAdmin}
+      />
 
       {/* Tarefas */}
       <Card>

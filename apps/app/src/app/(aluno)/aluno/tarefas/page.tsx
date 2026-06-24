@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { TABLES, type Database } from "@repo/db";
+import { Suspense } from "react";
 import { requireRole } from "@/lib/auth/session";
 import { getMaterialDownloadUrl } from "@/lib/materials";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -85,5 +86,9 @@ export default async function AlunoTarefasPage() {
     })),
   );
 
-  return <AlunoTarefasClient entregas={entregasWithUrls} />;
+  return (
+    <Suspense fallback={<div>Carregando tarefas...</div>}>
+      <AlunoTarefasClient entregas={entregasWithUrls} />
+    </Suspense>
+  );
 }

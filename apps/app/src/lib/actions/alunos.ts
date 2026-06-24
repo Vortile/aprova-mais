@@ -766,3 +766,82 @@ export async function resendAlunoInvite(
 
   return { ok: true, message: "Convite reenviado com sucesso." };
 }
+
+const saveContatoSchema = z.object({
+  id: z.string().uuid().optional(),
+  alunoId: z.string().uuid(),
+  nome: z.string().trim().min(1, "Informe o nome do contato"),
+  telefone: z.string().trim().min(1, "Informe o telefone do contato"),
+  papel: z.string().trim().min(1, "Informe o papel do contato (ex: Mãe, Pai)"),
+});
+
+export async function saveContato(input: unknown) {
+  const values = saveContatoSchema.safeParse(input);
+  if (!values.success) {
+    return { ok: false, error: "Dados inválidos." };
+  }
+
+  const session = await getCurrentAppSession();
+  if (!session || session.profile.role !== ROLES.ADMIN) {
+    return { ok: false, error: "Apenas administradores podem gerenciar contatos." };
+  }
+
+  const supabase = createAdminClient();
+  const { id, alunoId, nome, telefone, papel } = values.data;
+
+  if (id) {
+    const { error } = await supabase
+      .from("aluno_contatos")
+      .update(
+        asSupabaseUpdate<"aluno_contatos">({
+          nome,
+          telefone,
+          papel,
+        })
+      )
+      .eq("id", id);
+
+    if (error) {
+      return { ok: false, error: "Não foi possível atualizar o contato." };
+    }
+  } else {
+    const { error } = await supabase
+      .from("aluno_contatos")
+      .insert(
+        asSupabaseInsert<"aluno_contatos">({
+          aluno_id: alunoId,
+          nome,
+          telefone,
+          papel,
+        })
+      );
+
+    if (error) {
+      return { ok: false, error: "Não foi possível criar o contato." };
+    }
+  }
+
+  revalidatePath(`/admin/alunos/${alunoId}`);
+  return { ok: true, message: id ? "Contato atualizado." : "Contato adicionado." };
+}
+
+export async function deleteContato(id: string, alunoId: string) {
+  const session = await getCurrentAppSession();
+  if (!session || session.profile.role !== ROLES.ADMIN) {
+    return { ok: false, error: "Apenas administradores podem excluir contatos." };
+  }
+
+  const supabase = createAdminClient();
+  const { error } = await supabase
+    .from("aluno_contatos")
+    .delete()
+    .eq("id", id);
+
+  if (error) {
+    return { ok: false, error: "Não foi possível excluir o contato." };
+  }
+
+  revalidatePath(`/admin/alunos/${alunoId}`);
+  return { ok: true, message: "Contato excluído com sucesso." };
+}
+
