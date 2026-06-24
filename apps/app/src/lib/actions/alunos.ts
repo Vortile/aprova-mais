@@ -783,7 +783,10 @@ export async function saveContato(input: unknown) {
 
   const session = await getCurrentAppSession();
   if (!session || session.profile.role !== ROLES.ADMIN) {
-    return { ok: false, error: "Apenas administradores podem gerenciar contatos." };
+    return {
+      ok: false,
+      error: "Apenas administradores podem gerenciar contatos.",
+    };
   }
 
   const supabase = createAdminClient();
@@ -797,7 +800,7 @@ export async function saveContato(input: unknown) {
           nome,
           telefone,
           papel,
-        })
+        }),
       )
       .eq("id", id);
 
@@ -805,16 +808,14 @@ export async function saveContato(input: unknown) {
       return { ok: false, error: "Não foi possível atualizar o contato." };
     }
   } else {
-    const { error } = await supabase
-      .from("aluno_contatos")
-      .insert(
-        asSupabaseInsert<"aluno_contatos">({
-          aluno_id: alunoId,
-          nome,
-          telefone,
-          papel,
-        })
-      );
+    const { error } = await supabase.from("aluno_contatos").insert(
+      asSupabaseInsert<"aluno_contatos">({
+        aluno_id: alunoId,
+        nome,
+        telefone,
+        papel,
+      }),
+    );
 
     if (error) {
       return { ok: false, error: "Não foi possível criar o contato." };
@@ -822,20 +823,23 @@ export async function saveContato(input: unknown) {
   }
 
   revalidatePath(`/admin/alunos/${alunoId}`);
-  return { ok: true, message: id ? "Contato atualizado." : "Contato adicionado." };
+  return {
+    ok: true,
+    message: id ? "Contato atualizado." : "Contato adicionado.",
+  };
 }
 
 export async function deleteContato(id: string, alunoId: string) {
   const session = await getCurrentAppSession();
   if (!session || session.profile.role !== ROLES.ADMIN) {
-    return { ok: false, error: "Apenas administradores podem excluir contatos." };
+    return {
+      ok: false,
+      error: "Apenas administradores podem excluir contatos.",
+    };
   }
 
   const supabase = createAdminClient();
-  const { error } = await supabase
-    .from("aluno_contatos")
-    .delete()
-    .eq("id", id);
+  const { error } = await supabase.from("aluno_contatos").delete().eq("id", id);
 
   if (error) {
     return { ok: false, error: "Não foi possível excluir o contato." };
@@ -844,4 +848,3 @@ export async function deleteContato(id: string, alunoId: string) {
   revalidatePath(`/admin/alunos/${alunoId}`);
   return { ok: true, message: "Contato excluído com sucesso." };
 }
-

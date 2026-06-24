@@ -15,7 +15,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Loader2, Upload, FileText, Image as ImageIcon, X, Check } from "lucide-react";
+import {
+  Loader2,
+  Upload,
+  FileText,
+  Image as ImageIcon,
+  X,
+  Check,
+} from "lucide-react";
 import imageCompression from "browser-image-compression";
 import { submitTarefa } from "@/lib/actions/tarefas";
 
@@ -49,7 +56,7 @@ export function TarefaEntregaForm({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isCompressing, setIsCompressing] = useState(false);
   const [uploadText, setUploadText] = useState("");
-  
+
   // Parse initial files if any (saved as comma-separated or JSON list of urls/paths)
   const getInitialFiles = (): string[] => {
     if (!initialUrl) return [];
@@ -57,19 +64,23 @@ export function TarefaEntregaForm({
       if (initialUrl.startsWith("[")) {
         return JSON.parse(initialUrl) as string[];
       }
-      return initialUrl.split(",").map(f => f.trim()).filter(Boolean);
+      return initialUrl
+        .split(",")
+        .map((f) => f.trim())
+        .filter(Boolean);
     } catch {
       return [initialUrl];
     }
   };
 
-  const [uploadedFiles, setUploadedFiles] = useState<string[]>(getInitialFiles());
+  const [uploadedFiles, setUploadedFiles] =
+    useState<string[]>(getInitialFiles());
   const [localFiles, setLocalFiles] = useState<LocalFile[]>([]);
 
   // Cleanup object URLs on unmount to prevent memory leaks
   useEffect(() => {
     return () => {
-      localFiles.forEach(f => {
+      localFiles.forEach((f) => {
         if (f.previewUrl) URL.revokeObjectURL(f.previewUrl);
       });
     };
@@ -93,10 +104,10 @@ export function TarefaEntregaForm({
     try {
       for (let i = 0; i < files.length; i++) {
         const rawFile = files[i]!;
-        
+
         let fileToStore = rawFile;
         const isImage = rawFile.type.startsWith("image/");
-        
+
         if (isImage) {
           toast.info(`Otimizando "${rawFile.name}"...`);
           try {
@@ -107,7 +118,10 @@ export function TarefaEntregaForm({
             };
             fileToStore = await imageCompression(rawFile, options);
           } catch (workerError: any) {
-            console.warn("Compression with web worker failed, retrying without web worker...", workerError);
+            console.warn(
+              "Compression with web worker failed, retrying without web worker...",
+              workerError,
+            );
             try {
               const options = {
                 maxSizeMB: 1.5,
@@ -116,16 +130,24 @@ export function TarefaEntregaForm({
               };
               fileToStore = await imageCompression(rawFile, options);
             } catch (fallbackError: any) {
-              console.error("Compression failed completely, using original file...", fallbackError);
-              toast.warning(`Não foi possível otimizar "${rawFile.name}", enviando o arquivo original.`);
+              console.error(
+                "Compression failed completely, using original file...",
+                fallbackError,
+              );
+              toast.warning(
+                `Não foi possível otimizar "${rawFile.name}", enviando o arquivo original.`,
+              );
               fileToStore = rawFile;
             }
           }
         }
 
-        const uuid = typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
-          ? crypto.randomUUID()
-          : Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+        const uuid =
+          typeof crypto !== "undefined" &&
+          typeof crypto.randomUUID === "function"
+            ? crypto.randomUUID()
+            : Math.random().toString(36).substring(2, 15) +
+              Math.random().toString(36).substring(2, 15);
         const localId = `${Date.now()}-${uuid}`;
         newLocalFiles.push({
           id: localId,
@@ -155,16 +177,18 @@ export function TarefaEntregaForm({
   }
 
   function handleRemoveLocalFile(idToRemove: string) {
-    const file = localFiles.find(f => f.id === idToRemove);
+    const file = localFiles.find((f) => f.id === idToRemove);
     if (file) {
       if (file.previewUrl) URL.revokeObjectURL(file.previewUrl);
     }
-    setLocalFiles(prev => prev.filter(f => f.id !== idToRemove));
+    setLocalFiles((prev) => prev.filter((f) => f.id !== idToRemove));
   }
 
   async function onSubmit(values: FormValues) {
     if (uploadedFiles.length === 0 && localFiles.length === 0) {
-      toast.error("Por favor, envie ao menos uma foto ou arquivo da sua tarefa.");
+      toast.error(
+        "Por favor, envie ao menos uma foto ou arquivo da sua tarefa.",
+      );
       return;
     }
 
@@ -209,13 +233,13 @@ export function TarefaEntregaForm({
       }
 
       toast.success(result.message);
-      
+
       // Clean up object URLs
-      localFiles.forEach(f => {
+      localFiles.forEach((f) => {
         if (f.previewUrl) URL.revokeObjectURL(f.previewUrl);
       });
       setLocalFiles([]);
-      
+
       router.refresh();
       onSuccess();
     } catch (error: any) {
@@ -254,11 +278,13 @@ export function TarefaEntregaForm({
             <span>Fotos ou Arquivos da Entrega *</span>
             {localFiles.length > 0 && (
               <span className="text-xs text-amber-600 font-normal">
-                {localFiles.length} {localFiles.length === 1 ? "foto/arquivo" : "fotos/arquivos"} aguardando envio
+                {localFiles.length}{" "}
+                {localFiles.length === 1 ? "foto/arquivo" : "fotos/arquivos"}{" "}
+                aguardando envio
               </span>
             )}
           </FormLabel>
-          
+
           {/* Upload Button Area */}
           <div className="flex items-center justify-center w-full">
             <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer bg-slate-50/50 hover:bg-slate-50 border-slate-300 hover:border-[#1f4e79]/50 transition-colors">
@@ -266,8 +292,13 @@ export function TarefaEntregaForm({
                 {isCompressing ? (
                   <>
                     <Loader2 className="w-8 h-8 animate-spin text-amber-500 mb-2" />
-                    <p className="text-sm font-semibold text-slate-700">Comprimindo e preparando imagens...</p>
-                    <p className="text-xs text-muted-foreground mt-1">Isso reduz o tamanho em até 90% para o upload ficar super rápido!</p>
+                    <p className="text-sm font-semibold text-slate-700">
+                      Comprimindo e preparando imagens...
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Isso reduz o tamanho em até 90% para o upload ficar super
+                      rápido!
+                    </p>
                   </>
                 ) : (
                   <>
@@ -299,7 +330,7 @@ export function TarefaEntregaForm({
               {uploadedFiles.map((path, idx) => {
                 const isImage = /\.(jpe?g|png|gif|webp)$/i.test(path);
                 const fileName = path.split("/").pop() || "arquivo";
-                
+
                 return (
                   <div
                     key={`uploaded-${idx}`}
@@ -312,7 +343,9 @@ export function TarefaEntregaForm({
                         <FileText className="w-4 h-4 shrink-0 text-blue-500" />
                       )}
                       <span className="text-xs truncate font-medium text-slate-700">
-                        {fileName.length > 25 ? `${fileName.slice(0, 22)}...` : fileName}
+                        {fileName.length > 25
+                          ? `${fileName.slice(0, 22)}...`
+                          : fileName}
                       </span>
                       <span className="text-[10px] text-emerald-600 bg-emerald-100/50 px-1 py-0.5 rounded flex items-center gap-0.5 shrink-0">
                         <Check className="w-2.5 h-2.5" /> Salvo
@@ -345,7 +378,9 @@ export function TarefaEntregaForm({
                       <FileText className="w-4 h-4 shrink-0 text-blue-500" />
                     )}
                     <span className="text-xs truncate font-medium text-slate-700">
-                      {local.name.length > 25 ? `${local.name.slice(0, 22)}...` : local.name}
+                      {local.name.length > 25
+                        ? `${local.name.slice(0, 22)}...`
+                        : local.name}
                     </span>
                     <span className="text-[10px] text-amber-600 bg-amber-100/50 px-1 py-0.5 rounded shrink-0">
                       Aguardando

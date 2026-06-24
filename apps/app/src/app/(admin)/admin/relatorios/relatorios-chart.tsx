@@ -4,6 +4,8 @@ import { useRef, useState } from "react";
 import { Download, Loader2 } from "lucide-react";
 import html2canvas from "html2canvas";
 import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import {
   LineChart,
   Line,
@@ -42,6 +44,9 @@ const GREEN = "#2ecc71";
 export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
   const chartRef = useRef<HTMLDivElement>(null);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [showListas, setShowListas] = useState(true);
+  const [showProvas, setShowProvas] = useState(true);
+  const [showEngajamento, setShowEngajamento] = useState(true);
 
   async function handleDownload() {
     if (!chartRef.current) return;
@@ -79,7 +84,68 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        {/* Metric toggles */}
+        <div className="flex flex-wrap items-center gap-5 text-xs bg-muted/40 px-3 py-1.5 rounded-lg border">
+          <span className="font-semibold text-slate-700">
+            Mostrar no gráfico:
+          </span>
+
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="toggle-listas"
+              checked={showListas}
+              onCheckedChange={(checked) => setShowListas(!!checked)}
+            />
+            <Label
+              htmlFor="toggle-listas"
+              className="flex items-center gap-1.5 cursor-pointer text-xs font-medium"
+            >
+              <span
+                className="h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: BLUE }}
+              />
+              Listas (Treino)
+            </Label>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="toggle-provas"
+              checked={showProvas}
+              onCheckedChange={(checked) => setShowProvas(!!checked)}
+            />
+            <Label
+              htmlFor="toggle-provas"
+              className="flex items-center gap-1.5 cursor-pointer text-xs font-medium"
+            >
+              <span
+                className="h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: DARK_BLUE }}
+              />
+              Provas (Oficial)
+            </Label>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Checkbox
+              id="toggle-engajamento"
+              checked={showEngajamento}
+              onCheckedChange={(checked) => setShowEngajamento(!!checked)}
+            />
+            <Label
+              htmlFor="toggle-engajamento"
+              className="flex items-center gap-1.5 cursor-pointer text-xs font-medium"
+            >
+              <span
+                className="h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: GREEN }}
+              />
+              Engajamento e Foco
+            </Label>
+          </div>
+        </div>
+
         <Button
           variant="outline"
           size="sm"
@@ -144,57 +210,73 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
             <Legend wrapperStyle={{ fontSize: 12, paddingTop: 8 }} />
             <ReferenceLine y={70} stroke="#f59e0b" strokeDasharray="4 4" />
 
-            <Line
-              type="monotone"
-              dataKey="listas"
-              name="Listas de Exercícios (Treino)"
-              stroke={BLUE}
-              strokeWidth={2}
-              dot={{ r: 5, fill: BLUE }}
-              activeDot={{ r: 7 }}
-              connectNulls={true}
-            >
-              <LabelList
+            {showListas && (
+              <Line
+                type="monotone"
                 dataKey="listas"
-                position="top"
-                formatter={(v: any) => (v !== null && v !== undefined ? `${v}%` : "")}
-                style={{ fontSize: 10, fill: BLUE, fontWeight: "semibold" }}
-              />
-            </Line>
-            <Line
-              type="monotone"
-              dataKey="provas"
-              name="Provas da Escola (Resultado Oficial)"
-              stroke={DARK_BLUE}
-              strokeWidth={3}
-              dot={{ r: 6, fill: DARK_BLUE }}
-              activeDot={{ r: 8 }}
-              connectNulls={true}
-            >
-              <LabelList
+                name="Listas de Exercícios (Treino)"
+                stroke={BLUE}
+                strokeWidth={2}
+                dot={{ r: 5, fill: BLUE }}
+                activeDot={{ r: 7 }}
+                connectNulls={true}
+              >
+                <LabelList
+                  dataKey="listas"
+                  position="top"
+                  formatter={(v: any) =>
+                    v !== null && v !== undefined ? `${v}%` : ""
+                  }
+                  style={{ fontSize: 10, fill: BLUE, fontWeight: "semibold" }}
+                />
+              </Line>
+            )}
+            {showProvas && (
+              <Line
+                type="monotone"
                 dataKey="provas"
-                position="top"
-                formatter={(v: any) => (v !== null && v !== undefined ? `${v}%` : "")}
-                style={{ fontSize: 10, fill: DARK_BLUE, fontWeight: "semibold" }}
-              />
-            </Line>
-            <Line
-              type="monotone"
-              dataKey="engajamento"
-              name="Índice de Engajamento e Foco"
-              stroke={GREEN}
-              strokeWidth={1.5}
-              strokeDasharray="5 3"
-              dot={{ r: 4, fill: GREEN }}
-              connectNulls={true}
-            >
-              <LabelList
+                name="Provas da Escola (Resultado Oficial)"
+                stroke={DARK_BLUE}
+                strokeWidth={3}
+                dot={{ r: 6, fill: DARK_BLUE }}
+                activeDot={{ r: 8 }}
+                connectNulls={true}
+              >
+                <LabelList
+                  dataKey="provas"
+                  position="top"
+                  formatter={(v: any) =>
+                    v !== null && v !== undefined ? `${v}%` : ""
+                  }
+                  style={{
+                    fontSize: 10,
+                    fill: DARK_BLUE,
+                    fontWeight: "semibold",
+                  }}
+                />
+              </Line>
+            )}
+            {showEngajamento && (
+              <Line
+                type="monotone"
                 dataKey="engajamento"
-                position="bottom"
-                formatter={(v: any) => (v !== null && v !== undefined ? `${v}%` : "")}
-                style={{ fontSize: 10, fill: GREEN, fontWeight: "semibold" }}
-              />
-            </Line>
+                name="Índice de Engajamento e Foco"
+                stroke={GREEN}
+                strokeWidth={1.5}
+                strokeDasharray="5 3"
+                dot={{ r: 4, fill: GREEN }}
+                connectNulls={true}
+              >
+                <LabelList
+                  dataKey="engajamento"
+                  position="bottom"
+                  formatter={(v: any) =>
+                    v !== null && v !== undefined ? `${v}%` : ""
+                  }
+                  style={{ fontSize: 10, fill: GREEN, fontWeight: "semibold" }}
+                />
+              </Line>
+            )}
           </LineChart>
         </ResponsiveContainer>
 

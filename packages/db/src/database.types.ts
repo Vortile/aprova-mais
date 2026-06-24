@@ -111,7 +111,7 @@ export interface Database {
             isOneToOne: false;
             referencedRelation: "alunos";
             referencedColumns: ["id"];
-          }
+          },
         ];
       };
       materiais: {
@@ -124,6 +124,7 @@ export interface Database {
           grade_level: string | null;
           uploaded_by: string | null;
           created_at: string;
+          created_by_admin_id: string | null;
         };
         Insert: {
           id?: string;
@@ -134,6 +135,7 @@ export interface Database {
           grade_level?: string | null;
           uploaded_by?: string | null;
           created_at?: string;
+          created_by_admin_id?: string | null;
         };
         Update: {
           title?: string;
@@ -142,6 +144,7 @@ export interface Database {
           subject?: string | null;
           grade_level?: string | null;
           uploaded_by?: string | null;
+          created_by_admin_id?: string | null;
         };
         Relationships: [];
       };
@@ -220,31 +223,6 @@ export interface Database {
           aluno_id?: string;
           material_id?: string;
           assigned_by?: string | null;
-        };
-        Relationships: [];
-      };
-      depoimentos: {
-        Row: {
-          id: string;
-          quote: string;
-          author: string;
-          sort_order: number;
-          active: boolean;
-          created_at: string;
-        };
-        Insert: {
-          id?: string;
-          quote: string;
-          author: string;
-          sort_order?: number;
-          active?: boolean;
-          created_at?: string;
-        };
-        Update: {
-          quote?: string;
-          author?: string;
-          sort_order?: number;
-          active?: boolean;
         };
         Relationships: [];
       };

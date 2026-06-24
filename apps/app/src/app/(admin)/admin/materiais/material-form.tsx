@@ -17,6 +17,13 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { createMaterial, updateMaterial } from "@/lib/actions/materiais";
 
 type EditingMaterial = {
@@ -25,6 +32,7 @@ type EditingMaterial = {
   description: string | null;
   subject: string | null;
   grade_level: string | null;
+  uploaded_by?: string | null;
 };
 
 const schema = z.object({
@@ -32,6 +40,7 @@ const schema = z.object({
   description: z.string(),
   subject: z.string(),
   grade_level: z.string(),
+  uploaded_by: z.string().optional().nullable(),
 });
 
 type FormValues = z.infer<typeof schema>;
@@ -39,9 +48,13 @@ type FormValues = z.infer<typeof schema>;
 export function MaterialForm({
   onSuccess,
   material,
+  isAdmin,
+  professores = [],
 }: {
   onSuccess: () => void;
   material?: EditingMaterial | null;
+  isAdmin?: boolean;
+  professores?: { id: string; name: string }[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -51,13 +64,32 @@ export function MaterialForm({
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
 
+  const formSchema = z
+    .object({
+      title: z.string().min(1, "Informe o título"),
+      description: z.string(),
+      subject: z.string(),
+      grade_level: z.string(),
+      uploaded_by: z.string().optional().nullable(),
+    })
+    .superRefine((data, ctx) => {
+      if (isAdmin && (!data.uploaded_by || data.uploaded_by.trim() === "")) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Selecione o professor proprietário",
+          path: ["uploaded_by"],
+        });
+      }
+    });
+
   const form = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       title: material?.title ?? "",
       description: material?.description ?? "",
       subject: material?.subject ?? "",
       grade_level: material?.grade_level ?? "",
+      uploaded_by: material?.uploaded_by ?? "",
     },
   });
 
@@ -95,6 +127,7 @@ export function MaterialForm({
         description: values.description,
         subject: values.subject,
         gradeLevel: values.grade_level,
+        uploadedBy: values.uploaded_by || null,
       });
 
       if (!result.ok) {
@@ -138,6 +171,7 @@ export function MaterialForm({
       filePath,
       subject: values.subject,
       gradeLevel: values.grade_level,
+      uploadedBy: values.uploaded_by || null,
     });
 
     setIsUploading(false);
@@ -201,6 +235,48 @@ export function MaterialForm({
             )}
           />
         </div>
+
+        {isAdmin && (
+          <FormField
+            control={form.control}
+            name="uploaded_by"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Professor Proprietário *</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  value={field.value || ""}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Selecione o professor..." />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {professores.length === 0 ? (
+                      <SelectItem value="" disabled>
+                        Nenhum professor cadastrado
+                      </SelectItem>
+                    ) : (
+                      professores.map((prof) => (
+                        <SelectItem key={prof.id} value={prof.id}>
+                          {prof.name}
+                        </SelectItem>
+                      ))
+                    )}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Selecione o professor a quem este material pertence.
+                  Administradores não podem ser proprietários de materiais de
+                  estudo.
+                </p>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
+
         <FormField
           control={form.control}
           name="description"

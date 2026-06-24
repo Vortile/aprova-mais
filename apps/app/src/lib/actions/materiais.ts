@@ -13,7 +13,7 @@ import { ACTION_ERRORS } from "@/lib/errors";
 
 type MaterialOwnerRow = Pick<
   Database["public"]["Tables"]["materiais"]["Row"],
-  "id" | "file_url" | "uploaded_by"
+  "id" | "file_url" | "uploaded_by" | "created_by_admin_id"
 >;
 
 const materialMetaSchema = z.object({
@@ -21,6 +21,7 @@ const materialMetaSchema = z.object({
   description: z.string().trim(),
   subject: z.string().trim(),
   gradeLevel: z.string().trim(),
+  uploadedBy: z.string().uuid().optional().nullable(),
 });
 
 const createMaterialSchema = materialMetaSchema.extend({
@@ -55,7 +56,7 @@ async function fetchMaterialOwner(
 ): Promise<MaterialOwnerRow | null> {
   const { data } = await supabase
     .from(TABLES.MATERIAIS)
-    .select("id, file_url, uploaded_by")
+    .select("id, file_url, uploaded_by, created_by_admin_id")
     .eq("id", materialId)
     .maybeSingle();
 
@@ -84,6 +85,44 @@ export async function createMaterial(input: unknown): Promise<ActionResult> {
     return { ok: false, error: ACTION_ERRORS.NO_PERMISSION };
   }
 
+  const isAdmin = session.profile.role === ROLES.ADMIN;
+  let uploaded_by: string;
+  let created_by_admin_id: string | null = null;
+
+  if (isAdmin) {
+    if (
+      !values.data.uploadedBy ||
+      values.data.uploadedBy === session.profile.id
+    ) {
+      return {
+        ok: false,
+        error:
+          "Administradores não podem criar materiais para si mesmos. Selecione um professor proprietário.",
+      };
+    }
+
+    const { data: targetProfile } = await createAdminClient()
+      .from(TABLES.PROFILES)
+      .select("role")
+      .eq("id", values.data.uploadedBy)
+      .maybeSingle();
+
+    if (
+      !targetProfile ||
+      (targetProfile as { role: string }).role !== ROLES.PROFESSOR
+    ) {
+      return {
+        ok: false,
+        error: "O proprietário selecionado deve ser um professor cadastrado.",
+      };
+    }
+
+    uploaded_by = values.data.uploadedBy;
+    created_by_admin_id = session.profile.id;
+  } else {
+    uploaded_by = session.profile.id;
+  }
+
   const { error } = await createAdminClient()
     .from(TABLES.MATERIAIS)
     .insert(
@@ -93,7 +132,8 @@ export async function createMaterial(input: unknown): Promise<ActionResult> {
         file_url: values.data.filePath,
         subject: values.data.subject || null,
         grade_level: values.data.gradeLevel || null,
-        uploaded_by: session.profile.id,
+        uploaded_by,
+        created_by_admin_id,
       }),
     );
 
@@ -131,6 +171,44 @@ export async function updateMaterial(input: unknown): Promise<ActionResult> {
     return { ok: false, error: ACTION_ERRORS.NO_PERMISSION };
   }
 
+  const isAdmin = session.profile.role === ROLES.ADMIN;
+  let uploaded_by: string;
+  let created_by_admin_id: string | null = material.created_by_admin_id;
+
+  if (isAdmin) {
+    if (
+      !values.data.uploadedBy ||
+      values.data.uploadedBy === session.profile.id
+    ) {
+      return {
+        ok: false,
+        error:
+          "Administradores não podem atribuir materiais para si mesmos. Selecione um professor proprietário.",
+      };
+    }
+
+    const { data: targetProfile } = await createAdminClient()
+      .from(TABLES.PROFILES)
+      .select("role")
+      .eq("id", values.data.uploadedBy)
+      .maybeSingle();
+
+    if (
+      !targetProfile ||
+      (targetProfile as { role: string }).role !== ROLES.PROFESSOR
+    ) {
+      return {
+        ok: false,
+        error: "O proprietário selecionado deve ser um professor cadastrado.",
+      };
+    }
+
+    uploaded_by = values.data.uploadedBy;
+    created_by_admin_id = session.profile.id;
+  } else {
+    uploaded_by = session.profile.id;
+  }
+
   const { error } = await supabase
     .from(TABLES.MATERIAIS)
     .update(
@@ -139,6 +217,8 @@ export async function updateMaterial(input: unknown): Promise<ActionResult> {
         description: values.data.description || null,
         subject: values.data.subject || null,
         grade_level: values.data.gradeLevel || null,
+        uploaded_by,
+        created_by_admin_id,
       }),
     )
     .eq("id", material.id);

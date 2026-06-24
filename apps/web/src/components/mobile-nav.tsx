@@ -5,17 +5,13 @@ import { teacher } from "@/lib/teacher";
 
 const { zcalUrl, portalUrl } = teacher;
 
-interface MobileNavProps {
-  showDepoimentos?: boolean;
-}
-
-export function MobileNav({ showDepoimentos = true }: MobileNavProps) {
+export function MobileNav() {
   const [open, setOpen] = useState(false);
 
   return (
     <>
       <button
-        className="md:hidden text-primary"
+        className="md:hidden text-primary cursor-pointer"
         onClick={() => setOpen(!open)}
         aria-label="Abrir menu"
       >
@@ -46,15 +42,6 @@ export function MobileNav({ showDepoimentos = true }: MobileNavProps) {
           >
             Plataforma
           </a>
-          {showDepoimentos && (
-            <a
-              href="#depoimentos"
-              className="text-on-surface font-bold text-lg"
-              onClick={() => setOpen(false)}
-            >
-              Depoimentos
-            </a>
-          )}
           <a
             href="#contato"
             className="text-on-surface font-bold text-lg"
@@ -64,7 +51,7 @@ export function MobileNav({ showDepoimentos = true }: MobileNavProps) {
           </a>
 
           <a
-            className="md:inline-block text-on-surface px-6 py-3 rounded-lg font-bold text-sm transition-transform text-center shadow-md hover:shadow-lg active:scale-90"
+            className="md:inline-block cursor-pointer text-on-surface px-6 py-3 rounded-lg font-bold text-sm transition-transform text-center shadow-md hover:shadow-lg active:scale-90"
             href={portalUrl}
             target="_blank"
             rel="noopener noreferrer"
@@ -72,7 +59,7 @@ export function MobileNav({ showDepoimentos = true }: MobileNavProps) {
             Acessar Portal do Aluno
           </a>
           <a
-            className="bg-tertiary text-on-tertiary px-6 py-3 rounded-lg font-bold text-sm text-center"
+            className="bg-tertiary cursor-pointer text-on-tertiary px-6 py-3 rounded-lg font-bold text-sm text-center"
             href={zcalUrl}
             target="_blank"
             rel="noopener noreferrer"

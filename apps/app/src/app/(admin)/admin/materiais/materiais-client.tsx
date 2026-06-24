@@ -11,6 +11,7 @@ import {
   User,
   UserPlus,
   Filter,
+  ShieldCheck,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -55,19 +56,23 @@ import type { Database } from "@repo/db";
 type MaterialRow = Database["public"]["Tables"]["materiais"]["Row"] & {
   download_url: string | null;
   uploader_name: string | null;
+  admin_creator_name?: string | null;
 };
 
 type AlunoOption = { id: string; name: string };
+type ProfessorOption = { id: string; name: string };
 
 export function MateriaisClient({
   materiais,
   isAdmin,
   alunos,
+  professores = [],
   assignmentsByMaterial,
 }: {
   materiais: MaterialRow[];
   isAdmin: boolean;
   alunos: AlunoOption[];
+  professores?: ProfessorOption[];
   assignmentsByMaterial: Record<string, string[]>;
 }) {
   const router = useRouter();
@@ -288,6 +293,30 @@ export function MateriaisClient({
                     </Badge>
                   )}
                 </div>
+
+                {material.created_by_admin_id && (
+                  <div className="rounded-md bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100/50 dark:border-indigo-900/30 p-2 mt-2 flex items-start gap-1.5 text-[11px] text-indigo-800 dark:text-indigo-400">
+                    <ShieldCheck className="h-3.5 w-3.5 mt-0.5 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                    <div className="leading-normal">
+                      <span className="font-semibold block mb-0.5">
+                        Criado por Administrador
+                      </span>
+                      <span>
+                        Enviado por{" "}
+                        <span className="font-medium">
+                          {material.admin_creator_name ?? "Admin"}
+                        </span>{" "}
+                        diretamente para{" "}
+                        <span className="font-medium">
+                          {isAdmin
+                            ? (material.uploader_name ?? "o Professor")
+                            : "você"}
+                        </span>
+                        .
+                      </span>
+                    </div>
+                  </div>
+                )}
               </CardContent>
               <CardFooter className="flex items-center justify-between gap-2 pt-0">
                 <div className="flex items-center gap-2 min-w-0">
@@ -336,6 +365,8 @@ export function MateriaisClient({
           </DialogHeader>
           <MaterialForm
             material={editing}
+            isAdmin={isAdmin}
+            professores={professores}
             onSuccess={() => {
               setOpen(false);
               setEditing(null);

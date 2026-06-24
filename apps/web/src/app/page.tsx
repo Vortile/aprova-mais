@@ -1,45 +1,11 @@
 import { MobileNav } from "@/components/mobile-nav";
 import { BrandLockup } from "@/components/brand-lockup";
 import { teacher, whatsappUrl, instagramUrl } from "@/lib/teacher";
-import { DepoimentosSection } from "@/components/depoimentos-section";
-import { createClient } from "@repo/db";
-import { unstable_cache } from "next/cache";
 import Image from "next/image";
 
 const { zcalUrl, portalUrl } = teacher;
 
-type DepoimentoRow = {
-  id: string;
-  quote: string;
-  author: string;
-  sort_order: number;
-};
-
-const getDepoimentos = unstable_cache(
-  async (): Promise<DepoimentoRow[]> => {
-    try {
-      const supabase = createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-      );
-      const { data, error } = await supabase
-        .from("depoimentos")
-        .select("id, quote, author, sort_order")
-        .eq("active", true)
-        .order("sort_order", { ascending: true })
-        .order("created_at", { ascending: true });
-      if (error || !data) return [];
-      return data;
-    } catch {
-      return [];
-    }
-  },
-  ["depoimentos"],
-  { revalidate: 60 },
-);
-
 export default async function WebHomePage() {
-  const depoimentos = await getDepoimentos();
   return (
     <>
       {/* ── Top Nav ── */}
@@ -71,14 +37,6 @@ export default async function WebHomePage() {
             >
               Plataforma
             </a>
-            {depoimentos.length > 0 && (
-              <a
-                className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
-                href="#depoimentos"
-              >
-                Depoimentos
-              </a>
-            )}
             <a
               className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
               href="#contato"
@@ -88,7 +46,7 @@ export default async function WebHomePage() {
           </div>
           <div className="flex items-center gap-4">
             <a
-              className="hidden md:inline-block  text-on-surface px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
+              className="hidden md:inline-block cursor-pointer text-on-surface px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
               href={portalUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -96,14 +54,14 @@ export default async function WebHomePage() {
               Portal
             </a>
             <a
-              className="hidden md:inline-block bg-tertiary text-on-tertiary px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
+              className="hidden md:inline-block cursor-pointer bg-tertiary text-on-tertiary px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
               href={zcalUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
               Aula Diagnóstico
             </a>
-            <MobileNav showDepoimentos={depoimentos.length > 0} />
+            <MobileNav />
           </div>
         </div>
       </nav>
@@ -157,7 +115,7 @@ export default async function WebHomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <a
-                className="bg-tertiary text-on-tertiary px-8 py-4 rounded-xl font-bold text-center hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="bg-tertiary cursor-pointer text-on-tertiary px-8 py-4 rounded-xl font-bold text-center hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
                 href={zcalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -168,7 +126,7 @@ export default async function WebHomePage() {
                 </span>
               </a>
               <a
-                className="bg-surface-container text-primary border border-outline-variant/10 px-8 py-4 rounded-xl font-bold text-center hover:bg-surface-container-high transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="bg-surface-container cursor-pointer text-primary border border-outline-variant/10 px-8 py-4 rounded-xl font-bold text-center hover:bg-surface-container-high transition-all active:scale-95 flex items-center justify-center gap-2"
                 href="#materias"
               >
                 Nossas Matérias
@@ -345,7 +303,7 @@ export default async function WebHomePage() {
                 <span className="px-4 py-1.5 rounded-full bg-primary-container text-on-primary-container text-xs font-bold tracking-wider uppercase">
                   Metodologia Exclusiva
                 </span>
-                <h2 className="text-3xl md:text-5xl font-headline font-bold text-on-surface leading-tight">
+                <h2 className="text-3xl mt-2 md:text-5xl font-headline font-bold text-on-surface leading-tight">
                   O Método <br className="hidden md:inline" />
                   <span className="text-primary">Aprova+</span>
                 </h2>
@@ -610,7 +568,7 @@ export default async function WebHomePage() {
 
           <div className="lg:col-span-7 flex justify-center bg-transparent items-center w-full">
             {/* Screenshot directly with relative/aspect layout for image and rounded details */}
-            <div className="w-full bg-transparent overflow-hidden shadow-xl relative aspect-16/10">
+            <div className="w-full bg-transparent rounded-lg overflow-hidden shadow-xl relative aspect-16/10">
               <Image
                 src="/plataforma.png"
                 alt="Screenshot do painel do aluno Aprova+"
@@ -636,7 +594,7 @@ export default async function WebHomePage() {
               </p>
             </div>
             <a
-              className="bg-[#32d74b] hover:bg-[#25D366] text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 transition-all duration-300 shrink-0 shadow-md"
+              className="bg-[#32d74b] hover:bg-[#25D366] cursor-pointer text-white px-8 py-4 rounded-2xl font-bold flex items-center gap-2 hover:scale-105 transition-all duration-300 shrink-0 shadow-md"
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -648,12 +606,6 @@ export default async function WebHomePage() {
             </a>
           </div>
         </section>
-
-        {/* ── Depoimentos ── */}
-        <DepoimentosSection
-          depoimentos={depoimentos}
-          whatsappUrl={whatsappUrl}
-        />
 
         {/* ── CTA Final ── */}
         <section
@@ -667,7 +619,7 @@ export default async function WebHomePage() {
               </span>
             </div>
             <h2 className="text-4xl md:text-6xl font-headline font-bold">
-              A primeira Aula Diagnóstico é por nossa conta
+              Agende sua Aula Diagnóstico
             </h2>
             <p className="text-xl opacity-70">
               Sem compromisso. O professor vai até você para diagnosticar as
@@ -675,7 +627,7 @@ export default async function WebHomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
               <a
-                className="bg-tertiary text-on-tertiary px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all"
+                className="bg-tertiary cursor-pointer text-on-tertiary px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all"
                 href={zcalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -683,7 +635,7 @@ export default async function WebHomePage() {
                 Agendar Aula Diagnóstico
               </a>
               <a
-                className="bg-white/10 backdrop-blur-md text-white border border-white/20 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all"
+                className="bg-white/10 backdrop-blur-md cursor-pointer text-white border border-white/20 px-10 py-5 rounded-2xl font-bold text-lg hover:bg-white/20 transition-all"
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"

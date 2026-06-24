@@ -236,7 +236,9 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
                     ) : null}
                     {entrega.submission_url ? (
                       <div className="space-y-2 text-sm">
-                        <p className="font-medium text-slate-800">Arquivos enviados</p>
+                        <p className="font-medium text-slate-800">
+                          Arquivos enviados
+                        </p>
                         {(() => {
                           const url = entrega.submission_url;
                           let filePaths: string[] = [];
@@ -244,7 +246,10 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
                             if (url.startsWith("[")) {
                               filePaths = JSON.parse(url) as string[];
                             } else {
-                              filePaths = url.split(",").map(f => f.trim()).filter(Boolean);
+                              filePaths = url
+                                .split(",")
+                                .map((f) => f.trim())
+                                .filter(Boolean);
                             }
                           } catch {
                             filePaths = [url];
@@ -253,11 +258,15 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
                           return (
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-1">
                               {filePaths.map((path, idx) => {
-                                const isImage = /\.(jpe?g|png|gif|webp)$/i.test(path);
-                                const fileName = path.split("/").pop() || "arquivo";
-                                const downloadUrl = isImage || path.startsWith("entregas/")
-                                  ? `/api/submission-download?path=${encodeURIComponent(path)}`
-                                  : path;
+                                const isImage = /\.(jpe?g|png|gif|webp)$/i.test(
+                                  path,
+                                );
+                                const fileName =
+                                  path.split("/").pop() || "arquivo";
+                                const downloadUrl =
+                                  isImage || path.startsWith("entregas/")
+                                    ? `/api/submission-download?path=${encodeURIComponent(path)}`
+                                    : path;
 
                                 return (
                                   <a
@@ -277,7 +286,9 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
                                       </span>
                                     )}
                                     <span className="text-xs truncate font-medium text-slate-700 flex-1">
-                                      {fileName.length > 25 ? `${fileName.slice(0, 22)}...` : fileName}
+                                      {fileName.length > 25
+                                        ? `${fileName.slice(0, 22)}...`
+                                        : fileName}
                                     </span>
                                   </a>
                                 );
@@ -334,7 +345,9 @@ export function AlunoTarefasClient({ entregas }: { entregas: EntregaRow[] }) {
                   setSelectedEntrega(null);
                   const params = new URLSearchParams(window.location.search);
                   params.delete("entregaId");
-                  const newQuery = params.toString() ? `?${params.toString()}` : "";
+                  const newQuery = params.toString()
+                    ? `?${params.toString()}`
+                    : "";
                   router.replace(`${window.location.pathname}${newQuery}`);
                 }}
               />

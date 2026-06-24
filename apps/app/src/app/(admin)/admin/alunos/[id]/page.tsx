@@ -116,37 +116,42 @@ export default async function AlunoDetailPage({
   }
 
   // Parallel data fetching
-  const [tarefaAlunosResult, alunoMateriaisResult, financeiroResult, contatosResult] =
-    await Promise.all([
-      supabase
-        .from(TABLES.TAREFA_ALUNOS)
-        .select(
-          "id, status, submitted_at, reviewed_at, teacher_feedback, tarefas(id, title, due_date)",
-        )
-        .eq("aluno_id", id)
-        .order("created_at", { ascending: false }),
-      supabase
-        .from(TABLES.ALUNO_MATERIAIS)
-        .select(
-          "material_id, assigned_at, materiais(id, title, subject, grade_level, file_url)",
-        )
-        .eq("aluno_id", id)
-        .order("assigned_at", { ascending: false }),
-      isAdmin
-        ? supabase
-            .from(TABLES.FINANCEIRO)
-            .select("*")
-            .eq("aluno_id", id)
-            .order("due_date", { ascending: false })
-        : Promise.resolve({ data: null }),
-      supabase
-        .from("aluno_contatos")
-        .select("*")
-        .eq("aluno_id", id)
-        .order("created_at", { ascending: true }),
-    ]);
+  const [
+    tarefaAlunosResult,
+    alunoMateriaisResult,
+    financeiroResult,
+    contatosResult,
+  ] = await Promise.all([
+    supabase
+      .from(TABLES.TAREFA_ALUNOS)
+      .select(
+        "id, status, submitted_at, reviewed_at, teacher_feedback, tarefas(id, title, due_date)",
+      )
+      .eq("aluno_id", id)
+      .order("created_at", { ascending: false }),
+    supabase
+      .from(TABLES.ALUNO_MATERIAIS)
+      .select(
+        "material_id, assigned_at, materiais(id, title, subject, grade_level, file_url)",
+      )
+      .eq("aluno_id", id)
+      .order("assigned_at", { ascending: false }),
+    isAdmin
+      ? supabase
+          .from(TABLES.FINANCEIRO)
+          .select("*")
+          .eq("aluno_id", id)
+          .order("due_date", { ascending: false })
+      : Promise.resolve({ data: null }),
+    supabase
+      .from("aluno_contatos")
+      .select("*")
+      .eq("aluno_id", id)
+      .order("created_at", { ascending: true }),
+  ]);
 
-  const contatos = (contatosResult.data ?? []) as Database["public"]["Tables"]["aluno_contatos"]["Row"][];
+  const contatos = (contatosResult.data ??
+    []) as Database["public"]["Tables"]["aluno_contatos"]["Row"][];
 
   type TarefaEntrega = {
     id: string;
@@ -288,11 +293,7 @@ export default async function AlunoDetailPage({
       </Card>
 
       {/* Contatos e Responsáveis */}
-      <AlunoContatosCard
-        alunoId={id}
-        contatos={contatos}
-        isAdmin={isAdmin}
-      />
+      <AlunoContatosCard alunoId={id} contatos={contatos} isAdmin={isAdmin} />
 
       {/* Tarefas */}
       <Card>

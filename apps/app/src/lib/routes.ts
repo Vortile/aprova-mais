@@ -13,7 +13,6 @@ export const ROUTES = {
     RELATORIOS: "/admin/relatorios",
     FINANCEIRO: "/admin/financeiro",
     CONFIGURACOES: "/admin/configuracoes",
-    DEPOIMENTOS: "/admin/depoimentos",
   },
   ALUNO: {
     HOME: "/aluno",

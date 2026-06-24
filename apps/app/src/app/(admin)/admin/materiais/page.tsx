@@ -62,11 +62,11 @@ export default async function MateriaisPage() {
     }
   }
 
-  // Collect unique uploader profile IDs for name lookup
+  // Collect unique uploader and admin profile IDs for name lookup
   const uploaderIds = [
     ...new Set(
       ((materiais ?? []) as TableRow<"materiais">[])
-        .map((m) => m.uploaded_by)
+        .flatMap((m) => [m.uploaded_by, m.created_by_admin_id])
         .filter((id): id is string => Boolean(id)),
     ),
   ];
@@ -85,12 +85,33 @@ export default async function MateriaisPage() {
     }
   }
 
+  // Fetch teachers if admin, to allow uploading "on behalf of"
+  let professoresList: { id: string; name: string }[] = [];
+  if (isAdmin) {
+    const { data: profs } = await supabase
+      .from(TABLES.PROFILES)
+      .select("id, full_name")
+      .eq("role", ROLES.PROFESSOR)
+      .order("full_name", { ascending: true });
+
+    professoresList = (profs ?? []).map((p) => {
+      const row = p as { id: string; full_name: string | null };
+      return {
+        id: row.id,
+        name: row.full_name ?? "Professor sem nome",
+      };
+    });
+  }
+
   const materiaisWithMeta = await Promise.all(
     ((materiais ?? []) as TableRow<"materiais">[]).map(async (material) => ({
       ...material,
       download_url: await getMaterialDownloadUrl(material.file_url),
       uploader_name: material.uploaded_by
         ? (uploaderNames[material.uploaded_by] ?? null)
+        : null,
+      admin_creator_name: material.created_by_admin_id
+        ? (uploaderNames[material.created_by_admin_id] ?? null)
         : null,
     })),
   );
@@ -121,6 +142,7 @@ export default async function MateriaisPage() {
         materiais={materiaisWithMeta}
         isAdmin={isAdmin ?? false}
         alunos={alunosList}
+        professores={professoresList}
         assignmentsByMaterial={assignmentsByMaterial}
       />
     </div>

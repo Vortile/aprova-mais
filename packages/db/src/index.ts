@@ -11,7 +11,6 @@ export const TABLES = {
   TAREFAS: "tarefas",
   TAREFA_ALUNOS: "tarefa_alunos",
   ALUNO_MATERIAIS: "aluno_materiais",
-  DEPOIMENTOS: "depoimentos",
   RELATORIOS_PEDAGOGICOS: "relatorios_pedagogicos",
   REGISTROS_LISTA: "registros_lista",
   NOTAS_PROVAS: "notas_provas",
