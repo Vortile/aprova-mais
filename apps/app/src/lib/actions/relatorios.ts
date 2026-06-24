@@ -101,21 +101,6 @@ export async function saveRelatorioPedagogico(
     };
   }
 
-  // Ensure no duplicate reports for the same student on the same week
-  const { data: existingReport } = await supabase
-    .from(TABLES.RELATORIOS_PEDAGOGICOS)
-    .select("id")
-    .eq("aluno_id", alunoId)
-    .eq("data_semana", dataSemana)
-    .limit(1);
-
-  if (existingReport?.length) {
-    return {
-      ok: false,
-      error: "Já existe um relatório pedagógico para este aluno nesta semana.",
-    };
-  }
-
   const { error } = await supabase.from(TABLES.RELATORIOS_PEDAGOGICOS).insert({
     professor_id: professorId,
     aluno_id: alunoId,

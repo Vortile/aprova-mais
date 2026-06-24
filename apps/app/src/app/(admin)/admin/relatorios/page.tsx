@@ -164,7 +164,11 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       const dateStr = row.data_semana ? `${row.data_semana}T12:00:00` : row.created_at;
       const dt = new Date(dateStr);
       const pt = getOrCreate(dt);
-      pt.engajamento = row.engajamento as number;
+      
+      pt.engajamento =
+        pt.engajamento !== null && pt.engajamento !== undefined
+          ? Math.round((pt.engajamento + (row.engajamento as number)) / 2)
+          : (row.engajamento as number);
     }
 
     chartData = Array.from(pointMap.values()).sort(
