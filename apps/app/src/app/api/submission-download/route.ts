@@ -6,10 +6,7 @@ export async function GET(request: Request) {
   const session = await getCurrentAppSession();
 
   if (!session) {
-    return NextResponse.json(
-      { error: "Sessão inválida." },
-      { status: 401 }
-    );
+    return NextResponse.json({ error: "Sessão inválida." }, { status: 401 });
   }
 
   const { searchParams } = new URL(request.url);
@@ -18,7 +15,7 @@ export async function GET(request: Request) {
   if (!path) {
     return NextResponse.json(
       { error: "Caminho do arquivo não fornecido." },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -28,7 +25,7 @@ export async function GET(request: Request) {
   if (!signedUrl) {
     return NextResponse.json(
       { error: "Não foi possível gerar a URL de download." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 

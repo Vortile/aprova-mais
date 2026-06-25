@@ -14,4 +14,6 @@ export const TABLES = {
   RELATORIOS_PEDAGOGICOS: "relatorios_pedagogicos",
   REGISTROS_LISTA: "registros_lista",
   NOTAS_PROVAS: "notas_provas",
+  EMAILS: "emails",
+  EMAIL_ATTACHMENTS: "email_attachments",
 } as const satisfies Record<string, string>;

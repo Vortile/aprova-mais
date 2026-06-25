@@ -365,6 +365,92 @@ export interface Database {
         };
         Relationships: [];
       };
+      emails: {
+        Row: {
+          id: string;
+          resend_id: string | null;
+          direction: "received" | "sent";
+          from_email: string;
+          to_emails: string[];
+          cc_emails: string[] | null;
+          bcc_emails: string[] | null;
+          subject: string | null;
+          body_html: string | null;
+          body_text: string | null;
+          status: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          resend_id?: string | null;
+          direction: "received" | "sent";
+          from_email: string;
+          to_emails: string[];
+          cc_emails?: string[] | null;
+          bcc_emails?: string[] | null;
+          subject?: string | null;
+          body_html?: string | null;
+          body_text?: string | null;
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          resend_id?: string | null;
+          direction?: "received" | "sent";
+          from_email?: string;
+          to_emails?: string[];
+          cc_emails?: string[] | null;
+          bcc_emails?: string[] | null;
+          subject?: string | null;
+          body_html?: string | null;
+          body_text?: string | null;
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      email_attachments: {
+        Row: {
+          id: string;
+          email_id: string;
+          resend_attachment_id: string | null;
+          filename: string;
+          content_type: string | null;
+          size: number | null;
+          storage_path: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          email_id: string;
+          resend_attachment_id?: string | null;
+          filename: string;
+          content_type?: string | null;
+          size?: number | null;
+          storage_path: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          email_id?: string;
+          resend_attachment_id?: string | null;
+          filename?: string;
+          content_type?: string | null;
+          size?: number | null;
+          storage_path?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "email_attachments_email_id_fkey";
+            columns: ["email_id"];
+            isOneToOne: false;
+            referencedRelation: "emails";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

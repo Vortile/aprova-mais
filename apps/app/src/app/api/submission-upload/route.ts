@@ -33,7 +33,10 @@ export async function POST(request: Request) {
   // Limit size to 15MB per file
   if (file.size > 15 * 1024 * 1024) {
     return NextResponse.json(
-      { ok: false, error: "Arquivo muito grande. O limite é de 15MB por arquivo." },
+      {
+        ok: false,
+        error: "Arquivo muito grande. O limite é de 15MB por arquivo.",
+      },
       { status: 400 },
     );
   }
@@ -45,7 +48,7 @@ export async function POST(request: Request) {
     ? file.name.slice(0, -extension.length)
     : file.name;
   const safeName = `${Date.now()}-${crypto.randomUUID()}-${sanitizeStorageFileName(baseName)}${extension.toLowerCase()}`;
-  
+
   // Save under entregas/
   const path = `entregas/${safeName}`;
   const buffer = Buffer.from(await file.arrayBuffer());

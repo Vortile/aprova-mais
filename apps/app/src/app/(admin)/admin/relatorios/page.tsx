@@ -98,7 +98,17 @@ export default async function RelatoriosPage({ searchParams }: Props) {
     function parseToUTCDate(dateInput: string): Date {
       if (dateInput.includes("T")) {
         const d = new Date(dateInput);
-        return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 12, 0, 0, 0));
+        return new Date(
+          Date.UTC(
+            d.getUTCFullYear(),
+            d.getUTCMonth(),
+            d.getUTCDate(),
+            12,
+            0,
+            0,
+            0,
+          ),
+        );
       }
       const [year, month, day] = dateInput.split("-").map(Number);
       return new Date(Date.UTC(year, month - 1, day, 12, 0, 0, 0));
@@ -125,7 +135,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
           ? Math.round((row.quantidade_acertos / row.total_questoes) * 100)
           : 0;
       const pt = getOrCreate(dt);
-      
+
       // Store lists by subject to display separately or filter
       if (!pt.listasPorDisciplina) {
         pt.listasPorDisciplina = {};
@@ -135,7 +145,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
         existingListPct !== undefined
           ? Math.round((existingListPct + pct) / 2)
           : pct;
-      
+
       // Keep aggregate as fallback fallback
       pt.listas =
         pt.listas !== null && pt.listas !== undefined
@@ -171,7 +181,7 @@ export default async function RelatoriosPage({ searchParams }: Props) {
       const dateStr = row.data_semana ? row.data_semana : row.created_at;
       const dt = parseToUTCDate(dateStr);
       const pt = getOrCreate(dt);
-      
+
       pt.engajamento =
         pt.engajamento !== null && pt.engajamento !== undefined
           ? Math.round((pt.engajamento + (row.engajamento as number)) / 2)

@@ -11,6 +11,7 @@ import {
   ExternalLink,
   FileText,
   LogOut,
+  Mail,
   Settings,
   UserCog,
   Users,
@@ -41,6 +42,7 @@ import type { AppRole } from "@/lib/supabase/env";
 const ADMIN_ONLY_HREFS = new Set<string>([
   ROUTES.ADMIN.PROFESSORES,
   ROUTES.ADMIN.FINANCEIRO,
+  ROUTES.ADMIN.EMAILS,
 ]);
 
 const navItems = [
@@ -52,6 +54,7 @@ const navItems = [
       { href: ROUTES.ADMIN.MATERIAIS, label: "Materiais", icon: BookOpen },
       { href: ROUTES.ADMIN.TAREFAS, label: "Tarefas", icon: ClipboardList },
       { href: ROUTES.ADMIN.RELATORIOS, label: "Relatórios", icon: FileText },
+      { href: ROUTES.ADMIN.EMAILS, label: "E-mails", icon: Mail },
       { href: ROUTES.ADMIN.FINANCEIRO, label: "Financeiro", icon: DollarSign },
     ],
   },

@@ -374,26 +374,37 @@ export function TarefasClient({
               </DialogHeader>
               <div className="space-y-4 rounded-lg border bg-muted/20 p-4 text-sm">
                 <div>
-                  <p className="font-medium text-slate-800">Resposta do aluno</p>
+                  <p className="font-medium text-slate-800">
+                    Resposta do aluno
+                  </p>
                   <p className="mt-1 whitespace-pre-wrap text-muted-foreground leading-relaxed">
                     {reviewTarget.entrega.student_notes ||
                       "Nenhuma observação enviada."}
                   </p>
                 </div>
                 <div>
-                  <p className="font-medium text-slate-800">Fotos/Arquivos enviados pelo aluno</p>
+                  <p className="font-medium text-slate-800">
+                    Fotos/Arquivos enviados pelo aluno
+                  </p>
                   {(() => {
                     const url = reviewTarget.entrega.submission_url;
                     if (!url) {
-                      return <p className="mt-1 text-muted-foreground">Nenhum arquivo enviado.</p>;
+                      return (
+                        <p className="mt-1 text-muted-foreground">
+                          Nenhum arquivo enviado.
+                        </p>
+                      );
                     }
-                    
+
                     let filePaths: string[] = [];
                     try {
                       if (url.startsWith("[")) {
                         filePaths = JSON.parse(url) as string[];
                       } else {
-                        filePaths = url.split(",").map(f => f.trim()).filter(Boolean);
+                        filePaths = url
+                          .split(",")
+                          .map((f) => f.trim())
+                          .filter(Boolean);
                       }
                     } catch {
                       filePaths = [url];
@@ -412,7 +423,7 @@ export function TarefasClient({
                           // Let's check how materials-download handles it. It creates a signed URL.
                           // Let's create an API route under `/api/submission-download?path=...` or similar. Let's create this API route to sign and redirect!
                           const downloadUrl = `/api/submission-download?path=${encodeURIComponent(path)}`;
-                          
+
                           return (
                             <a
                               key={idx}
@@ -431,7 +442,9 @@ export function TarefasClient({
                                 </span>
                               )}
                               <span className="text-xs truncate font-medium text-slate-700 flex-1">
-                                {fileName.length > 25 ? `${fileName.slice(0, 22)}...` : fileName}
+                                {fileName.length > 25
+                                  ? `${fileName.slice(0, 22)}...`
+                                  : fileName}
                               </span>
                             </a>
                           );

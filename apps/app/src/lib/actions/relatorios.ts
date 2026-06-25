@@ -82,7 +82,8 @@ export async function saveRelatorioPedagogico(
     };
   }
 
-  const { alunoId, dataSemana, disciplinas, cargaHoraria, statusConteudo } = parsed.data;
+  const { alunoId, dataSemana, disciplinas, cargaHoraria, statusConteudo } =
+    parsed.data;
   const supabase = createAdminClient();
   const professorId = access.session.profile.id;
 

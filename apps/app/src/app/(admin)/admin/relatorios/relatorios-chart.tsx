@@ -83,7 +83,10 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
   const sorted = [...data].sort((a, b) => a.dateMs - b.dateMs);
 
   // Custom label renderer to handle overlapping values elegantly
-  const renderCustomLabel = (key: "listas" | "provas" | "engajamento", color: string) => {
+  const renderCustomLabel = (
+    key: "listas" | "provas" | "engajamento",
+    color: string,
+  ) => {
     return (props: any) => {
       const { x, y, value, index } = props;
       if (value === null || value === undefined) return null;
@@ -107,11 +110,21 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
       const valProvas = showProvas ? point.provas : null;
 
       // Case 1: Listas and Provas collide on the same value (and are both shown)
-      if (key === "listas" && valListas !== null && valProvas !== null && valListas === valProvas) {
+      if (
+        key === "listas" &&
+        valListas !== null &&
+        valProvas !== null &&
+        valListas === valProvas
+      ) {
         dx = -12;
         dy = -4;
         anchor = "end";
-      } else if (key === "provas" && valListas !== null && valProvas !== null && valListas === valProvas) {
+      } else if (
+        key === "provas" &&
+        valListas !== null &&
+        valProvas !== null &&
+        valListas === valProvas
+      ) {
         dx = 12;
         dy = -4;
         anchor = "start";

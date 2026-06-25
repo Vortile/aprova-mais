@@ -53,7 +53,7 @@ function filterByTime(
   endDateStr?: string,
 ): ChartDataPoint[] {
   if (filter === "all") return data;
-  
+
   if (filter === "custom") {
     let filtered = data;
     if (startDateStr) {
@@ -112,7 +112,7 @@ export function RelatoriosClient({
     if (subjectFilter === "all") {
       return d;
     }
-    
+
     // Create new point with only this subject's results
     const filteredPoint = { ...d };
     filteredPoint.listas = d.listasPorDisciplina?.[subjectFilter] ?? undefined;
@@ -227,7 +227,9 @@ export function RelatoriosClient({
                 {timeFilter === "custom" && (
                   <div className="flex flex-wrap items-center gap-4 pt-2 border-t border-muted-foreground/10">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-slate-700">De:</span>
+                      <span className="text-xs font-semibold text-slate-700">
+                        De:
+                      </span>
                       <Input
                         type="date"
                         value={startDate}
@@ -236,7 +238,9 @@ export function RelatoriosClient({
                       />
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-slate-700">Até:</span>
+                      <span className="text-xs font-semibold text-slate-700">
+                        Até:
+                      </span>
                       <Input
                         type="date"
                         value={endDate}
@@ -262,7 +266,12 @@ export function RelatoriosClient({
               </div>
 
               <RelatoriosChart
-                data={filterByTime(filteredChartData, timeFilter, startDate, endDate)}
+                data={filterByTime(
+                  filteredChartData,
+                  timeFilter,
+                  startDate,
+                  endDate,
+                )}
                 nomeAluno={
                   selectedAluno.profiles?.full_name ??
                   selectedAluno.contact_email ??
