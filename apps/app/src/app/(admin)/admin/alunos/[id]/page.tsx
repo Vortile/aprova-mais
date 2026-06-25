@@ -17,10 +17,12 @@ import { TABLES, type Database } from "@repo/db";
 import { ROLES } from "@/lib/supabase/env";
 import { ROUTES } from "@/lib/routes";
 import { getMaterialDownloadUrl } from "@/lib/materials";
+import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlunoContatosCard } from "../aluno-contatos-card";
+import { AlunoEditButton } from "./aluno-edit-button";
 import {
   Table,
   TableBody,
@@ -121,6 +123,7 @@ export default async function AlunoDetailPage({
     alunoMateriaisResult,
     financeiroResult,
     contatosResult,
+    professorsResult,
   ] = await Promise.all([
     supabase
       .from(TABLES.TAREFA_ALUNOS)
@@ -148,6 +151,13 @@ export default async function AlunoDetailPage({
       .select("*")
       .eq("aluno_id", id)
       .order("created_at", { ascending: true }),
+    isAdmin
+      ? supabase
+          .from(TABLES.PROFILES)
+          .select("id, full_name")
+          .eq("role", ROLES.PROFESSOR)
+          .order("full_name", { ascending: true })
+      : Promise.resolve({ data: null }),
   ]);
 
   const contatos = (contatosResult.data ??
@@ -177,6 +187,10 @@ export default async function AlunoDetailPage({
   const entregas = (tarefaAlunosResult.data ?? []) as TarefaEntrega[];
   const alunoMateriais = (alunoMateriaisResult.data ?? []) as AlunoMaterial[];
   const financeiroRegistros = (financeiroResult.data ?? []) as FinanceiroRow[];
+  const professors = (professorsResult.data ?? []) as {
+    id: string;
+    full_name: string | null;
+  }[];
 
   // Resolve material download URLs
   const materiaisWithUrls = await Promise.all(
@@ -225,23 +239,65 @@ export default async function AlunoDetailPage({
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          {accountStatus === "ativo" && <Badge variant="default">Ativo</Badge>}
-          {accountStatus === "pendente" && (
-            <Badge variant="secondary" className="gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-400 inline-block" />
-              Convite pendente
-            </Badge>
-          )}
-          {accountStatus === "sem-conta" && (
-            <Badge variant="outline">Sem conta</Badge>
-          )}
+          {isAdmin && <AlunoEditButton aluno={aluno} professors={professors} />}
         </div>
       </div>
 
+      {/* Alert if active without professor */}
+      {isAdmin && !aluno.professor_id && accountStatus === "ativo" && (
+        <div className="p-4 rounded-lg border border-destructive bg-destructive/10 text-destructive text-sm animate-pulse">
+          <p className="font-semibold">⚠️ Aluno Ativo sem Professor!</p>
+          <p className="text-destructive/90 mt-1">
+            Este aluno já ativou sua conta e possui acesso à plataforma, mas
+            ainda não tem nenhum professor responsável associado. Atrele um
+            professor usando o botão "Editar Aluno" acima para que ele possa
+            receber acompanhamento pedagógico.
+          </p>
+        </div>
+      )}
+
       {/* Info card */}
-      <Card>
+      <Card
+        className={cn(
+          "relative overflow-hidden",
+          isAdmin &&
+            !aluno.professor_id &&
+            (accountStatus === "ativo"
+              ? "animate-error-row border-destructive/40"
+              : "animate-warning-row border-amber-500/30"),
+        )}
+      >
         <CardHeader className="pb-3">
-          <CardTitle className="text-base">Informações do aluno</CardTitle>
+          <div className="flex items-center justify-between gap-4">
+            <CardTitle className="text-base">Informações do aluno</CardTitle>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground font-normal">
+                Status da conta:
+              </span>
+              {accountStatus === "ativo" && (
+                <Badge variant="default" className="text-[11px] px-2 py-0">
+                  Ativo
+                </Badge>
+              )}
+              {accountStatus === "pendente" && (
+                <Badge
+                  variant="secondary"
+                  className="gap-1 text-[11px] px-2 py-0"
+                >
+                  <span className="h-1 w-1 rounded-full bg-amber-400 inline-block animate-pulse" />
+                  Convite pendente
+                </Badge>
+              )}
+              {accountStatus === "sem-conta" && (
+                <Badge
+                  variant="outline"
+                  className="text-[11px] px-2 py-0 text-muted-foreground"
+                >
+                  Sem conta
+                </Badge>
+              )}
+            </div>
+          </div>
         </CardHeader>
         <CardContent className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 text-sm">
           {aluno.contact_email && (
@@ -262,7 +318,7 @@ export default async function AlunoDetailPage({
               </div>
             </div>
           )}
-          {professorName && (
+          {professorName ? (
             <div className="flex items-start gap-2">
               <User className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
               <div>
@@ -270,6 +326,40 @@ export default async function AlunoDetailPage({
                 <p>{professorName}</p>
               </div>
             </div>
+          ) : (
+            isAdmin && (
+              <div className="flex items-start gap-2">
+                <User className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-xs text-muted-foreground">Professor</p>
+                  <div className="mt-1">
+                    {accountStatus === "ativo" ? (
+                      <Badge
+                        variant="outline"
+                        className="animate-pulse gap-1.5 border-destructive bg-destructive/10 text-destructive font-medium hover:bg-destructive/20"
+                      >
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>
+                        </span>
+                        Atrelar professor
+                      </Badge>
+                    ) : (
+                      <Badge
+                        variant="outline"
+                        className="animate-pulse gap-1.5 border-amber-500/50 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium hover:bg-amber-500/20"
+                      >
+                        <span className="relative flex h-2 w-2 shrink-0">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                        </span>
+                        Atrelar professor
+                      </Badge>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )
           )}
           {aluno.address && (
             <div className="flex items-start gap-2">

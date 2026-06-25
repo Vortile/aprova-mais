@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (&:where(.dark, .dark *));
+
 @import "../components/ui/styles.css";
 
 /* Map CSS variables to Tailwind v4 theme tokens */
@@ -44,4 +46,32 @@
   body {
     @apply bg-background text-foreground antialiased;
   }
+}
+
+@keyframes warning-pulse-bg {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(245, 158, 11, 0.05);
+  }
+}
+
+@keyframes error-pulse-bg {
+  0%,
+  100% {
+    background-color: transparent;
+  }
+  50% {
+    background-color: rgba(239, 68, 68, 0.07);
+  }
+}
+
+.animate-warning-row {
+  animation: warning-pulse-bg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.animate-error-row {
+  animation: error-pulse-bg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

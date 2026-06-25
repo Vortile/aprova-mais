@@ -13,6 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
 import {
   Table,
   TableBody,
@@ -161,116 +162,154 @@ export function AlunosClient({
                 </TableCell>
               </TableRow>
             ) : (
-              alunos.map((aluno) => (
-                <TableRow
-                  key={aluno.id}
-                  className="cursor-pointer"
-                  onClick={() => router.push(`/admin/alunos/${aluno.id}`)}
-                >
-                  <TableCell className="font-medium">
-                    {aluno.profiles?.full_name ?? aluno.contact_email ?? "—"}
-                  </TableCell>
-                  {isAdmin && (
-                    <TableCell>
-                      {aluno.monthly_amount != null ? (
-                        formatCurrency(aluno.monthly_amount)
-                      ) : (
-                        <span className="text-muted-foreground text-sm">—</span>
-                      )}
+              alunos.map((aluno) => {
+                const isAtivo = !!aluno.profiles?.clerk_user_id;
+                const semProfessor = !aluno.professor_id;
+
+                return (
+                  <TableRow
+                    key={aluno.id}
+                    className={cn(
+                      "cursor-pointer transition-colors",
+                      semProfessor &&
+                        (isAtivo ? "animate-error-row" : "animate-warning-row"),
+                    )}
+                    onClick={() => router.push(`/admin/alunos/${aluno.id}`)}
+                  >
+                    <TableCell className="font-medium">
+                      {aluno.profiles?.full_name ?? aluno.contact_email ?? "—"}
                     </TableCell>
-                  )}
-                  <TableCell>
-                    <div className="space-y-1">
-                      <div className="text-sm">
-                        {aluno.contact_email ?? "Sem email cadastrado"}
+                    {isAdmin && (
+                      <TableCell>
+                        {aluno.monthly_amount != null ? (
+                          formatCurrency(aluno.monthly_amount)
+                        ) : (
+                          <span className="text-muted-foreground text-sm">
+                            —
+                          </span>
+                        )}
+                      </TableCell>
+                    )}
+                    <TableCell>
+                      <div className="space-y-1">
+                        <div className="text-sm">
+                          {aluno.contact_email ?? "Sem email cadastrado"}
+                        </div>
+                        {aluno.profiles?.clerk_user_id ? (
+                          <Badge variant="default">Ativo</Badge>
+                        ) : aluno.profile_id ? (
+                          <Badge variant="secondary" className="gap-1">
+                            <span className="h-1.5 w-1.5 rounded-full bg-amber-400 inline-block" />
+                            Convite pendente
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline">Sem conta</Badge>
+                        )}
                       </div>
-                      {aluno.profiles?.clerk_user_id ? (
-                        <Badge variant="default">Ativo</Badge>
-                      ) : aluno.profile_id ? (
-                        <Badge variant="secondary" className="gap-1">
-                          <span className="h-1.5 w-1.5 rounded-full bg-amber-400 inline-block" />
-                          Convite pendente
+                    </TableCell>
+                    <TableCell>{aluno.grade ?? "—"}</TableCell>
+                    <TableCell>
+                      <div className="flex flex-wrap gap-1">
+                        {aluno.subject_focus?.length ? (
+                          aluno.subject_focus.map((s) => (
+                            <Badge
+                              key={s}
+                              variant="secondary"
+                              className="text-xs"
+                            >
+                              {s}
+                            </Badge>
+                          ))
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      {aluno.professor_id ? (
+                        (professors.find((p) => p.id === aluno.professor_id)
+                          ?.full_name ?? "—")
+                      ) : isAtivo ? (
+                        <Badge
+                          variant="outline"
+                          className="animate-pulse gap-1.5 border-destructive bg-destructive/10 text-destructive font-medium hover:bg-destructive/20"
+                        >
+                          <span className="relative flex h-2 w-2 shrink-0">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-destructive"></span>
+                          </span>
+                          Atrelar professor
                         </Badge>
                       ) : (
-                        <Badge variant="outline">Sem conta</Badge>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>{aluno.grade ?? "—"}</TableCell>
-                  <TableCell>
-                    <div className="flex flex-wrap gap-1">
-                      {aluno.subject_focus?.length ? (
-                        aluno.subject_focus.map((s) => (
-                          <Badge
-                            key={s}
-                            variant="secondary"
-                            className="text-xs"
-                          >
-                            {s}
-                          </Badge>
-                        ))
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </div>
-                  </TableCell>
-                  <TableCell>
-                    {aluno.professor_id
-                      ? (professors.find((p) => p.id === aluno.professor_id)
-                          ?.full_name ?? "—")
-                      : "—"}
-                  </TableCell>
-                  <TableCell onClick={(e) => e.stopPropagation()}>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-8 w-8">
-                          <MoreHorizontal className="h-4 w-4" />
-                          <span className="sr-only">Ações</span>
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() =>
-                            router.push(`/admin/alunos/${aluno.id}`)
-                          }
+                        <Badge
+                          variant="outline"
+                          className="animate-pulse gap-1.5 border-amber-500/50 bg-amber-500/10 text-amber-600 dark:text-amber-400 font-medium hover:bg-amber-500/20"
                         >
-                          <Eye className="h-4 w-4 mr-2" />
-                          Ver detalhes
-                        </DropdownMenuItem>
-                        {isAdmin && (
-                          <DropdownMenuItem onClick={() => handleEdit(aluno)}>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Editar
-                          </DropdownMenuItem>
-                        )}
-                        {aluno.profile_id && !aluno.profiles?.clerk_user_id && (
-                          <DropdownMenuItem
-                            disabled={resendingId === aluno.id}
-                            onClick={() => void handleResendInvite(aluno)}
+                          <span className="relative flex h-2 w-2 shrink-0">
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+                          </span>
+                          Atrelar professor
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell onClick={(e) => e.stopPropagation()}>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
                           >
-                            <MailCheck className="h-4 w-4 mr-2" />
-                            {resendingId === aluno.id
-                              ? "Reenviando..."
-                              : "Reenviar convite"}
-                          </DropdownMenuItem>
-                        )}
-                        {isAdmin && (
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Ações</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
                           <DropdownMenuItem
-                            className="text-destructive focus:text-destructive"
-                            disabled={deletingId === aluno.id}
-                            onClick={() => setDeleteTarget(aluno)}
+                            onClick={() =>
+                              router.push(`/admin/alunos/${aluno.id}`)
+                            }
                           >
-                            <Trash2 className="h-4 w-4 mr-2" />
-                            {deletingId === aluno.id
-                              ? "Excluindo..."
-                              : "Excluir"}
+                            <Eye className="h-4 w-4 mr-2" />
+                            Ver detalhes
                           </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))
+                          {isAdmin && (
+                            <DropdownMenuItem onClick={() => handleEdit(aluno)}>
+                              <Pencil className="h-4 w-4 mr-2" />
+                              Editar
+                            </DropdownMenuItem>
+                          )}
+                          {aluno.profile_id &&
+                            !aluno.profiles?.clerk_user_id && (
+                              <DropdownMenuItem
+                                disabled={resendingId === aluno.id}
+                                onClick={() => void handleResendInvite(aluno)}
+                              >
+                                <MailCheck className="h-4 w-4 mr-2" />
+                                {resendingId === aluno.id
+                                  ? "Reenviando..."
+                                  : "Reenviar convite"}
+                              </DropdownMenuItem>
+                            )}
+                          {isAdmin && (
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              disabled={deletingId === aluno.id}
+                              onClick={() => setDeleteTarget(aluno)}
+                            >
+                              <Trash2 className="h-4 w-4 mr-2" />
+                              {deletingId === aluno.id
+                                ? "Excluindo..."
+                                : "Excluir"}
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>
