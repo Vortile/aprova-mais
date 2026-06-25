@@ -391,9 +391,12 @@ export function EmailsClient({ initialEmails }: EmailsClientProps) {
                 </span>
                 {selectedEmail.body_html ? (
                   <iframe
-                    srcDoc={selectedEmail.body_html}
+                    srcDoc={selectedEmail.body_html.replace(
+                      "cid:email-footer",
+                      "/email-footer.jpg",
+                    )}
                     className="w-full h-100 border rounded-lg bg-white"
-                    sandbox="allow-popups"
+                    sandbox="allow-popups allow-same-origin"
                     title="Conteúdo do E-mail"
                   />
                 ) : (
