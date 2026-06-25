@@ -148,17 +148,15 @@ export async function sendEmailAction(formData: {
 
     // Standard high-trust CAN-SPAM compliant footers
     // If the JPG is present, we render it directly. Otherwise, we fall back to a beautifully formatted HTML text footer.
-    const complianceFooterHtml = hasInlineFooter
+    const footerContent = hasInlineFooter
       ? `
-      <br><br>
       <div style="max-width:600px;margin:0 auto;text-align:center;">
         <img src="cid:email-footer" alt="Aprova+ – Aulas particulares com profissionais. Manaus - AM, Brasil." width="600" style="display:block;border:0;width:100%;max-width:600px;height:auto;" />
       </div>
     `
       : `
-      <br><br>
       <hr style="border:none;border-top:1px solid #eaeaea;margin:20px 0;" />
-      <p style="font-size:11px;line-height:18px;color:#71717a;margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+      <p style="font-size:11px;line-height:18px;color:#71717a;margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;text-align:left;">
         Este é um e-mail enviado automaticamente pela plataforma <strong>Aprova+</strong>.
         <br />
         Você recebeu esta mensagem porque está cadastrado como aluno, responsável ou professor no sistema Aprova+.
@@ -183,21 +181,43 @@ Caso queira parar de receber estes comunicados ou cancelar seu cadastro, entre e
     let finalHtml = formData.html;
     if (!formData.html.includes("aprovamaiscurso-pro.com.br")) {
       const lowercaseHtml = formData.html.toLowerCase();
-      const bodyCloseIndex = lowercaseHtml.lastIndexOf("</body>");
-      if (bodyCloseIndex !== -1) {
+      const lastTableIndex = lowercaseHtml.lastIndexOf("</table>");
+
+      if (lastTableIndex !== -1) {
+        // It's a table-based layout. Let's insert the footer as a table row inside the outer table.
+        const footerTableRow = `
+          <tr>
+            <td align="center" style="padding-top:20px;">
+              ${footerContent}
+            </td>
+          </tr>
+        `;
         finalHtml =
-          formData.html.substring(0, bodyCloseIndex) +
-          complianceFooterHtml +
-          formData.html.substring(bodyCloseIndex);
+          formData.html.substring(0, lastTableIndex) +
+          footerTableRow +
+          formData.html.substring(lastTableIndex);
       } else {
-        const htmlCloseIndex = lowercaseHtml.lastIndexOf("</html>");
-        if (htmlCloseIndex !== -1) {
+        // No tables found. Let's insert before </body> or append.
+        const bodyCloseIndex = lowercaseHtml.lastIndexOf("</body>");
+        const fallbackFooter = `
+          <br><br>
+          ${footerContent}
+        `;
+        if (bodyCloseIndex !== -1) {
           finalHtml =
-            formData.html.substring(0, htmlCloseIndex) +
-            complianceFooterHtml +
-            formData.html.substring(htmlCloseIndex);
+            formData.html.substring(0, bodyCloseIndex) +
+            fallbackFooter +
+            formData.html.substring(bodyCloseIndex);
         } else {
-          finalHtml = `${formData.html}${complianceFooterHtml}`;
+          const htmlCloseIndex = lowercaseHtml.lastIndexOf("</html>");
+          if (htmlCloseIndex !== -1) {
+            finalHtml =
+              formData.html.substring(0, htmlCloseIndex) +
+              fallbackFooter +
+              formData.html.substring(htmlCloseIndex);
+          } else {
+            finalHtml = `${formData.html}${fallbackFooter}`;
+          }
         }
       }
     }
