@@ -77,7 +77,7 @@ export async function POST(request: Request) {
           headers: {
             Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
           },
-        }
+        },
       );
 
       if (emailDetailRes.ok) {
@@ -85,10 +85,16 @@ export async function POST(request: Request) {
         bodyHtml = fullEmailData.html || bodyHtml;
         bodyText = fullEmailData.text || bodyText;
       } else {
-        console.error(`Failed to fetch full received email details for ${resendEmailId}:`, await emailDetailRes.text());
+        console.error(
+          `Failed to fetch full received email details for ${resendEmailId}:`,
+          await emailDetailRes.text(),
+        );
       }
     } catch (err) {
-      console.error(`Error calling Resend received email details for ${resendEmailId}:`, err);
+      console.error(
+        `Error calling Resend received email details for ${resendEmailId}:`,
+        err,
+      );
     }
 
     // First insert email record
@@ -215,7 +221,10 @@ export async function POST(request: Request) {
       const { revalidatePath } = require("next/cache");
       revalidatePath("/admin/emails");
     } catch (revalidateErr) {
-      console.error("Error triggerring path revalidation inside webhook:", revalidateErr);
+      console.error(
+        "Error triggerring path revalidation inside webhook:",
+        revalidateErr,
+      );
     }
   }
 
