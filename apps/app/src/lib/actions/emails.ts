@@ -179,10 +179,28 @@ Manaus - AM, Brasil
 Caso queira parar de receber estes comunicados ou cancelar seu cadastro, entre em contato em: contato@aprovamaiscurso-pro.com.br
 `;
 
-    // Append footers to make emails more trustable and complaince-safe
-    const finalHtml = formData.html.includes("aprovamaiscurso-pro.com.br")
-      ? formData.html
-      : `${formData.html}${complianceFooterHtml}`;
+    // Append footers to make emails more trustable and compliance-safe
+    let finalHtml = formData.html;
+    if (!formData.html.includes("aprovamaiscurso-pro.com.br")) {
+      const lowercaseHtml = formData.html.toLowerCase();
+      const bodyCloseIndex = lowercaseHtml.lastIndexOf("</body>");
+      if (bodyCloseIndex !== -1) {
+        finalHtml =
+          formData.html.substring(0, bodyCloseIndex) +
+          complianceFooterHtml +
+          formData.html.substring(bodyCloseIndex);
+      } else {
+        const htmlCloseIndex = lowercaseHtml.lastIndexOf("</html>");
+        if (htmlCloseIndex !== -1) {
+          finalHtml =
+            formData.html.substring(0, htmlCloseIndex) +
+            complianceFooterHtml +
+            formData.html.substring(htmlCloseIndex);
+        } else {
+          finalHtml = `${formData.html}${complianceFooterHtml}`;
+        }
+      }
+    }
 
     const strippedText = formData.html
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
