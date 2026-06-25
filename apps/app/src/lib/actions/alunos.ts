@@ -569,7 +569,7 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
   const resolvedClerkUserId =
     clerkUser?.id ??
     (isEmailUnchanged && hasClerkUserId
-      ? currentAluno.profiles!.clerk_user_id
+      ? (currentAluno?.profiles?.clerk_user_id ?? null)
       : null);
 
   // ─── Step 2: all DB writes ────────────────────────────────────────────────
