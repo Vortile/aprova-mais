@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     template: "%s | Aprova+",
   },
   description:
-    "Aulas particulares presenciais em Manaus de Português, Matemática, Física e Química para o Ensino Fundamental e Médio. Aulas com profissionais formados especialistas, atendimento a domicílio. Primeira aula grátis.",
+    "Aulas particulares presenciais em Manaus de Português, Matemática, Física e Química para o Ensino Fundamental e Médio. Aulas com profissionais formados e especialistas, atendimento a domicílio. Primeira aula grátis.",
   keywords: [
     "aulas particulares Manaus",
     "professor particular Manaus",
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     title:
       "Aprova+ | Aulas Particulares em Manaus — Português, Matemática, Física e Química",
     description:
-      "Aulas particulares presenciais em Manaus de Português, Matemática, Física e Química. Aulas com profissionais formados especialistas, atendimento a domicílio. Primeira aula grátis.",
+      "Aulas particulares presenciais em Manaus de Português, Matemática, Física e Química. Aulas com profissionais formados e especialistas, atendimento a domicílio. Primeira aula grátis.",
     images: [
       {
         url: "/og-image.png",

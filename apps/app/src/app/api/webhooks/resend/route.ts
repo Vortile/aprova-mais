@@ -47,7 +47,11 @@ export async function POST(request: Request) {
   if (type === "email.received") {
     const supabase = createAdminClient();
 
-    const resendEmailId = data.id;
+    // From Resend's webhook payload documentation for "email.received":
+    // The actual unique identifier of the received email is nested in data.email_id.
+    // Also, "Webhooks do not include the email body, headers, or attachments, only their metadata.
+    // You must call the Received emails API (/api-reference/emails/retrieve-received-email) to retrieve them."
+    const resendEmailId = data.email_id || data.id;
     const fromEmail = data.from || "unknown";
     const toEmails = Array.isArray(data.to) ? data.to : [data.to || "unknown"];
     const ccEmails = Array.isArray(data.cc)
@@ -61,8 +65,31 @@ export async function POST(request: Request) {
         ? [data.bcc]
         : null;
     const subject = data.subject || "(Sem Assunto)";
-    const bodyHtml = data.html || null;
-    const bodyText = data.text || null;
+
+    let bodyHtml = data.html || null;
+    let bodyText = data.text || null;
+
+    // Fetch the complete email body, html content, and headers from Resend API
+    try {
+      const emailDetailRes = await fetch(
+        `https://api.resend.com/emails/receiving/${resendEmailId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          },
+        }
+      );
+
+      if (emailDetailRes.ok) {
+        const fullEmailData = await emailDetailRes.json();
+        bodyHtml = fullEmailData.html || bodyHtml;
+        bodyText = fullEmailData.text || bodyText;
+      } else {
+        console.error(`Failed to fetch full received email details for ${resendEmailId}:`, await emailDetailRes.text());
+      }
+    } catch (err) {
+      console.error(`Error calling Resend received email details for ${resendEmailId}:`, err);
+    }
 
     // First insert email record
     const { data: emailRecord, error: emailError } = await supabase
@@ -181,6 +208,14 @@ export async function POST(request: Request) {
       } catch (err) {
         console.error(`Error processing attachment ${att.id}:`, err);
       }
+    }
+
+    // After successfully parsing and storing the received email, revalidate the admin emails path so it updates on next request/polling
+    try {
+      const { revalidatePath } = require("next/cache");
+      revalidatePath("/admin/emails");
+    } catch (revalidateErr) {
+      console.error("Error triggerring path revalidation inside webhook:", revalidateErr);
     }
   }
 

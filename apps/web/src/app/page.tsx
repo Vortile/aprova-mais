@@ -110,8 +110,8 @@ export default async function WebHomePage() {
             </div>
             <p className="text-lg md:text-xl text-on-surface-variant max-w-xl leading-relaxed">
               Acompanhamento presencial em Manaus, personalizado para cada
-              aluno. Aulas particulares com profissionais formados especialistas
-              e anos de experiência.
+              aluno. Aulas particulares com profissionais formados, especialistas
+              e com anos de experiência.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <a
@@ -199,11 +199,11 @@ export default async function WebHomePage() {
                   </span>
                 </div>
                 <h3 className="text-xl font-bold mb-4">
-                  1. Agende a aula experimental
+                  1. Agende sua aula diagnóstico
                 </h3>
                 <p className="text-on-surface-variant leading-relaxed">
-                  O primeiro passo é totalmente gratuito. Escolha o melhor
-                  horário para uma primeira conversa sem compromisso.
+                  O primeiro passo é agendar sua aula diagnóstico. Escolha o
+                  melhor horário para uma primeira visita do professor especialista.
                 </p>
               </div>
               <div className="bg-surface p-8 rounded-3xl border-b-4 border-tertiary-fixed hover:-translate-y-2 transition-transform duration-300">
