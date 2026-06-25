@@ -101,7 +101,9 @@ export function MateriaisClient({
     (m) =>
       (filterSubject === "all" || m.subject === filterSubject) &&
       (filterGrade === "all" || m.grade_level === filterGrade) &&
-      (!isAdmin || filterProfessor === "all" || m.uploaded_by === filterProfessor),
+      (!isAdmin ||
+        filterProfessor === "all" ||
+        m.uploaded_by === filterProfessor),
   );
 
   function handleOpenAssign(material: MaterialRow) {
@@ -179,7 +181,9 @@ export function MateriaisClient({
       </div>
 
       {/* Filters */}
-      {(uniqueSubjects.length > 0 || uniqueGrades.length > 0 || (isAdmin && professores.length > 0)) && (
+      {(uniqueSubjects.length > 0 ||
+        uniqueGrades.length > 0 ||
+        (isAdmin && professores.length > 0)) && (
         <div className="flex flex-wrap items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
           {isAdmin && professores.length > 0 && (
@@ -406,10 +410,7 @@ export function MateriaisClient({
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={handleDelete}
-              variant="destructive"
-            >
+            <AlertDialogAction onClick={handleDelete} variant="destructive">
               Excluir
             </AlertDialogAction>
           </AlertDialogFooter>

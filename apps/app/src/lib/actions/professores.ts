@@ -353,3 +353,146 @@ export async function updateProfessor(input: unknown): Promise<ActionResult> {
 
   return { ok: true, message: "Professor atualizado." };
 }
+
+export async function resendProfessorInvite(
+  profileId: string,
+): Promise<ActionResult> {
+  if (!profileIdSchema.safeParse(profileId).success) {
+    return { ok: false, error: "Professor inválido." };
+  }
+
+  const access = await assertAdminAccess();
+
+  if ("error" in access) {
+    return { ok: false, error: access.error ?? ACTION_ERRORS.NO_PERMISSION };
+  }
+
+  const supabase = createAdminClient();
+
+  const { data: profileRaw } = await supabase
+    .from(TABLES.PROFILES)
+    .select("*")
+    .eq("id", profileId)
+    .eq("role", ROLES.PROFESSOR)
+    .maybeSingle();
+
+  const profile = profileRaw as ProfileRow | null;
+
+  if (!profile) {
+    return { ok: false, error: "Professor não encontrado." };
+  }
+
+  if (profile.clerk_user_id) {
+    return {
+      ok: false,
+      error:
+        "Este professor já possui uma conta ativa. O convite não é necessário.",
+    };
+  }
+
+  if (!profile.email) {
+    return {
+      ok: false,
+      error: "Este professor não possui email cadastrado para receber o convite.",
+    };
+  }
+
+  const normalizedEmail = normalizeEmail(profile.email);
+
+  if (!normalizedEmail) {
+    return { ok: false, error: "O email cadastrado é inválido." };
+  }
+
+  try {
+    const client = await clerkClient();
+    await revokePendingInvitations(normalizedEmail);
+
+    const invite = await client.invitations.createInvitation({
+      emailAddress: normalizedEmail,
+      ignoreExisting: true,
+      notify: false,
+      publicMetadata: {
+        role: "professor",
+        full_name: profile.full_name,
+      },
+      redirectUrl: `${await getAppOrigin()}/sign-up`,
+    });
+
+    const inviteUrl = invite.url || `${await getAppOrigin()}/registrar`;
+
+    // Send beautifully branded invitation via Resend
+    const { sendEmailAction } = await import("./emails");
+    const inviteHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aprova+ - Convite</title>
+      </head>
+      <body style="margin:0;padding:0;background-color:#fbfbfa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#fbfbfa;padding:20px 0;">
+          <tr>
+            <td align="center">
+              <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff;border:1px solid #eaeaea;border-radius:12px;overflow:hidden;">
+                <!-- Hi Banner -->
+                <tr>
+                  <td align="center">
+                    <img src="cid:email-banner-hi" alt="Olá da equipe Aprova+!" width="600" style="display:block;border:0;width:100%;max-width:600px;height:auto;" />
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:40px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <!-- Title -->
+                      <tr>
+                        <td style="padding-bottom:20px;">
+                          <h1 style="font-size:20px;line-height:28px;color:#111827;margin:0;font-weight:700;">Seja muito bem-vindo(a) à Equipe Aprova+!</h1>
+                        </td>
+                      </tr>
+                      <!-- Content -->
+                      <tr>
+                        <td style="padding-bottom:30px;font-size:15px;line-height:24px;color:#4b5563;">
+                          <p style="margin:0 0 16px 0;">Olá, <strong>${profile.full_name || "Professor(a)"}</strong>!</p>
+                          <p style="margin:0 0 16px 0;">Você foi cadastrado por um de nossos administradores na plataforma <strong>Aprova+</strong> para iniciar sua atuação pedagógica.</p>
+                          <p style="margin:0 0 16px 0;">Sua conta de acesso está pré-configurada sob o perfil de <strong>Professor</strong>.</p>
+                          <p style="margin:0 0 16px 0;">Para ativar seu perfil, criar sua senha de acesso e começar a publicar tarefas, cadastrar notas de provas e emitir relatórios pedagógicos, clique no botão de ativação abaixo:</p>
+                        </td>
+                      </tr>
+                      <!-- Button -->
+                      <tr>
+                        <td align="center" style="padding-bottom:10px;">
+                          <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td align="center" style="background-color:#1e535c;border-radius:8px;">
+                                <a href="${inviteUrl}" target="_blank" style="display:inline-block;padding:12px 24px;color:#ffffff;font-size:14px;font-weight:bold;text-decoration:none;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ativar Minha Conta</a>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
+
+    await sendEmailAction({
+      to: normalizedEmail,
+      subject: "Bem-vindo à equipe Aprova+! Ative sua conta de Professor",
+      html: inviteHtml,
+    });
+  } catch (err) {
+    console.error("Failed to resend custom Resend teacher invite email:", err);
+    return { ok: false, error: "Não foi possível reenviar o convite." };
+  }
+
+  revalidatePath(ROUTES.ADMIN.PROFESSORES);
+
+  return { ok: true, message: "Convite reenviado com sucesso." };
+}

@@ -253,13 +253,18 @@ async function upsertAlunoProfile({
 }
 
 async function findClerkUserByEmail(normalizedEmail: string) {
-  const client = await clerkClient();
-  const response = await client.users.getUserList({
-    emailAddress: [normalizedEmail],
-    limit: 1,
-  });
+  try {
+    const client = await clerkClient();
+    const response = await client.users.getUserList({
+      emailAddress: [normalizedEmail],
+      limit: 1,
+    });
 
-  return (response.data[0] as ClerkUserRecord | undefined) ?? null;
+    return (response.data[0] as ClerkUserRecord | undefined) ?? null;
+  } catch (error) {
+    console.error("[findClerkUserByEmail] Error fetching clerk user list by email:", normalizedEmail, error);
+    return null;
+  }
 }
 
 async function getClerkUser(userId: string) {
@@ -267,7 +272,8 @@ async function getClerkUser(userId: string) {
     return (await (
       await clerkClient()
     ).users.getUser(userId)) as unknown as ClerkUserRecord;
-  } catch {
+  } catch (error) {
+    console.error("[getClerkUser] Error fetching clerk user by id:", userId, error);
     return null;
   }
 }
@@ -553,6 +559,19 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
     clerkUser = currentClerkUser ?? matchedClerkUser;
   }
 
+  // Determine if we should preserve the existing clerk_user_id to avoid wiping it on Clerk lookup failures or offline development
+  const hasClerkUserId = !!currentAluno?.profiles?.clerk_user_id;
+  const isEmailUnchanged =
+    !!normalizedEmail &&
+    (normalizedEmail === currentAluno?.contact_email ||
+      normalizedEmail === currentAluno?.profiles?.email);
+
+  const resolvedClerkUserId =
+    clerkUser?.id ??
+    (isEmailUnchanged && hasClerkUserId
+      ? currentAluno.profiles!.clerk_user_id
+      : null);
+
   // ─── Step 2: all DB writes ────────────────────────────────────────────────
   let profileId = currentAluno?.profile_id ?? null;
 
@@ -564,7 +583,7 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
       currentProfileId: currentAluno?.profile_id ?? null,
       normalizedEmail,
       fullName,
-      clerkUserId: clerkUser?.id ?? null,
+      clerkUserId: resolvedClerkUserId,
     });
 
     if (!profile) {
@@ -682,6 +701,13 @@ export async function saveAluno(input: unknown): Promise<SaveAlunoResult> {
         successMessage = currentAluno?.profile_id
           ? "Conta do aluno atualizada."
           : "Conta existente vinculada ao aluno.";
+      } else if (resolvedClerkUserId) {
+        // Active student whose Clerk user lookup failed or was bypassed,
+        // but we know they already have a linked Clerk account in the database.
+        // We do NOT send an invitation, and we just update their status message.
+        successMessage = values.data.alunoId
+          ? "Aluno atualizado."
+          : "Aluno criado.";
       } else {
         await createAlunoInvitation(normalizedEmail, fullName);
         successMessage = "Convite enviado ao aluno.";

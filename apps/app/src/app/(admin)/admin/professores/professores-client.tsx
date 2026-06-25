@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Plus, Trash2, MailCheck, Clock } from "lucide-react";
+import { Pencil, Plus, Trash2, MailCheck, Clock, MoreHorizontal } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +36,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { deleteProfessor } from "@/lib/actions/professores";
+import { deleteProfessor, resendProfessorInvite } from "@/lib/actions/professores";
 import { ProfessorForm } from "./professor-form";
 import { ProfessorEditForm } from "./professor-edit-form";
 import type { Database } from "@repo/db";
@@ -47,6 +53,7 @@ export function ProfessoresClient({
   const [editTarget, setEditTarget] = useState<ProfileRow | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ProfileRow | null>(null);
+  const [resendingId, setResendingId] = useState<string | null>(null);
 
   async function handleDelete() {
     if (!deleteTarget) return;
@@ -64,6 +71,17 @@ export function ProfessoresClient({
 
     toast.success(result.message);
     router.refresh();
+  }
+
+  async function handleResendInvite(professor: ProfileRow) {
+    setResendingId(professor.id);
+    const result = await resendProfessorInvite(professor.id);
+    setResendingId(null);
+    if (!result.ok) {
+      toast.error(result.error);
+    } else {
+      toast.success(result.message);
+    }
   }
 
   return (
@@ -124,25 +142,47 @@ export function ProfessoresClient({
                       </Badge>
                     )}
                   </TableCell>
-                  <TableCell>
-                    <div className="flex gap-1 justify-end">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        onClick={() => setEditTarget(professor)}
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8 text-destructive hover:text-destructive"
-                        disabled={deletingId === professor.id}
-                        onClick={() => setDeleteTarget(professor)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                  <TableCell onClick={(e) => e.stopPropagation()}>
+                    <div className="flex justify-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                            <span className="sr-only">Ações</span>
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={() => setEditTarget(professor)}>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Editar
+                          </DropdownMenuItem>
+                          {!professor.clerk_user_id && (
+                            <DropdownMenuItem
+                              disabled={resendingId === professor.id}
+                              onClick={() => void handleResendInvite(professor)}
+                            >
+                              <MailCheck className="h-4 w-4 mr-2" />
+                              {resendingId === professor.id
+                                ? "Reenviando..."
+                                : "Reenviar convite"}
+                            </DropdownMenuItem>
+                          )}
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            disabled={deletingId === professor.id}
+                            onClick={() => setDeleteTarget(professor)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            {deletingId === professor.id
+                              ? "Excluindo..."
+                              : "Excluir"}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                   </TableCell>
                 </TableRow>
@@ -194,10 +234,11 @@ export function ProfessoresClient({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={handleDelete}
+              onClick={() => void handleDelete()}
+              disabled={!!deletingId}
               variant="destructive"
             >
-              Remover
+              {deletingId ? "Removendo..." : "Remover"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
