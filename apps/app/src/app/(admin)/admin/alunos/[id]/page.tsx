@@ -89,7 +89,7 @@ export default async function AlunoDetailPage({
   const { data: alunoData } = await supabase
     .from(TABLES.ALUNOS)
     .select(
-      "*, profiles!alunos_profile_id_fkey(id, full_name, email, clerk_user_id, role, avatar_url, address, created_at)",
+      "*, profiles!alunos_profile_id_fkey(id, full_name, email, clerk_user_id, role, avatar_url, address, banned, created_at)",
     )
     .eq("id", id)
     .maybeSingle();
@@ -206,11 +206,13 @@ export default async function AlunoDetailPage({
   );
 
   const name = aluno.profiles?.full_name ?? aluno.contact_email ?? "Aluno";
-  const accountStatus = aluno.profiles?.clerk_user_id
-    ? "ativo"
-    : aluno.profile_id
-      ? "pendente"
-      : "sem-conta";
+  const accountStatus = aluno.profiles?.banned
+    ? "desativado"
+    : aluno.profiles?.clerk_user_id
+      ? "ativo"
+      : aluno.profile_id
+        ? "pendente"
+        : "sem-conta";
 
   return (
     <div className="space-y-6">
@@ -274,6 +276,14 @@ export default async function AlunoDetailPage({
               <span className="text-xs text-muted-foreground font-normal">
                 Status da conta:
               </span>
+              {accountStatus === "desativado" && (
+                <Badge
+                  variant="destructive"
+                  className="text-[11px] px-2 py-0 animate-pulse"
+                >
+                  Desativado
+                </Badge>
+              )}
               {accountStatus === "ativo" && (
                 <Badge variant="default" className="text-[11px] px-2 py-0">
                   Ativo

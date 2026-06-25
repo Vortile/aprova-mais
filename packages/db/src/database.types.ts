@@ -21,6 +21,7 @@ export interface Database {
           role: "admin" | "professor" | "aluno";
           avatar_url: string | null;
           address: string | null;
+          banned: boolean;
           created_at: string;
         };
         Insert: {
@@ -31,6 +32,7 @@ export interface Database {
           role?: "admin" | "professor" | "aluno";
           avatar_url?: string | null;
           address?: string | null;
+          banned?: boolean;
           created_at?: string;
         };
         Update: {
@@ -40,6 +42,7 @@ export interface Database {
           role?: "admin" | "professor" | "aluno";
           avatar_url?: string | null;
           address?: string | null;
+          banned?: boolean;
         };
         Relationships: [];
       };

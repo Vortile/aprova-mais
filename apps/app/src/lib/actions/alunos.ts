@@ -45,7 +45,7 @@ type AlunoWithProfileRow = Pick<
 > & {
   profiles: Pick<
     ProfileRow,
-    "id" | "clerk_user_id" | "email" | "full_name" | "role"
+    "id" | "clerk_user_id" | "email" | "full_name" | "role" | "banned"
   > | null;
 };
 type ClerkUserRecord = {
@@ -132,7 +132,7 @@ async function findAluno(alunoId: string) {
   const { data, error } = await supabase
     .from(TABLES.ALUNOS)
     .select(
-      "id, profile_id, contact_email, professor_id, profiles!alunos_profile_id_fkey(id, clerk_user_id, email, full_name, role)",
+      "id, profile_id, contact_email, professor_id, profiles!alunos_profile_id_fkey(id, clerk_user_id, email, full_name, role, banned)",
     )
     .eq("id", alunoId)
     .single();
@@ -923,4 +923,92 @@ export async function deleteContato(id: string, alunoId: string) {
 
   revalidatePath(`/admin/alunos/${alunoId}`);
   return { ok: true, message: "Contato excluído com sucesso." };
+}
+
+export async function toggleAlunoStatus(
+  alunoId: string,
+  banned: boolean,
+): Promise<{ ok: true; message: string } | { ok: false; error: string }> {
+  if (!alunoIdSchema.safeParse(alunoId).success) {
+    return { ok: false, error: "Aluno inválido." };
+  }
+
+  const access = await assertStaffAccess();
+
+  if ("error" in access) {
+    return { ok: false, error: access.error ?? ACTION_ERRORS.NO_PERMISSION };
+  }
+
+  const aluno = await findAluno(alunoId);
+
+  if (!aluno) {
+    return { ok: false, error: "Aluno não encontrado." };
+  }
+
+  if (
+    access.session.profile.role !== ROLES.ADMIN &&
+    aluno.professor_id !== access.session.profile.id
+  ) {
+    return {
+      ok: false,
+      error: "Você não tem permissão para alterar o status deste aluno.",
+    };
+  }
+
+  if (!aluno.profile_id) {
+    return {
+      ok: false,
+      error:
+        "Este aluno ainda não possui um perfil associado para ser desativado.",
+    };
+  }
+
+  const supabase = createAdminClient();
+
+  // 1. Update Supabase profile
+  const { error: updateError } = await supabase
+    .from(TABLES.PROFILES)
+    .update(asSupabaseUpdate<"profiles">({ banned }))
+    .eq("id", aluno.profile_id);
+
+  if (updateError) {
+    console.error(
+      "Erro ao atualizar status de banimento no Supabase:",
+      updateError,
+    );
+    return {
+      ok: false,
+      error: "Não foi possível atualizar o status no banco de dados.",
+    };
+  }
+
+  // 2. Update Clerk status if they have a clerk_user_id
+  if (aluno.profiles?.clerk_user_id) {
+    try {
+      const client = await clerkClient();
+      if (banned) {
+        await client.users.banUser(aluno.profiles.clerk_user_id);
+      } else {
+        await client.users.unbanUser(aluno.profiles.clerk_user_id);
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar status de banimento no Clerk:", error);
+      return {
+        ok: true,
+        message: banned
+          ? "O aluno foi desativado localmente, mas ocorreu um erro ao desativar no Clerk."
+          : "O aluno foi reativado localmente, mas ocorreu um erro ao reativar no Clerk.",
+      };
+    }
+  }
+
+  revalidatePath(ROUTES.ADMIN.ALUNOS);
+  revalidatePath(`/admin/alunos/${alunoId}`);
+
+  return {
+    ok: true,
+    message: banned
+      ? "Conta do aluno desativada com sucesso."
+      : "Conta do aluno reativada com sucesso.",
+  };
 }

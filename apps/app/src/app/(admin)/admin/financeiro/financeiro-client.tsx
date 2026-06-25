@@ -333,7 +333,7 @@ export function FinanceiroClient({
             <AlertDialogFooter>
               <AlertDialogCancel>Cancelar</AlertDialogCancel>
               <AlertDialogAction
-                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                variant="destructive"
                 disabled={isDeleting}
                 onClick={() => deleteTarget && void handleDelete(deleteTarget)}
               >

@@ -87,6 +87,7 @@ function buildFallbackProfile(
     role: inferRoleFromMetadata(user),
     avatar_url: user.imageUrl ?? null,
     address: null,
+    banned: false,
     created_at: new Date(0).toISOString(),
   };
 }

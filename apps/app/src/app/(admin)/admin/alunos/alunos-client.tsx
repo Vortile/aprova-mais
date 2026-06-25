@@ -9,6 +9,8 @@ import {
   Pencil,
   Plus,
   Trash2,
+  Ban,
+  UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -44,13 +46,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { deleteAluno, resendAlunoInvite } from "@/lib/actions/alunos";
+import {
+  deleteAluno,
+  resendAlunoInvite,
+  toggleAlunoStatus,
+} from "@/lib/actions/alunos";
 import { AlunoForm } from "./aluno-form";
 import type { Database } from "@repo/db";
 type AlunoRow = Database["public"]["Tables"]["alunos"]["Row"] & {
   profiles: Pick<
     Database["public"]["Tables"]["profiles"]["Row"],
-    "full_name" | "avatar_url" | "clerk_user_id"
+    "full_name" | "avatar_url" | "clerk_user_id" | "banned"
   > | null;
 };
 
@@ -81,6 +87,8 @@ export function AlunosClient({
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<AlunoRow | null>(null);
   const [resendingId, setResendingId] = useState<string | null>(null);
+  const [statusTarget, setStatusTarget] = useState<AlunoRow | null>(null);
+  const [updatingStatusId, setUpdatingStatusId] = useState<string | null>(null);
 
   function handleAdd() {
     setEditing(null);
@@ -100,6 +108,25 @@ export function AlunosClient({
 
     setDeletingId(null);
     setDeleteTarget(null);
+
+    if (!result.ok) {
+      toast.error(result.error);
+      return;
+    }
+
+    toast.success(result.message);
+    router.refresh();
+  }
+
+  async function handleToggleStatus() {
+    if (!statusTarget) return;
+    setUpdatingStatusId(statusTarget.id);
+
+    const isBanned = !!statusTarget.profiles?.banned;
+    const result = await toggleAlunoStatus(statusTarget.id, !isBanned);
+
+    setUpdatingStatusId(null);
+    setStatusTarget(null);
 
     if (!result.ok) {
       toast.error(result.error);
@@ -195,7 +222,9 @@ export function AlunosClient({
                         <div className="text-sm">
                           {aluno.contact_email ?? "Sem email cadastrado"}
                         </div>
-                        {aluno.profiles?.clerk_user_id ? (
+                        {aluno.profiles?.banned ? (
+                          <Badge variant="destructive">Desativado</Badge>
+                        ) : aluno.profiles?.clerk_user_id ? (
                           <Badge variant="default">Ativo</Badge>
                         ) : aluno.profile_id ? (
                           <Badge variant="secondary" className="gap-1">
@@ -292,6 +321,29 @@ export function AlunosClient({
                                   : "Reenviar convite"}
                               </DropdownMenuItem>
                             )}
+                          {aluno.profile_id && (
+                            <DropdownMenuItem
+                              className={cn(
+                                aluno.profiles?.banned
+                                  ? "text-emerald-600 focus:text-emerald-600 dark:text-emerald-400 dark:focus:text-emerald-400"
+                                  : "text-amber-600 focus:text-amber-600 dark:text-amber-400 dark:focus:text-amber-400",
+                              )}
+                              disabled={updatingStatusId === aluno.id}
+                              onClick={() => setStatusTarget(aluno)}
+                            >
+                              {aluno.profiles?.banned ? (
+                                <>
+                                  <UserCheck className="h-4 w-4 mr-2" />
+                                  Ativar conta
+                                </>
+                              ) : (
+                                <>
+                                  <Ban className="h-4 w-4 mr-2" />
+                                  Desativar conta
+                                </>
+                              )}
+                            </DropdownMenuItem>
+                          )}
                           {isAdmin && (
                             <DropdownMenuItem
                               className="text-destructive focus:text-destructive"
@@ -346,9 +398,45 @@ export function AlunosClient({
             <AlertDialogAction
               onClick={() => void handleDelete()}
               disabled={!!deletingId}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              variant="destructive"
             >
               {deletingId ? "Excluindo..." : "Excluir"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <AlertDialog
+        open={!!statusTarget}
+        onOpenChange={(o) => !o && setStatusTarget(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {statusTarget?.profiles?.banned
+                ? "Reativar conta do aluno?"
+                : "Desativar conta do aluno?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {statusTarget?.profiles?.banned
+                ? "Deseja reativar o acesso deste aluno à plataforma? Ele poderá fazer login normalmente."
+                : "Desativar este aluno impedirá que ele faça login na plataforma e revogará todas as sessões ativas imediatamente."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => void handleToggleStatus()}
+              disabled={!!updatingStatusId}
+              variant={
+                statusTarget?.profiles?.banned ? "default" : "destructive"
+              }
+            >
+              {updatingStatusId
+                ? "Atualizando..."
+                : statusTarget?.profiles?.banned
+                  ? "Reativar"
+                  : "Desativar"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

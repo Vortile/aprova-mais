@@ -45,51 +45,60 @@ function cleanCssText(css: string): string {
   if (!css) return css;
 
   // Replace oklch(...) with hsl(...)
-  css = css.replace(/oklch\(\s*([\d.%]+)\s+([\d.%]+)\s+([\d.%]+)(?:\s*\/\s*([\d.%]+))?\s*\)/gi, (m, lVal, cVal, hVal, aVal) => {
-    try {
-      let l = parseFloat(lVal);
-      if (lVal.includes("%")) l = l / 100;
-      let c = parseFloat(cVal);
-      if (cVal.includes("%")) c = c / 100;
-      let h = parseFloat(hVal);
-      if (hVal.includes("deg")) h = parseFloat(hVal.replace("deg", ""));
-      else if (hVal.includes("rad")) h = parseFloat(hVal.replace("rad", "")) * (180 / Math.PI);
-      else if (hVal.includes("grad")) h = parseFloat(hVal.replace("grad", "")) * 0.9;
-      else if (hVal.includes("turn")) h = parseFloat(hVal.replace("turn", "")) * 360;
-      if (isNaN(h)) h = 0;
+  css = css.replace(
+    /oklch\(\s*([\d.%]+)\s+([\d.%]+)\s+([\d.%]+)(?:\s*\/\s*([\d.%]+))?\s*\)/gi,
+    (m, lVal, cVal, hVal, aVal) => {
+      try {
+        let l = parseFloat(lVal);
+        if (lVal.includes("%")) l = l / 100;
+        let c = parseFloat(cVal);
+        if (cVal.includes("%")) c = c / 100;
+        let h = parseFloat(hVal);
+        if (hVal.includes("deg")) h = parseFloat(hVal.replace("deg", ""));
+        else if (hVal.includes("rad"))
+          h = parseFloat(hVal.replace("rad", "")) * (180 / Math.PI);
+        else if (hVal.includes("grad"))
+          h = parseFloat(hVal.replace("grad", "")) * 0.9;
+        else if (hVal.includes("turn"))
+          h = parseFloat(hVal.replace("turn", "")) * 360;
+        if (isNaN(h)) h = 0;
 
-      let s = Math.max(0, Math.min(100, c * 250));
-      let lPercent = (Math.max(0, Math.min(1, l)) * 100).toFixed(1) + "%";
-      let sPercent = s.toFixed(1) + "%";
-      let hDeg = h.toFixed(1);
+        let s = Math.max(0, Math.min(100, c * 250));
+        let lPercent = (Math.max(0, Math.min(1, l)) * 100).toFixed(1) + "%";
+        let sPercent = s.toFixed(1) + "%";
+        let hDeg = h.toFixed(1);
 
-      if (aVal !== undefined) {
-        let a = parseFloat(aVal);
-        if (aVal.includes("%")) a = a / 100;
-        return `hsla(${hDeg}, ${sPercent}, ${lPercent}, ${a})`;
+        if (aVal !== undefined) {
+          let a = parseFloat(aVal);
+          if (aVal.includes("%")) a = a / 100;
+          return `hsla(${hDeg}, ${sPercent}, ${lPercent}, ${a})`;
+        }
+        return `hsl(${hDeg}, ${sPercent}, ${lPercent})`;
+      } catch (err) {
+        return "#ffffff";
       }
-      return `hsl(${hDeg}, ${sPercent}, ${lPercent})`;
-    } catch (err) {
-      return "#ffffff";
-    }
-  });
+    },
+  );
 
   // Replace lab(...) with hsl(0, 0%, L%)
-  css = css.replace(/lab\(\s*([\d.%]+)\s+([-\d.%]+)\s+([-\d.%]+)(?:\s*\/\s*([\d.%]+))?\s*\)/gi, (m, lVal, aValSub, bValSub, aVal) => {
-    try {
-      let l = parseFloat(lVal);
-      if (!lVal.includes("%")) l = Math.min(100, l); // lab L is usually 0-100
-      let lPercent = l.toFixed(1) + "%";
-      if (aVal !== undefined) {
-        let a = parseFloat(aVal);
-        if (aVal.includes("%")) a = a / 100;
-        return `hsla(0, 0%, ${lPercent}, ${a})`;
+  css = css.replace(
+    /lab\(\s*([\d.%]+)\s+([-\d.%]+)\s+([-\d.%]+)(?:\s*\/\s*([\d.%]+))?\s*\)/gi,
+    (m, lVal, aValSub, bValSub, aVal) => {
+      try {
+        let l = parseFloat(lVal);
+        if (!lVal.includes("%")) l = Math.min(100, l); // lab L is usually 0-100
+        let lPercent = l.toFixed(1) + "%";
+        if (aVal !== undefined) {
+          let a = parseFloat(aVal);
+          if (aVal.includes("%")) a = a / 100;
+          return `hsla(0, 0%, ${lPercent}, ${a})`;
+        }
+        return `hsl(0, 0%, ${lPercent})`;
+      } catch (err) {
+        return "#ffffff";
       }
-      return `hsl(0, 0%, ${lPercent})`;
-    } catch (err) {
-      return "#ffffff";
-    }
-  });
+    },
+  );
 
   return css;
 }
@@ -128,7 +137,7 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
             }
 
             if (typeof val === "function") {
-              return val.bind(target);
+              return (val as any).bind(target);
             }
             return val;
           },
@@ -143,7 +152,9 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
         scrollY: 0,
         onclone: (clonedDoc) => {
           // 1. Force the original width of the container in the cloned document
-          const clonedContainer = clonedDoc.getElementById("relatorios-chart-container");
+          const clonedContainer = clonedDoc.getElementById(
+            "relatorios-chart-container",
+          );
           if (clonedContainer) {
             (clonedContainer as HTMLElement).style.width = `${originalWidth}px`;
             (clonedContainer as HTMLElement).style.boxSizing = "border-box";
@@ -151,14 +162,20 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
             (clonedContainer as HTMLElement).style.borderRadius = "12px";
             (clonedContainer as HTMLElement).style.border = "1px solid #e2e8f0";
             (clonedContainer as HTMLElement).style.backgroundColor = "#ffffff";
-            (clonedContainer as HTMLElement).style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+            (clonedContainer as HTMLElement).style.fontFamily =
+              'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
           }
 
           // 2. Also patch the cloned window's getComputedStyle just in case html2canvas uses it
           if (clonedDoc.defaultView) {
-            const clonedOriginalGetComputedStyle = clonedDoc.defaultView.getComputedStyle;
+            const clonedOriginalGetComputedStyle =
+              clonedDoc.defaultView.getComputedStyle;
             clonedDoc.defaultView.getComputedStyle = function (elt, pseudoElt) {
-              const style = clonedOriginalGetComputedStyle.call(clonedDoc.defaultView, elt, pseudoElt);
+              const style = clonedOriginalGetComputedStyle.call(
+                clonedDoc.defaultView,
+                elt,
+                pseudoElt,
+              );
               return new Proxy(style, {
                 get(target, prop) {
                   if (prop === "getPropertyValue") {
@@ -174,7 +191,7 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
                   }
 
                   if (typeof val === "function") {
-                    return val.bind(target);
+                    return (val as any).bind(target);
                   }
                   return val;
                 },
@@ -202,12 +219,14 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
             root.style.setProperty("--border", "#e2e8f0");
             root.style.setProperty("--input", "#e2e8f0");
             root.style.setProperty("--ring", "#1f4e79");
-            root.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+            root.style.fontFamily =
+              'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
           }
 
           const body = clonedDoc.body;
           if (body) {
-            body.style.fontFamily = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+            body.style.fontFamily =
+              'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
           }
 
           // 4. Strip all oklch() and lab() color functions from cloned inline styles and stylesheets
@@ -222,7 +241,8 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
 
           // 5. Clean external stylesheets and convert them to inline cleaned styles, disabling old ones
           try {
-            const head = clonedDoc.head || clonedDoc.getElementsByTagName("head")[0];
+            const head =
+              clonedDoc.head || clonedDoc.getElementsByTagName("head")[0];
             const sheets = Array.from(clonedDoc.styleSheets);
             sheets.forEach((sheet: any) => {
               try {
@@ -420,7 +440,11 @@ export function RelatoriosChart({ data, nomeAluno, disciplina }: Props) {
         </Button>
       </div>
 
-      <div ref={chartRef} id="relatorios-chart-container" className="rounded-lg border bg-card p-4">
+      <div
+        ref={chartRef}
+        id="relatorios-chart-container"
+        className="rounded-lg border bg-card p-4"
+      >
         <div className="mb-4 text-center">
           <p className="text-sm font-bold text-[#1f4e79]">
             APROVA+ • Diagnóstico Analítico 360°{" "}

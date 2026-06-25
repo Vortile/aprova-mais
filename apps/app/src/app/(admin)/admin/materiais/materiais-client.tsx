@@ -88,6 +88,7 @@ export function MateriaisClient({
   const [savingAssign, setSavingAssign] = useState(false);
   const [filterSubject, setFilterSubject] = useState("all");
   const [filterGrade, setFilterGrade] = useState("all");
+  const [filterProfessor, setFilterProfessor] = useState("all");
 
   const uniqueSubjects = [
     ...new Set(materiais.map((m) => m.subject).filter(Boolean)),
@@ -99,7 +100,8 @@ export function MateriaisClient({
   const filteredMateriais = materiais.filter(
     (m) =>
       (filterSubject === "all" || m.subject === filterSubject) &&
-      (filterGrade === "all" || m.grade_level === filterGrade),
+      (filterGrade === "all" || m.grade_level === filterGrade) &&
+      (!isAdmin || filterProfessor === "all" || m.uploaded_by === filterProfessor),
   );
 
   function handleOpenAssign(material: MaterialRow) {
@@ -177,9 +179,24 @@ export function MateriaisClient({
       </div>
 
       {/* Filters */}
-      {(uniqueSubjects.length > 0 || uniqueGrades.length > 0) && (
+      {(uniqueSubjects.length > 0 || uniqueGrades.length > 0 || (isAdmin && professores.length > 0)) && (
         <div className="flex flex-wrap items-center gap-2">
           <Filter className="h-4 w-4 text-muted-foreground shrink-0" />
+          {isAdmin && professores.length > 0 && (
+            <Select value={filterProfessor} onValueChange={setFilterProfessor}>
+              <SelectTrigger className="h-8 w-44 text-xs">
+                <SelectValue placeholder="Professor" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os professores</SelectItem>
+                {professores.map((p) => (
+                  <SelectItem key={p.id} value={p.id}>
+                    {p.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           {uniqueSubjects.length > 0 && (
             <Select value={filterSubject} onValueChange={setFilterSubject}>
               <SelectTrigger className="h-8 w-40 text-xs">
@@ -391,7 +408,7 @@ export function MateriaisClient({
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive hover:bg-destructive/90"
+              variant="destructive"
             >
               Excluir
             </AlertDialogAction>

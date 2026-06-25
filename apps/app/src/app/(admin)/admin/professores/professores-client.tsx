@@ -195,7 +195,7 @@ export function ProfessoresClient({
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDelete}
-              className="bg-destructive hover:bg-destructive/90"
+              variant="destructive"
             >
               Remover
             </AlertDialogAction>
