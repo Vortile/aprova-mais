@@ -125,6 +125,13 @@ export async function saveTarefa(input: unknown): Promise<ActionResult> {
     };
   }
 
+  if (access.session.profile.role === ROLES.ADMIN) {
+    return {
+      ok: false,
+      error: "Administradores não podem criar tarefas.",
+    };
+  }
+
   const supabase = createAdminClient();
   const { data: tarefaData, error: tarefaError } = await supabase
     .from(TABLES.TAREFAS)

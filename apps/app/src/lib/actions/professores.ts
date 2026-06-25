@@ -137,16 +137,84 @@ export async function saveProfessor(input: unknown): Promise<ActionResult> {
   // Create Clerk invitation
   await revokePendingInvitations(normalizedEmail);
 
-  await client.invitations.createInvitation({
+  const invite = await client.invitations.createInvitation({
     emailAddress: normalizedEmail,
     ignoreExisting: true,
-    notify: true,
+    notify: false, // Disable default Clerk emails so we can use our branded Resend footer emails
     publicMetadata: {
       role: "professor",
       full_name: values.data.fullName,
     },
     redirectUrl: `${await getAppOrigin()}/sign-up`,
   });
+
+  const inviteUrl = invite.url || `${await getAppOrigin()}/registrar`;
+
+  // Send beautifully branded invitation via Resend
+  try {
+    const { sendEmailAction } = await import("./emails");
+    const inviteHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aprova+ - Convite</title>
+      </head>
+      <body style="margin:0;padding:0;background-color:#fbfbfa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#fbfbfa;padding:20px 0;">
+          <tr>
+            <td align="center">
+              <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff;border:1px solid #eaeaea;border-radius:12px;overflow:hidden;padding:40px;">
+                <!-- Logo Header -->
+                <tr>
+                  <td align="center" style="padding-bottom:30px;">
+                    <span style="font-size:24px;font-weight:bold;color:#1e535c;letter-spacing:-0.5px;">Aprova+</span>
+                  </td>
+                </tr>
+                <!-- Title -->
+                <tr>
+                  <td style="padding-bottom:20px;">
+                    <h1 style="font-size:20px;line-height:28px;color:#111827;margin:0;font-weight:700;">Seja muito bem-vindo(a) à Equipe Aprova+!</h1>
+                  </td>
+                </tr>
+                <!-- Content -->
+                <tr>
+                  <td style="padding-bottom:30px;font-size:15px;line-height:24px;color:#4b5563;">
+                    <p style="margin:0 0 16px 0;">Olá, <strong>${values.data.fullName || "Professor(a)"}</strong>!</p>
+                    <p style="margin:0 0 16px 0;">Você foi cadastrado por um de nossos administradores na plataforma <strong>Aprova+</strong> para iniciar sua atuação pedagógica.</p>
+                    <p style="margin:0 0 16px 0;">Sua conta de acesso está pré-configurada sob o perfil de <strong>Professor</strong>.</p>
+                    <p style="margin:0 0 16px 0;">Para ativar seu perfil, criar sua senha de acesso e começar a publicar tarefas, cadastrar notas de provas e emitir relatórios pedagógicos, clique no botão de ativação abaixo:</p>
+                  </td>
+                </tr>
+                <!-- Button -->
+                <tr>
+                  <td align="center" style="padding-bottom:30px;">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="background-color:#1e535c;border-radius:8px;">
+                          <a href="${inviteUrl}" target="_blank" style="display:inline-block;padding:12px 24px;color:#ffffff;font-size:14px;font-weight:bold;text-decoration:none;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ativar Minha Conta</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
+
+    await sendEmailAction({
+      to: normalizedEmail,
+      subject: "Bem-vindo à equipe Aprova+! Ative sua conta de Professor",
+      html: inviteHtml,
+    });
+  } catch (err) {
+    console.error("Failed to send custom Resend teacher invite email:", err);
+  }
 
   // Create profile row
   const { error: insertError } = await supabase.from(TABLES.PROFILES).insert(

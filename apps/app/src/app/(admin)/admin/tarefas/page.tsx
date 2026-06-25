@@ -128,6 +128,7 @@ export default async function TarefasPage() {
         tarefas={tarefasWithUrls}
         alunos={(alunos ?? []) as AlunoOption[]}
         materiais={materiaisWithUrls}
+        isAdmin={isAdmin}
       />
     </div>
   );

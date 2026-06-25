@@ -338,16 +338,86 @@ async function createAlunoInvitation(
   // publicMetadata.role is a hint for the invitation flow.
   // When the student signs up and an admin saves their record,
   // privateMetadata.role will be set authoritatively via syncClerkUser.
-  await client.invitations.createInvitation({
+  const invite = await client.invitations.createInvitation({
     emailAddress: normalizedEmail,
     ignoreExisting: true,
-    notify: true,
+    notify: false, // Set to false to disable Clerk's generic default email notification
     publicMetadata: {
       role: "aluno",
       ...(fullName ? { full_name: fullName } : {}),
     },
     redirectUrl: `${await getAppOrigin()}/sign-up`,
   });
+
+  const inviteUrl = invite.url || `${await getAppOrigin()}/registrar`;
+
+  // Send beautifully styled email via Resend instead of Clerk's default
+  try {
+    const { sendEmailAction } = await import("./emails");
+    
+    // HTML email template
+    const inviteHtml = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Aprova+ - Convite</title>
+      </head>
+      <body style="margin:0;padding:0;background-color:#fbfbfa;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#fbfbfa;padding:20px 0;">
+          <tr>
+            <td align="center">
+              <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff;border:1px solid #eaeaea;border-radius:12px;overflow:hidden;padding:40px;">
+                <!-- Logo Header -->
+                <tr>
+                  <td align="center" style="padding-bottom:30px;">
+                    <span style="font-size:24px;font-weight:bold;color:#1e535c;letter-spacing:-0.5px;">Aprova+</span>
+                  </td>
+                </tr>
+                <!-- Title -->
+                <tr>
+                  <td style="padding-bottom:20px;">
+                    <h1 style="font-size:20px;line-height:28px;color:#111827;margin:0;font-weight:700;">Seja muito bem-vindo(a) ao Aprova+!</h1>
+                  </td>
+                </tr>
+                <!-- Content -->
+                <tr>
+                  <td style="padding-bottom:30px;font-size:15px;line-height:24px;color:#4b5563;">
+                    <p style="margin:0 0 16px 0;">Olá, <strong>${fullName || "Aluno"}</strong>!</p>
+                    <p style="margin:0 0 16px 0;">Você foi cadastrado por um de nossos administradores na plataforma <strong>Aprova+</strong> para iniciar sua jornada de aulas particulares e acompanhamento pedagógico personalizado.</p>
+                    <p style="margin:0 0 16px 0;">Sua conta de acesso está pré-configurada sob o perfil de <strong>Aluno</strong>.</p>
+                    <p style="margin:0 0 16px 0;">Para ativar seu perfil, criar sua senha de acesso e explorar o dashboard de acompanhamento, relatórios e tarefas, clique no botão de ativação abaixo:</p>
+                  </td>
+                </tr>
+                <!-- Button -->
+                <tr>
+                  <td align="center" style="padding-bottom:30px;">
+                    <table border="0" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="background-color:#1e535c;border-radius:8px;">
+                          <a href="${inviteUrl}" target="_blank" style="display:inline-block;padding:12px 24px;color:#ffffff;font-size:14px;font-weight:bold;text-decoration:none;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ativar Minha Conta</a>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </body>
+      </html>
+    `;
+
+    await sendEmailAction({
+      to: normalizedEmail,
+      subject: "Seja bem-vindo ao Aprova+! Ative sua conta",
+      html: inviteHtml,
+    });
+  } catch (err) {
+    console.error("Failed to send custom Resend invitation email:", err);
+  }
 }
 
 function getSubjectList(subjectFocus: string) {
