@@ -210,6 +210,47 @@ Caso queira parar de receber estes comunicados ou cancelar seu cadastro, entre e
       });
     }
 
+    // Dynamic banner checks based on cid reference within the HTML
+    if (finalHtml.includes("cid:email-banner-welcome")) {
+      const bannerPath = path.join(
+        process.cwd(),
+        "public",
+        "email-banner-welcome.jpg",
+      );
+      if (fs.existsSync(bannerPath)) {
+        const base64Banner = fs.readFileSync(bannerPath, {
+          encoding: "base64",
+        });
+        emailAttachments.push({
+          filename: "email-banner-welcome.jpg",
+          content: base64Banner,
+          contentId: "email-banner-welcome",
+          contentType: "image/jpeg",
+          disposition: "inline",
+        });
+      }
+    }
+
+    if (finalHtml.includes("cid:email-banner-hi")) {
+      const bannerPath = path.join(
+        process.cwd(),
+        "public",
+        "email-banner-hi.jpg",
+      );
+      if (fs.existsSync(bannerPath)) {
+        const base64Banner = fs.readFileSync(bannerPath, {
+          encoding: "base64",
+        });
+        emailAttachments.push({
+          filename: "email-banner-hi.jpg",
+          content: base64Banner,
+          contentId: "email-banner-hi",
+          contentType: "image/jpeg",
+          disposition: "inline",
+        });
+      }
+    }
+
     // Send via Resend SDK
     const response = await resend.emails.send({
       from: `Aprova+ <${sender}>`,

@@ -176,9 +176,14 @@ export function TarefasClient({
         <div className="flex items-start gap-3 rounded-lg border border-blue-100 bg-blue-50/50 p-4 text-sm text-blue-800">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-blue-600" />
           <div className="space-y-1">
-            <p className="font-semibold text-blue-900">Visualização de Administrador</p>
+            <p className="font-semibold text-blue-900">
+              Visualização de Administrador
+            </p>
             <p className="text-blue-700 leading-relaxed">
-              Como administrador, você pode visualizar e gerenciar as tarefas criadas por todos os professores, bem como acompanhar as entregas dos alunos. No entanto, você não pode criar tarefas, pois administradores não possuem alunos diretamente vinculados.
+              Como administrador, você pode visualizar e gerenciar as tarefas
+              criadas por todos os professores, bem como acompanhar as entregas
+              dos alunos. No entanto, você não pode criar tarefas, pois
+              administradores não possuem alunos diretamente vinculados.
             </p>
           </div>
         </div>
@@ -201,14 +206,19 @@ export function TarefasClient({
             <Tooltip>
               <TooltipTrigger asChild>
                 <span className="inline-block">
-                  <Button size="sm" disabled className="cursor-not-allowed opacity-50">
+                  <Button
+                    size="sm"
+                    disabled
+                    className="cursor-not-allowed opacity-50"
+                  >
                     <Plus className="mr-1 h-4 w-4" />
                     Nova tarefa
                   </Button>
                 </span>
               </TooltipTrigger>
               <TooltipContent side="left" className="max-w-xs">
-                Administradores não possuem alunos diretamente, portanto não podem criar tarefas.
+                Administradores não possuem alunos diretamente, portanto não
+                podem criar tarefas.
               </TooltipContent>
             </Tooltip>
           </TooltipProvider>
@@ -243,7 +253,8 @@ export function TarefasClient({
                   </span>
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="max-w-xs">
-                  Administradores não possuem alunos diretamente, portanto não podem criar tarefas.
+                  Administradores não possuem alunos diretamente, portanto não
+                  podem criar tarefas.
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>

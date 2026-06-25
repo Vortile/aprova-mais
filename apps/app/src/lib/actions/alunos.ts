@@ -354,7 +354,7 @@ async function createAlunoInvitation(
   // Send beautifully styled email via Resend instead of Clerk's default
   try {
     const { sendEmailAction } = await import("./emails");
-    
+
     // HTML email template
     const inviteHtml = `
       <!DOCTYPE html>
@@ -368,35 +368,41 @@ async function createAlunoInvitation(
         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#fbfbfa;padding:20px 0;">
           <tr>
             <td align="center">
-              <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff;border:1px solid #eaeaea;border-radius:12px;overflow:hidden;padding:40px;">
-                <!-- Logo Header -->
+              <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color:#ffffff;border:1px solid #eaeaea;border-radius:12px;overflow:hidden;">
+                <!-- Welcome Banner -->
                 <tr>
-                  <td align="center" style="padding-bottom:30px;">
-                    <span style="font-size:24px;font-weight:bold;color:#1e535c;letter-spacing:-0.5px;">Aprova+</span>
+                  <td align="center">
+                    <img src="cid:email-banner-welcome" alt="Bem-vindo ao Aprova+!" width="600" style="display:block;border:0;width:100%;max-width:600px;height:auto;" />
                   </td>
                 </tr>
-                <!-- Title -->
                 <tr>
-                  <td style="padding-bottom:20px;">
-                    <h1 style="font-size:20px;line-height:28px;color:#111827;margin:0;font-weight:700;">Seja muito bem-vindo(a) ao Aprova+!</h1>
-                  </td>
-                </tr>
-                <!-- Content -->
-                <tr>
-                  <td style="padding-bottom:30px;font-size:15px;line-height:24px;color:#4b5563;">
-                    <p style="margin:0 0 16px 0;">Olá, <strong>${fullName || "Aluno"}</strong>!</p>
-                    <p style="margin:0 0 16px 0;">Você foi cadastrado por um de nossos administradores na plataforma <strong>Aprova+</strong> para iniciar sua jornada de aulas particulares e acompanhamento pedagógico personalizado.</p>
-                    <p style="margin:0 0 16px 0;">Sua conta de acesso está pré-configurada sob o perfil de <strong>Aluno</strong>.</p>
-                    <p style="margin:0 0 16px 0;">Para ativar seu perfil, criar sua senha de acesso e explorar o dashboard de acompanhamento, relatórios e tarefas, clique no botão de ativação abaixo:</p>
-                  </td>
-                </tr>
-                <!-- Button -->
-                <tr>
-                  <td align="center" style="padding-bottom:30px;">
-                    <table border="0" cellpadding="0" cellspacing="0">
+                  <td style="padding:40px;">
+                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                      <!-- Title -->
                       <tr>
-                        <td align="center" style="background-color:#1e535c;border-radius:8px;">
-                          <a href="${inviteUrl}" target="_blank" style="display:inline-block;padding:12px 24px;color:#ffffff;font-size:14px;font-weight:bold;text-decoration:none;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ativar Minha Conta</a>
+                        <td style="padding-bottom:20px;">
+                          <h1 style="font-size:20px;line-height:28px;color:#111827;margin:0;font-weight:700;">Seja muito bem-vindo(a) ao Aprova+!</h1>
+                        </td>
+                      </tr>
+                      <!-- Content -->
+                      <tr>
+                        <td style="padding-bottom:30px;font-size:15px;line-height:24px;color:#4b5563;">
+                          <p style="margin:0 0 16px 0;">Olá, <strong>${fullName || "Aluno"}</strong>!</p>
+                          <p style="margin:0 0 16px 0;">Você foi cadastrado por um de nossos administradores na plataforma <strong>Aprova+</strong> para iniciar sua jornada de aulas particulares e acompanhamento pedagógico personalizado.</p>
+                          <p style="margin:0 0 16px 0;">Sua conta de acesso está pré-configurada sob o perfil de <strong>Aluno</strong>.</p>
+                          <p style="margin:0 0 16px 0;">Para ativar seu perfil, criar sua senha de acesso e explorar o dashboard de acompanhamento, relatórios e tarefas, clique no botão de ativação abaixo:</p>
+                        </td>
+                      </tr>
+                      <!-- Button -->
+                      <tr>
+                        <td align="center" style="padding-bottom:10px;">
+                          <table border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td align="center" style="background-color:#1e535c;border-radius:8px;">
+                                <a href="${inviteUrl}" target="_blank" style="display:inline-block;padding:12px 24px;color:#ffffff;font-size:14px;font-weight:bold;text-decoration:none;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">Ativar Minha Conta</a>
+                              </td>
+                            </tr>
+                          </table>
                         </td>
                       </tr>
                     </table>
