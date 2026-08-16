@@ -13,6 +13,7 @@ import {
   LogOut,
   Mail,
   Settings,
+  Ticket,
   UserCog,
   Users,
 } from "lucide-react";
@@ -43,6 +44,7 @@ const ADMIN_ONLY_HREFS = new Set<string>([
   ROUTES.ADMIN.PROFESSORES,
   ROUTES.ADMIN.FINANCEIRO,
   ROUTES.ADMIN.EMAILS,
+  ROUTES.ADMIN.EVENTOS,
 ]);
 
 const navItems = [
@@ -56,6 +58,7 @@ const navItems = [
       { href: ROUTES.ADMIN.RELATORIOS, label: "Relatórios", icon: FileText },
       { href: ROUTES.ADMIN.EMAILS, label: "E-mails", icon: Mail },
       { href: ROUTES.ADMIN.FINANCEIRO, label: "Financeiro", icon: DollarSign },
+      { href: ROUTES.ADMIN.EVENTOS, label: "Eventos", icon: Ticket },
     ],
   },
   {

@@ -454,9 +454,328 @@ export interface Database {
           },
         ];
       };
+      eventos: {
+        Row: {
+          id: string;
+          slug: string;
+          titulo: string;
+          descricao: string | null;
+          preco_centavos: number;
+          limite_total_vagas: number;
+          capacidade_por_turma: number;
+          local_nome: string;
+          local_endereco: string;
+          local_contato: string;
+          horario_geral: string | null;
+          sala_turma_1: string | null;
+          sala_turma_2: string | null;
+          data_sabado_1: string | null;
+          data_sabado_2: string | null;
+          data_sabado_3: string | null;
+          data_sabado_4: string | null;
+          ativo: boolean;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          slug: string;
+          titulo: string;
+          descricao?: string | null;
+          preco_centavos: number;
+          limite_total_vagas: number;
+          capacidade_por_turma: number;
+          local_nome: string;
+          local_endereco: string;
+          local_contato: string;
+          horario_geral?: string | null;
+          sala_turma_1?: string | null;
+          sala_turma_2?: string | null;
+          data_sabado_1?: string | null;
+          data_sabado_2?: string | null;
+          data_sabado_3?: string | null;
+          data_sabado_4?: string | null;
+          ativo?: boolean;
+          created_at?: string;
+        };
+        Update: {
+          slug?: string;
+          titulo?: string;
+          descricao?: string | null;
+          preco_centavos?: number;
+          limite_total_vagas?: number;
+          capacidade_por_turma?: number;
+          local_nome?: string;
+          local_endereco?: string;
+          local_contato?: string;
+          horario_geral?: string | null;
+          sala_turma_1?: string | null;
+          sala_turma_2?: string | null;
+          data_sabado_1?: string | null;
+          data_sabado_2?: string | null;
+          data_sabado_3?: string | null;
+          data_sabado_4?: string | null;
+          ativo?: boolean;
+        };
+        Relationships: [];
+      };
+      evento_inscricoes: {
+        Row: {
+          id: string;
+          evento_id: string;
+          numero_inscricao: number;
+          session_id: string | null;
+          nome_aluno: string;
+          email_aluno: string;
+          whatsapp_aluno: string;
+          cpf_aluno: string;
+          data_nascimento: string;
+          idade_aluno: number;
+          serie_atual: "1_ano" | "2_ano" | "3_ano" | "concluido";
+          nome_responsavel: string | null;
+          whatsapp_responsavel: string | null;
+          restricoes_medicas: string | null;
+          status_pagamento: "pendente" | "aprovado" | "recusado" | "cancelado";
+          forma_pagamento: "pix" | "credit_card" | null;
+          gateway: string;
+          gateway_payment_id: string | null;
+          numero_confirmacao: number | null;
+          turma_alocada: 1 | 2 | null;
+          horario_turma: string | null;
+          sala_alocada: string | null;
+          codigo_ingresso: string;
+          valor_pago_centavos: number;
+          utm_source: string | null;
+          utm_medium: string | null;
+          utm_campaign: string | null;
+          created_at: string;
+          pago_em: string | null;
+        };
+        Insert: {
+          id?: string;
+          evento_id: string;
+          session_id?: string | null;
+          nome_aluno: string;
+          email_aluno: string;
+          whatsapp_aluno: string;
+          cpf_aluno: string;
+          data_nascimento: string;
+          idade_aluno: number;
+          serie_atual: "1_ano" | "2_ano" | "3_ano" | "concluido";
+          nome_responsavel?: string | null;
+          whatsapp_responsavel?: string | null;
+          restricoes_medicas?: string | null;
+          status_pagamento?: "pendente" | "aprovado" | "recusado" | "cancelado";
+          forma_pagamento?: "pix" | "credit_card" | null;
+          gateway?: string;
+          gateway_payment_id?: string | null;
+          numero_confirmacao?: number | null;
+          turma_alocada?: 1 | 2 | null;
+          horario_turma?: string | null;
+          sala_alocada?: string | null;
+          codigo_ingresso?: string;
+          valor_pago_centavos: number;
+          utm_source?: string | null;
+          utm_medium?: string | null;
+          utm_campaign?: string | null;
+          created_at?: string;
+          pago_em?: string | null;
+        };
+        Update: {
+          nome_aluno?: string;
+          email_aluno?: string;
+          whatsapp_aluno?: string;
+          cpf_aluno?: string;
+          data_nascimento?: string;
+          idade_aluno?: number;
+          serie_atual?: "1_ano" | "2_ano" | "3_ano" | "concluido";
+          nome_responsavel?: string | null;
+          whatsapp_responsavel?: string | null;
+          restricoes_medicas?: string | null;
+          status_pagamento?: "pendente" | "aprovado" | "recusado" | "cancelado";
+          forma_pagamento?: "pix" | "credit_card" | null;
+          gateway?: string;
+          gateway_payment_id?: string | null;
+          numero_confirmacao?: number | null;
+          turma_alocada?: 1 | 2 | null;
+          horario_turma?: string | null;
+          sala_alocada?: string | null;
+          valor_pago_centavos?: number;
+          utm_source?: string | null;
+          utm_medium?: string | null;
+          utm_campaign?: string | null;
+          pago_em?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "evento_inscricoes_evento_id_fkey";
+            columns: ["evento_id"];
+            isOneToOne: false;
+            referencedRelation: "eventos";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      evento_analytics: {
+        Row: {
+          id: string;
+          evento_slug: string;
+          tipo_evento:
+            | "page_view"
+            | "cta_click"
+            | "form_started"
+            | "form_submitted"
+            | "pix_generated"
+            | "card_started"
+            | "payment_approved";
+          session_id: string;
+          inscricao_id: string | null;
+          utm_source: string | null;
+          utm_medium: string | null;
+          utm_campaign: string | null;
+          referrer: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          evento_slug: string;
+          tipo_evento:
+            | "page_view"
+            | "cta_click"
+            | "form_started"
+            | "form_submitted"
+            | "pix_generated"
+            | "card_started"
+            | "payment_approved";
+          session_id: string;
+          inscricao_id?: string | null;
+          utm_source?: string | null;
+          utm_medium?: string | null;
+          utm_campaign?: string | null;
+          referrer?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          tipo_evento?:
+            | "page_view"
+            | "cta_click"
+            | "form_started"
+            | "form_submitted"
+            | "pix_generated"
+            | "card_started"
+            | "payment_approved";
+          inscricao_id?: string | null;
+          utm_source?: string | null;
+          utm_medium?: string | null;
+          utm_campaign?: string | null;
+          referrer?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "evento_analytics_inscricao_id_fkey";
+            columns: ["inscricao_id"];
+            isOneToOne: false;
+            referencedRelation: "evento_inscricoes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      evento_checkins: {
+        Row: {
+          id: string;
+          inscricao_id: string;
+          dia_numero: 1 | 2 | 3 | 4;
+          checkin_at: string;
+          validado_por: string | null;
+        };
+        Insert: {
+          id?: string;
+          inscricao_id: string;
+          dia_numero: 1 | 2 | 3 | 4;
+          checkin_at?: string;
+          validado_por?: string | null;
+        };
+        Update: {
+          dia_numero?: 1 | 2 | 3 | 4;
+          checkin_at?: string;
+          validado_por?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "evento_checkins_inscricao_id_fkey";
+            columns: ["inscricao_id"];
+            isOneToOne: false;
+            referencedRelation: "evento_inscricoes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      evento_email_log: {
+        Row: {
+          id: string;
+          inscricao_id: string;
+          tipo_email:
+            | "ticket_confirmacao"
+            | "guia_preparacao"
+            | "mensagem_professor"
+            | "mapa_tri"
+            | "checklist_evento"
+            | "devolutiva_dia1"
+            | "devolutiva_dia2"
+            | "devolutiva_dia3"
+            | "pos_evento";
+          enviado_em: string;
+        };
+        Insert: {
+          id?: string;
+          inscricao_id: string;
+          tipo_email:
+            | "ticket_confirmacao"
+            | "guia_preparacao"
+            | "mensagem_professor"
+            | "mapa_tri"
+            | "checklist_evento"
+            | "devolutiva_dia1"
+            | "devolutiva_dia2"
+            | "devolutiva_dia3"
+            | "pos_evento";
+          enviado_em?: string;
+        };
+        Update: {
+          tipo_email?:
+            | "ticket_confirmacao"
+            | "guia_preparacao"
+            | "mensagem_professor"
+            | "mapa_tri"
+            | "checklist_evento"
+            | "devolutiva_dia1"
+            | "devolutiva_dia2"
+            | "devolutiva_dia3"
+            | "pos_evento";
+          enviado_em?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "evento_email_log_inscricao_id_fkey";
+            columns: ["inscricao_id"];
+            isOneToOne: false;
+            referencedRelation: "evento_inscricoes";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      confirmar_pagamento_evento: {
+        Args: {
+          p_inscricao_id: string;
+          p_gateway_payment_id: string;
+          p_forma_pagamento: string;
+          p_valor_pago_centavos: number;
+        };
+        Returns: Database["public"]["Tables"]["evento_inscricoes"]["Row"];
+      };
+    };
     Enums: Record<string, never>;
   };
 }

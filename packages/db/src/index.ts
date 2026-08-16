@@ -16,4 +16,9 @@ export const TABLES = {
   NOTAS_PROVAS: "notas_provas",
   EMAILS: "emails",
   EMAIL_ATTACHMENTS: "email_attachments",
+  EVENTOS: "eventos",
+  EVENTO_INSCRICOES: "evento_inscricoes",
+  EVENTO_ANALYTICS: "evento_analytics",
+  EVENTO_CHECKINS: "evento_checkins",
+  EVENTO_EMAIL_LOG: "evento_email_log",
 } as const satisfies Record<string, string>;
