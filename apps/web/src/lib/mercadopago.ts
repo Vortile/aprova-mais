@@ -72,6 +72,7 @@ async function mercadoPagoFetch(
   const body = await response.json();
 
   if (!response.ok) {
+    console.error("Mercado Pago API error:", JSON.stringify(body));
     const message =
       body?.message || body?.cause?.[0]?.description || "Erro no Mercado Pago";
     throw new Error(message);

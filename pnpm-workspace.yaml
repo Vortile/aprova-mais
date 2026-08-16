@@ -1,4 +1,6 @@
 packages:
-  - "apps/*"
-  - "packages/config"
-  - "packages/db"
+  - apps/*
+  - packages/config
+  - packages/db
+ignoredBuiltDependencies:
+  - esbuild

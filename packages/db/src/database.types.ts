@@ -472,7 +472,6 @@ export interface Database {
           data_sabado_1: string | null;
           data_sabado_2: string | null;
           data_sabado_3: string | null;
-          data_sabado_4: string | null;
           ativo: boolean;
           created_at: string;
         };
@@ -493,7 +492,6 @@ export interface Database {
           data_sabado_1?: string | null;
           data_sabado_2?: string | null;
           data_sabado_3?: string | null;
-          data_sabado_4?: string | null;
           ativo?: boolean;
           created_at?: string;
         };
@@ -513,7 +511,6 @@ export interface Database {
           data_sabado_1?: string | null;
           data_sabado_2?: string | null;
           data_sabado_3?: string | null;
-          data_sabado_4?: string | null;
           ativo?: boolean;
         };
         Relationships: [];
@@ -683,19 +680,19 @@ export interface Database {
         Row: {
           id: string;
           inscricao_id: string;
-          dia_numero: 1 | 2 | 3 | 4;
+          dia_numero: 1 | 2 | 3;
           checkin_at: string;
           validado_por: string | null;
         };
         Insert: {
           id?: string;
           inscricao_id: string;
-          dia_numero: 1 | 2 | 3 | 4;
+          dia_numero: 1 | 2 | 3;
           checkin_at?: string;
           validado_por?: string | null;
         };
         Update: {
-          dia_numero?: 1 | 2 | 3 | 4;
+          dia_numero?: 1 | 2 | 3;
           checkin_at?: string;
           validado_por?: string | null;
         };
@@ -721,7 +718,6 @@ export interface Database {
             | "checklist_evento"
             | "devolutiva_dia1"
             | "devolutiva_dia2"
-            | "devolutiva_dia3"
             | "pos_evento";
           enviado_em: string;
         };
@@ -736,7 +732,6 @@ export interface Database {
             | "checklist_evento"
             | "devolutiva_dia1"
             | "devolutiva_dia2"
-            | "devolutiva_dia3"
             | "pos_evento";
           enviado_em?: string;
         };
@@ -749,7 +744,6 @@ export interface Database {
             | "checklist_evento"
             | "devolutiva_dia1"
             | "devolutiva_dia2"
-            | "devolutiva_dia3"
             | "pos_evento";
           enviado_em?: string;
         };

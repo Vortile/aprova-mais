@@ -1,50 +1,7 @@
 import { NextResponse } from "next/server";
-import crypto from "crypto";
 import { getPayment } from "@/lib/mercadopago";
 import { confirmarPagamentoEInscricao } from "@/lib/evento/confirm";
-
-function isValidSignature(request: Request, dataId: string): boolean {
-  const secret = process.env.MERCADOPAGO_WEBHOOK_SECRET;
-  const signatureHeader = request.headers.get("x-signature");
-  const requestId = request.headers.get("x-request-id");
-
-  // No secret configured yet: allow through so early setup isn't blocked,
-  // but the payment status itself is always re-fetched from Mercado Pago's
-  // API below (never trusted from the webhook body), which limits the blast
-  // radius of an unauthenticated notification.
-  if (!secret) {
-    return true;
-  }
-
-  if (!signatureHeader || !requestId) {
-    return false;
-  }
-
-  const parts = Object.fromEntries(
-    signatureHeader.split(",").map((part) => {
-      const [key, value] = part.split("=");
-      return [key?.trim(), value?.trim()];
-    }),
-  );
-
-  const ts = parts.ts;
-  const v1 = parts.v1;
-  if (!ts || !v1) {
-    return false;
-  }
-
-  const manifest = `id:${dataId.toLowerCase()};request-id:${requestId};ts:${ts};`;
-  const computed = crypto
-    .createHmac("sha256", secret)
-    .update(manifest)
-    .digest("hex");
-
-  try {
-    return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(v1));
-  } catch {
-    return false;
-  }
-}
+import { isValidMercadoPagoSignature } from "@/lib/evento/webhook-signature";
 
 export async function POST(request: Request) {
   const url = new URL(request.url);
@@ -58,7 +15,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "missing_payment_id" }, { status: 400 });
   }
 
-  if (!isValidSignature(request, String(paymentId))) {
+  if (
+    !isValidMercadoPagoSignature({
+      secret: process.env.MERCADOPAGO_WEBHOOK_SECRET,
+      signatureHeader: request.headers.get("x-signature"),
+      requestId: request.headers.get("x-request-id"),
+      dataId: String(paymentId),
+    })
+  ) {
     return NextResponse.json({ error: "invalid_signature" }, { status: 401 });
   }
 

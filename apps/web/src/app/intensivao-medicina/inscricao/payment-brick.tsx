@@ -120,6 +120,7 @@ export function PaymentBrick({
           },
         },
         callbacks: {
+          onReady: () => {},
           onSubmit: ({
             selectedPaymentMethod,
             formData,

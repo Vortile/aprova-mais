@@ -8,7 +8,7 @@ const TABS = [
     label: "Para o Estudante",
     icon: "school",
     title: "Chega de travar nos 720 pontos.",
-    body: "Você já estuda muito e sente que não sai do lugar. O problema não é esforço — é foco no que a TRI de Medicina realmente cobra. Em 4 sábados, você aprende exatamente onde estão os pontos que faltam para a nota de corte, treina com questões no padrão exato da prova e sai com um plano claro para os últimos meses antes do ENEM.",
+    body: "Você já estuda muito e sente que não sai do lugar. O problema não é esforço — é foco no que a TRI de Medicina realmente cobra. Em 3 sábados, você aprende exatamente onde estão os pontos que faltam para a nota de corte, treina com questões no padrão exato da prova e sai com um plano claro para os últimos meses antes do ENEM.",
   },
   {
     key: "pais",

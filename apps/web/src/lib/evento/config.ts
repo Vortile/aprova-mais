@@ -11,12 +11,15 @@ export const evento = {
   precoReais: 500,
   limiteTotalVagas: 26,
   capacidadePorTurma: 13,
+  // Só mostramos a contagem regressiva de vagas quando restar isso ou menos —
+  // evita expor que o evento acabou de abrir (poucas ou nenhuma inscrição),
+  // e concentra o gatilho de escassez no momento em que ela é real.
+  limiarUrgenciaVagas: 10,
   localNome: "Open Laranjeiras Gallery",
   localEndereco: "Av. Prof. Nilton Lins, 1984 – Flores, Manaus - AM, 69058-300",
   localContato: "(92) 98158-1955",
   horarioGeral: "08:00 às 12:00",
   salaTurma1: "Sala HY",
-  totalEncontros: 4,
 } as const;
 
 export const serieOptions = [

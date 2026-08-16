@@ -14,12 +14,12 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Intensivão ENEM 2026 — Foco Medicina | Aprova+",
   description:
-    "4 sábados presenciais em Manaus para destravar a nota de Medicina no ENEM 2026. Vagas limitadas a 26 alunos.",
+    "3 sábados presenciais em Manaus para destravar a nota de Medicina no ENEM 2026. Vagas limitadas a 26 alunos.",
 };
 
 const OFERTA_STACK = [
   {
-    item: "4 Sábados de Imersão Presencial (16h de treinamento cirúrgico)",
+    item: "3 Sábados de Imersão Presencial (24h de treinamento cirúrgico)",
     valor: 750,
   },
   {
@@ -35,7 +35,7 @@ const OFERTA_STACK = [
     item: "Acesso ao grupo VIP no WhatsApp com o Prof. Júnior até o ENEM",
     valor: 297,
   },
-  { item: "Coffee-break e networking exclusivo nos 4 dias", valor: 97 },
+  { item: "Coffee-break e networking exclusivo nos 3 dias", valor: 97 },
 ] as const;
 
 const VALOR_TOTAL = OFERTA_STACK.reduce((sum, row) => sum + row.valor, 0);
@@ -78,7 +78,7 @@ export default async function IntensivaoMedicinaPage() {
               location_on
             </span>
             <span className="text-primary font-bold text-xs uppercase tracking-widest">
-              Manaus · AM · Presencial · 4 Sábados
+              Manaus · AM · Presencial · 3 Sábados
             </span>
           </div>
 
@@ -88,10 +88,10 @@ export default async function IntensivaoMedicinaPage() {
           </h1>
 
           <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
-            Um intensivão presencial de 4 sábados (12/09, 19/09, 26/09 e 03/10)
-            para quem já estuda muito, mas travou nos mesmos pontos da TRI.
-            Método cirúrgico, foco total em Medicina e uma turma pequena, com o
-            Prof. Júnior.
+            Um intensivão presencial de 3 sábados (12/09, 19/09 e 26/09) para
+            quem já estuda muito, mas travou nos mesmos pontos da TRI. Método
+            cirúrgico, foco total em Medicina e uma turma pequena, com o Prof.
+            Júnior.
           </p>
 
           <div className="flex flex-col items-center gap-3">
@@ -109,7 +109,7 @@ export default async function IntensivaoMedicinaPage() {
                 <span className="text-error">
                   Vagas esgotadas — as 26 vagas foram preenchidas
                 </span>
-              ) : (
+              ) : vagasRestantes <= evento.limiarUrgenciaVagas ? (
                 <>
                   Restam apenas{" "}
                   <span className="text-tertiary">
@@ -120,6 +120,8 @@ export default async function IntensivaoMedicinaPage() {
                     ? " — Primeira sala lotada, últimas vagas na segunda sala (mesmo horário)"
                     : ""}
                 </>
+              ) : (
+                "Vagas limitadas — turma pequena para manter o atendimento próximo ao aluno"
               )}
             </p>
           </div>
@@ -143,9 +145,9 @@ export default async function IntensivaoMedicinaPage() {
         {/* ── Cronograma ── */}
         <section className="py-20 px-6 max-w-5xl mx-auto" id="cronograma">
           <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface text-center mb-12">
-            O que acontece nos 4 sábados
+            O que acontece nos 3 sábados
           </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
               {
                 dia: "Sábado 1 · 12/09",
@@ -161,15 +163,9 @@ export default async function IntensivaoMedicinaPage() {
               },
               {
                 dia: "Sábado 3 · 26/09",
-                titulo: "Redação Cirúrgica",
-                desc: "Estrutura de redação nota 1000 e linguagens: o passo a passo para uma redação de alto nível sob pressão de tempo.",
+                titulo: "Redação Cirúrgica + Simulado",
+                desc: "Estrutura de redação nota 1000 e simulado diagnóstico completo, com devolutiva individual.",
                 icon: "edit_document",
-              },
-              {
-                dia: "Sábado 4 · 03/10",
-                titulo: "Simulado + Devolutiva",
-                desc: "Simulado diagnóstico completo no padrão da prova, com devolutiva individual e plano de reta final.",
-                icon: "fact_check",
               },
             ].map((sabado) => (
               <div
@@ -206,7 +202,7 @@ export default async function IntensivaoMedicinaPage() {
             />
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-tertiary mb-2">
-                Quem vai te guiar nos 4 sábados
+                Quem vai te guiar nos 3 sábados
               </p>
               <h2 className="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">
                 Prof. {teacher.fullName}

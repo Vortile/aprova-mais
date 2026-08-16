@@ -43,12 +43,7 @@ export function computeDripSchedule(
 
   if (evento.data_sabado_3) {
     const sabado3 = new Date(`${evento.data_sabado_3}T00:00:00`);
-    items.push({ tipo: "devolutiva_dia3", targetDate: addDays(sabado3, 1) });
-  }
-
-  if (evento.data_sabado_4) {
-    const sabado4 = new Date(`${evento.data_sabado_4}T00:00:00`);
-    items.push({ tipo: "pos_evento", targetDate: addDays(sabado4, 1) });
+    items.push({ tipo: "pos_evento", targetDate: addDays(sabado3, 1) });
   }
 
   return items;

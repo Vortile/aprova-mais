@@ -76,7 +76,7 @@ export async function confirmarPagamentoEInscricao(params: {
   if (!alreadySent) {
     const { data: eventoRowData } = await supabase
       .from(TABLES.EVENTOS)
-      .select("data_sabado_1, data_sabado_2, data_sabado_3, data_sabado_4")
+      .select("data_sabado_1, data_sabado_2, data_sabado_3")
       .eq("id", inscricao.evento_id)
       .single();
 

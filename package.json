@@ -8,6 +8,7 @@
     "db:push": "sh -ac 'set -a && . ./.env && set +a && pnpm dlx supabase db push --db-url \"$DATABASE_URL\"'",
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
+    "test": "turbo test",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\" --ignore-path .gitignore"
   },
   "devDependencies": {

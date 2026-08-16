@@ -7,7 +7,7 @@ const FAQ_ITEMS = [
   {
     question: "E se eu perder um dos sábados?",
     answer:
-      "O conteúdo é sequencial e presencial, então recomendamos fortemente participar dos 4 dias. Caso perca um encontro, disponibilizamos o resumo em vídeo e o material da aula pelo WhatsApp para você não ficar para trás.",
+      "O conteúdo é sequencial e presencial, então recomendamos fortemente participar dos 3 dias. Caso perca um encontro, disponibilizamos o resumo em vídeo e o material da aula pelo WhatsApp para você não ficar para trás.",
   },
   {
     question: "Menor de idade pode ir desacompanhado?",
@@ -17,7 +17,7 @@ const FAQ_ITEMS = [
   {
     question: "O material impresso já está incluso?",
     answer:
-      "Sim, a apostila física de questões comentadas, o simulado diagnóstico e o coffee-break dos 4 dias estão inclusos nos R$ 500 — sem nenhuma cobrança extra.",
+      "Sim, a apostila física de questões comentadas, o simulado diagnóstico e o coffee-break dos 3 dias estão inclusos nos R$ 500 — sem nenhuma cobrança extra.",
   },
   {
     question: "Como funciona o pagamento?",
