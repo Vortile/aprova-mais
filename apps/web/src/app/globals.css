@@ -33,16 +33,16 @@
   --color-on-secondary-fixed: #0f464d;
   --color-on-secondary-fixed-variant: #32636a;
 
-  /* Tertiary — Warmth Gold */
-  --color-tertiary: #8c510b;
-  --color-tertiary-dim: #7d4500;
-  --color-tertiary-container: #ffb065;
-  --color-tertiary-fixed: #ffb065;
-  --color-tertiary-fixed-dim: #efa359;
-  --color-on-tertiary: #fff7f4;
-  --color-on-tertiary-container: #5c3200;
-  --color-on-tertiary-fixed: #3f2000;
-  --color-on-tertiary-fixed-variant: #693a00;
+  /* Tertiary — Vibrant Education Blue (was Warmth Gold) */
+  --color-tertiary: #2563eb;
+  --color-tertiary-dim: #1d4ed8;
+  --color-tertiary-container: #dbeafe;
+  --color-tertiary-fixed: #2563eb;
+  --color-tertiary-fixed-dim: #1d4ed8;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #1e40af;
+  --color-on-tertiary-fixed: #ffffff;
+  --color-on-tertiary-fixed-variant: #1e3a8a;
 
   /* Background & Surface */
   --color-background: #faf9f6;

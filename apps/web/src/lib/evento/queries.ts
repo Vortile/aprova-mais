@@ -18,6 +18,10 @@ export type EventoStatus = {
   turma2Ocupadas: number;
   esgotado: boolean;
   turma1Esgotada: boolean;
+  dataSabado1: string | null;
+  /** Divulgar o evento faz sentido enquanto ele estiver ativo, tiver vaga
+   * e o primeiro sábado ainda não tiver começado. */
+  promoAtivo: boolean;
 };
 
 /**
@@ -33,7 +37,7 @@ export async function getEventoStatus(
   const { data: eventoRowData, error: eventoError } = await supabase
     .from(TABLES.EVENTOS)
     .select(
-      "id, slug, ativo, preco_centavos, limite_total_vagas, capacidade_por_turma",
+      "id, slug, ativo, preco_centavos, limite_total_vagas, capacidade_por_turma, data_sabado_1",
     )
     .eq("slug", slug)
     .single();
@@ -60,6 +64,11 @@ export async function getEventoStatus(
     vagasConfirmadas - eventoRow.capacidade_por_turma,
   );
 
+  const esgotado = vagasConfirmadas >= eventoRow.limite_total_vagas;
+  const primeiroSabadoJaComecou = eventoRow.data_sabado_1
+    ? new Date() >= new Date(`${eventoRow.data_sabado_1}T00:00:00`)
+    : false;
+
   return {
     eventoId: eventoRow.id,
     slug: eventoRow.slug,
@@ -74,7 +83,9 @@ export async function getEventoStatus(
     ),
     turma1Ocupadas,
     turma2Ocupadas,
-    esgotado: vagasConfirmadas >= eventoRow.limite_total_vagas,
+    esgotado,
     turma1Esgotada: turma1Ocupadas >= eventoRow.capacidade_por_turma,
+    dataSabado1: eventoRow.data_sabado_1,
+    promoAtivo: eventoRow.ativo && !esgotado && !primeiroSabadoJaComecou,
   };
 }

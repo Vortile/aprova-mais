@@ -59,7 +59,7 @@ export function MobileNav() {
             Acessar Portal do Aluno
           </a>
           <a
-            className="bg-tertiary cursor-pointer text-on-tertiary px-6 py-3 rounded-lg font-bold text-sm text-center"
+            className="bg-tertiary hover:bg-blue-700 cursor-pointer text-on-tertiary px-6 py-3 rounded-lg font-bold text-sm text-center"
             href={zcalUrl}
             target="_blank"
             rel="noopener noreferrer"

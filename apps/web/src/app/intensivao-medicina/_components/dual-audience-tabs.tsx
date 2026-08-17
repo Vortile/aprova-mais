@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const TABS = [
   {
@@ -43,13 +44,23 @@ export function DualAudienceTabs() {
           </button>
         ))}
       </div>
-      <div className="bg-surface p-8 md:p-10 rounded-3xl">
-        <h3 className="text-2xl font-headline font-bold text-on-surface mb-4">
-          {current.title}
-        </h3>
-        <p className="text-on-surface-variant leading-relaxed text-lg">
-          {current.body}
-        </p>
+      <div className="bg-surface p-8 md:p-10 rounded-3xl min-h-[200px] overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current.key}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+          >
+            <h3 className="text-2xl font-headline font-bold text-on-surface mb-4">
+              {current.title}
+            </h3>
+            <p className="text-on-surface-variant leading-relaxed text-lg">
+              {current.body}
+            </p>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </div>
   );

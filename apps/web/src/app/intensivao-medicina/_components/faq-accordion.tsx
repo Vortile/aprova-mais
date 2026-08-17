@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { evento } from "@/lib/evento/config";
 
 const FAQ_ITEMS = [
@@ -22,7 +23,7 @@ const FAQ_ITEMS = [
   {
     question: "Como funciona o pagamento?",
     answer:
-      "Você pode pagar via PIX (aprovação imediata) ou Cartão de Crédito em até 12x. Assim que o pagamento é confirmado, o ingresso com QR Code chega automaticamente no seu e-mail.",
+      "Você pode pagar via PIX (aprovação imediata) ou Cartão de Crédito em até 12x. Assim que o pagamento é confirmed, o ingresso com QR Code chega automaticamente no seu e-mail.",
   },
   {
     question: "Como sei em qual turma (sala) eu fiquei?",
@@ -47,15 +48,29 @@ export function FaqAccordion() {
               onClick={() => setOpenIndex(isOpen ? null : index)}
             >
               <span className="font-bold text-on-surface">{item.question}</span>
-              <span className="material-symbols-outlined text-primary shrink-0">
-                {isOpen ? "remove" : "add"}
-              </span>
+              <motion.span
+                animate={{ rotate: isOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+                className="material-symbols-outlined text-primary shrink-0"
+              >
+                keyboard_arrow_down
+              </motion.span>
             </button>
-            {isOpen && (
-              <div className="px-6 pb-6 text-on-surface-variant leading-relaxed">
-                {item.answer}
-              </div>
-            )}
+            <AnimatePresence initial={false}>
+              {isOpen && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: "auto", opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-6 pb-6 text-on-surface-variant leading-relaxed">
+                    {item.answer}
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         );
       })}

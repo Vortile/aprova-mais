@@ -15,7 +15,7 @@ The digital experience must feel like a quiet, high-end study lounge. We achieve
 The palette is rooted in the lush but muted tones of a sophisticated study.
 
 - **Primary (#1d6875):** A deep, intellectual teal used for core branding and navigation. It conveys competence and calm.
-- **Tertiary (#8c510b):** Our "Warmth" accent. This muted gold is reserved for CTAs and the "+" in the logo, providing a soft glow that draws the eye without being aggressive.
+- **Tertiary (#2563eb):** Our "Action Blue" accent. This vibrant blue is reserved for CTAs and key focal points, giving a modern, high-trust educational feel.
 - **Surface (#faf9f6):** The "Off-white" foundation. It is softer on the eyes than pure white, mimicking high-quality parchment.
 
 ### The "No-Line" Rule

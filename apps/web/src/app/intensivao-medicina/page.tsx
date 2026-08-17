@@ -8,6 +8,13 @@ import { TrackPageView } from "./_components/track-page-view";
 import { CtaLink } from "./_components/cta-link";
 import { DualAudienceTabs } from "./_components/dual-audience-tabs";
 import { FaqAccordion } from "./_components/faq-accordion";
+import {
+  FadeIn,
+  FadeInWhenVisible,
+  FloatingCard,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/motion/motion-wrappers";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +26,7 @@ export const metadata: Metadata = {
 
 const OFERTA_STACK = [
   {
-    item: "3 Sábados de Imersão Presencial (24h de treinamento cirúrgico)",
+    item: "3 Sábados de Imersão Presencial (6h de treinamento cirúrgico)",
     valor: 750,
   },
   {
@@ -63,7 +70,7 @@ export default async function IntensivaoMedicinaPage() {
           </Link>
           <CtaLink
             href="/intensivao-medicina/inscricao"
-            className="cursor-pointer bg-tertiary text-on-tertiary px-5 py-2.5 rounded-lg font-bold text-sm shadow-md hover:shadow-lg active:scale-95 transition-all"
+            className="cursor-pointer bg-tertiary hover:bg-blue-700 text-on-tertiary px-5 py-2.5 rounded-lg font-bold text-sm shadow-md hover:shadow-lg active:scale-95 transition-all"
           >
             {esgotado ? "Lista de Espera" : "Garantir Vaga"}
           </CtaLink>
@@ -72,74 +79,119 @@ export default async function IntensivaoMedicinaPage() {
 
       <main className="pt-24 overflow-x-hidden">
         {/* ── Hero ── */}
-        <section className="relative px-6 py-12 md:py-20 max-w-5xl mx-auto text-center space-y-8">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-container/30">
-            <span className="material-symbols-outlined text-primary text-sm">
-              location_on
-            </span>
-            <span className="text-primary font-bold text-xs uppercase tracking-widest">
-              Manaus · AM · Presencial · 3 Sábados
-            </span>
-          </div>
-
-          <h1 className="text-4xl md:text-6xl font-headline font-bold text-on-surface leading-[1.1] tracking-tight">
-            Destrave sua nota de{" "}
-            <span className="text-primary italic">Medicina</span> no ENEM 2026
-          </h1>
-
-          <p className="text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto leading-relaxed">
-            Um intensivão presencial de 3 sábados (12/09, 19/09 e 26/09) para
-            quem já estuda muito, mas travou nos mesmos pontos da TRI. Método
-            cirúrgico, foco total em Medicina e uma turma pequena, com o Prof.
-            Júnior.
-          </p>
-
-          <div className="flex flex-col items-center gap-3">
-            <CtaLink
-              href="/intensivao-medicina/inscricao"
-              className="bg-tertiary cursor-pointer text-on-tertiary px-10 py-5 rounded-xl font-bold text-lg text-center hover:shadow-xl transition-all active:scale-95 inline-flex items-center gap-2"
-            >
-              {esgotado
-                ? "Entrar na Lista de Espera"
-                : "Garantir Minha Vaga — R$ 500"}
-              <span className="material-symbols-outlined">arrow_forward</span>
-            </CtaLink>
-            <p className="text-sm font-bold text-on-surface-variant">
-              {esgotado ? (
-                <span className="text-error">
-                  Vagas esgotadas — as 26 vagas foram preenchidas
+        <section className="relative px-6 py-12 md:py-16 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-12 gap-10 items-center">
+            <FadeIn className="md:col-span-7 text-center md:text-left space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-container/30">
+                <span className="material-symbols-outlined text-primary text-sm">
+                  location_on
                 </span>
-              ) : vagasRestantes <= evento.limiarUrgenciaVagas ? (
-                <>
-                  Restam apenas{" "}
-                  <span className="text-tertiary">
-                    {vagasRestantes} de {evento.limiteTotalVagas}
-                  </span>{" "}
-                  vagas
-                  {turma1Esgotada
-                    ? " — Primeira sala lotada, últimas vagas na segunda sala (mesmo horário)"
-                    : ""}
-                </>
-              ) : (
-                "Vagas limitadas — turma pequena para manter o atendimento próximo ao aluno"
-              )}
-            </p>
+                <span className="text-primary font-bold text-xs uppercase tracking-widest">
+                  Manaus · AM · Presencial · 3 Sábados
+                </span>
+              </div>
+
+              <h1 className="text-4xl md:text-6xl font-headline font-bold text-on-surface leading-[1.1] tracking-tight">
+                Destrave sua nota de{" "}
+                <span className="text-primary italic">Medicina</span> no ENEM
+                2026
+              </h1>
+
+              <p className="text-lg md:text-xl text-on-surface-variant leading-relaxed">
+                Um intensivão presencial de 3 sábados (12/09, 19/09 e 26/09)
+                para quem já estuda muito, mas travou nos mesmos pontos da TRI.
+                Método cirúrgico, foco total em Medicina e turma pequena com o
+                Prof. Júnior.
+              </p>
+
+              <div className="flex flex-col items-center md:items-start gap-3 pt-2">
+                <CtaLink
+                  href="/intensivao-medicina/inscricao"
+                  className="bg-tertiary hover:bg-blue-700 cursor-pointer text-on-tertiary px-10 py-5 rounded-xl font-bold text-lg text-center hover:shadow-xl transition-all active:scale-95 inline-flex items-center gap-2"
+                >
+                  {esgotado
+                    ? "Entrar na Lista de Espera"
+                    : "Garantir Minha Vaga — R$ 500"}
+                  <span className="material-symbols-outlined">
+                    arrow_forward
+                  </span>
+                </CtaLink>
+                <p className="text-sm font-bold text-on-surface-variant">
+                  {esgotado ? (
+                    <span className="text-error">
+                      Vagas esgotadas — as 26 vagas foram preenchidas
+                    </span>
+                  ) : vagasRestantes <= evento.limiarUrgenciaVagas ? (
+                    <>
+                      Restam apenas{" "}
+                      <span className="text-tertiary">
+                        {vagasRestantes} de {evento.limiteTotalVagas}
+                      </span>{" "}
+                      vagas
+                      {turma1Esgotada
+                        ? " — Primeira sala lotada, últimas vagas na segunda sala (mesmo horário)"
+                        : ""}
+                    </>
+                  ) : (
+                    "Vagas limitadas — turma pequena para manter o atendimento próximo ao aluno"
+                  )}
+                </p>
+              </div>
+            </FadeIn>
+
+            {/* Featured Medical Study Image Card */}
+            <FloatingCard className="md:col-span-5 flex justify-center">
+              <div className="relative w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-surface-container-lowest">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/medicina-estudo.jpg"
+                  alt="Material e estetoscópio de preparação para Medicina"
+                  className="w-full h-[400px] object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-6 text-white text-left space-y-2">
+                  <span className="px-3 py-1 bg-blue-600 rounded-full text-[11px] font-extrabold uppercase tracking-widest text-white w-fit">
+                    Foco Absoluto Medicina
+                  </span>
+                  <p className="font-headline font-bold text-lg leading-snug">
+                    Preparação cirúrgica para a nota de corte mais concorrida
+                  </p>
+                </div>
+              </div>
+            </FloatingCard>
           </div>
         </section>
 
         {/* ── O Problema ── */}
         <section className="bg-surface-container-low py-20 px-6 rounded-t-[3.5rem]">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface">
-              Por que 90% dos candidatos a Medicina travam na TRI?
-            </h2>
-            <p className="text-lg text-on-surface-variant leading-relaxed">
-              Não é falta de esforço. É estudar teoria genérica quando a prova
-              cobra um padrão bem específico de raciocínio. O Intensivão troca
-              "estudar muito" por "estudar exatamente o que pesa" nos blocos
-              decisivos de Ciências da Natureza, Matemática e Redação.
-            </p>
-          </div>
+          <FadeInWhenVisible className="max-w-5xl mx-auto space-y-12">
+            <div className="text-center space-y-6 max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface">
+                Por que 90% dos candidatos a Medicina travam na TRI?
+              </h2>
+              <p className="text-lg text-on-surface-variant leading-relaxed">
+                Não é falta de esforço. É estudar teoria genérica quando a prova
+                cobra um padrão bem específico de raciocínio. O Intensivão troca
+                "estudar muito" por "estudar exatamente o que pesa" nos blocos
+                decisivos de Ciências da Natureza, Matemática e Redação.
+              </p>
+            </div>
+
+            {/* Team/Atmosphere photo card */}
+            <div className="relative rounded-3xl overflow-hidden shadow-xl max-w-3xl mx-auto border border-outline-variant/10">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/medicina-equipe.jpg"
+                alt="Equipe de estudantes e futuros médicos"
+                className="w-full h-64 md:h-80 object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-950/85 via-blue-950/30 to-transparent flex items-end p-6 md:p-8">
+                <p className="text-white font-headline font-bold text-base md:text-xl">
+                  Treinamento focado no padrão real de exigência dos aprovados
+                  em Medicina na UFAM e UEA.
+                </p>
+              </div>
+            </div>
+          </FadeInWhenVisible>
         </section>
 
         {/* ── Cronograma ── */}
@@ -147,7 +199,7 @@ export default async function IntensivaoMedicinaPage() {
           <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface text-center mb-12">
             O que acontece nos 3 sábados
           </h2>
-          <div className="grid md:grid-cols-3 gap-6">
+          <StaggerContainer className="grid md:grid-cols-3 gap-6">
             {[
               {
                 dia: "Sábado 1 · 12/09",
@@ -168,7 +220,7 @@ export default async function IntensivaoMedicinaPage() {
                 icon: "edit_document",
               },
             ].map((sabado) => (
-              <div
+              <StaggerItem
                 key={sabado.dia}
                 className="bg-surface-container-low p-8 rounded-3xl border-b-4 border-primary-container hover:-translate-y-2 transition-transform duration-300"
               >
@@ -186,9 +238,9 @@ export default async function IntensivaoMedicinaPage() {
                 <p className="text-on-surface-variant leading-relaxed">
                   {sabado.desc}
                 </p>
-              </div>
+              </StaggerItem>
             ))}
-          </div>
+          </StaggerContainer>
         </section>
 
         {/* ── Mentor ── */}
@@ -275,7 +327,7 @@ export default async function IntensivaoMedicinaPage() {
           <div className="text-center mt-10">
             <CtaLink
               href="/intensivao-medicina/inscricao"
-              className="bg-tertiary cursor-pointer text-on-tertiary px-10 py-5 rounded-xl font-bold text-lg text-center hover:shadow-xl transition-all active:scale-95 inline-flex items-center gap-2"
+              className="bg-tertiary hover:bg-blue-700 cursor-pointer text-on-tertiary px-10 py-5 rounded-xl font-bold text-lg text-center hover:shadow-xl transition-all active:scale-95 inline-flex items-center gap-2"
             >
               {esgotado
                 ? "Entrar na Lista de Espera"

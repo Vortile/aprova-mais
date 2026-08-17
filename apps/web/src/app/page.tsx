@@ -1,75 +1,93 @@
 import { MobileNav } from "@/components/mobile-nav";
 import { BrandLockup } from "@/components/brand-lockup";
 import { teacher, whatsappUrl, instagramUrl } from "@/lib/teacher";
+import { getEventoStatus } from "@/lib/evento/queries";
+import { EventoPromoBanner } from "@/app/_components/evento-promo-banner";
+import { EventoPromoSection } from "@/app/_components/evento-promo-section";
+import { FadeIn, FloatingCard } from "@/components/motion/motion-wrappers";
 import Image from "next/image";
 
 const { zcalUrl, portalUrl } = teacher;
 
+export const dynamic = "force-dynamic";
+
 export default async function WebHomePage() {
+  const eventoStatus = await getEventoStatus();
+  const promoAtivo = eventoStatus?.promoAtivo ?? false;
+
   return (
     <>
       {/* ── Top Nav ── */}
-      <nav className="fixed top-0 w-full z-50 bg-[#faf9f6]/80 backdrop-blur-xl shadow-sm shadow-[#303330]/5">
-        <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto w-full relative">
-          <a className="inline-flex" href="#">
-            <BrandLockup
-              priority
-              labelClassName="font-headline text-2xl font-bold tracking-tight"
-              logoClassName="h-9 w-9"
-            />
-          </a>
-          <div className="hidden md:flex items-center gap-8">
-            <a
-              className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
-              href="#como-funciona"
-            >
-              Como Funciona
+      <div className="fixed top-0 w-full z-50">
+        {promoAtivo && <EventoPromoBanner />}
+        <nav className="w-full bg-[#faf9f6]/80 backdrop-blur-xl shadow-sm shadow-[#303330]/5">
+          <div className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto w-full relative">
+            <a className="inline-flex" href="#">
+              <BrandLockup
+                priority
+                labelClassName="font-headline text-2xl font-bold tracking-tight"
+                logoClassName="h-9 w-9"
+              />
             </a>
-            <a
-              className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
-              href="#materias"
-            >
-              Matérias
-            </a>
-            <a
-              className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
-              href="#plataforma"
-            >
-              Plataforma
-            </a>
-            <a
-              className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
-              href="#contato"
-            >
-              Contato
-            </a>
+            <div className="hidden md:flex items-center gap-8">
+              <a
+                className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
+                href="#como-funciona"
+              >
+                Como Funciona
+              </a>
+              <a
+                className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
+                href="#materias"
+              >
+                Matérias
+              </a>
+              <a
+                className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
+                href="#plataforma"
+              >
+                Plataforma
+              </a>
+              <a
+                className="text-on-surface opacity-80 font-bold text-lg tracking-tight hover:text-tertiary transition-colors duration-300"
+                href="#contato"
+              >
+                Contato
+              </a>
+            </div>
+            <div className="flex items-center gap-4">
+              <a
+                className="hidden md:inline-block cursor-pointer text-on-surface px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
+                href={portalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Portal
+              </a>
+              <a
+                className="hidden md:inline-block cursor-pointer bg-tertiary hover:bg-blue-700 text-on-tertiary px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
+                href={zcalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Aula Diagnóstico
+              </a>
+              <MobileNav />
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <a
-              className="hidden md:inline-block cursor-pointer text-on-surface px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
-              href={portalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Portal
-            </a>
-            <a
-              className="hidden md:inline-block cursor-pointer bg-tertiary text-on-tertiary px-6 py-2.5 rounded-lg font-bold text-sm transition-transform shadow-md hover:shadow-lg active:scale-90"
-              href={zcalUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Aula Diagnóstico
-            </a>
-            <MobileNav />
-          </div>
-        </div>
-      </nav>
+        </nav>
+      </div>
 
-      <main className="pt-24 overflow-x-hidden">
+      <main
+        className={
+          promoAtivo
+            ? "pt-32 md:pt-28 overflow-x-hidden"
+            : "pt-24 overflow-x-hidden"
+        }
+      >
         {/* ── Hero ── */}
         <section className="relative px-6 py-12 md:py-24 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
-          <div className="flex-1 space-y-8 text-left z-10">
+          <FadeIn className="flex-1 space-y-8 text-left z-10">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary-container/30 border border-primary-container/50">
               <span className="material-symbols-outlined text-primary text-sm">
                 location_on
@@ -95,7 +113,7 @@ export default async function WebHomePage() {
                 </span>
                 Matemática
               </span>
-              <span className="px-3.5 py-1.5 rounded-full bg-amber-100 text-amber-800 text-xs font-bold border border-amber-200/50 shadow-sm flex items-center gap-1.5">
+              <span className="px-3.5 py-1.5 rounded-full bg-blue-100 text-blue-800 text-xs font-bold border border-blue-200/50 shadow-sm flex items-center gap-1.5">
                 <span className="material-symbols-outlined text-sm">
                   science
                 </span>
@@ -115,7 +133,7 @@ export default async function WebHomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <a
-                className="bg-tertiary cursor-pointer text-on-tertiary px-8 py-4 rounded-xl font-bold text-center hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
+                className="bg-tertiary hover:bg-blue-700 cursor-pointer text-on-tertiary px-8 py-4 rounded-xl font-bold text-center hover:shadow-xl transition-all active:scale-95 flex items-center justify-center gap-2"
                 href={zcalUrl}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -146,9 +164,9 @@ export default async function WebHomePage() {
                 </span>
               </div>
             </div>
-          </div>
+          </FadeIn>
 
-          <div className="flex-1 relative w-full aspect-square md:aspect-auto md:h-150">
+          <FloatingCard className="flex-1 relative w-full aspect-square md:aspect-auto md:h-150">
             <div className="absolute inset-0 bg-primary/5 rounded-[4rem] -rotate-3 translate-x-4"></div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
@@ -169,8 +187,10 @@ export default async function WebHomePage() {
                 </div>
               </div>
             </div>
-          </div>
+          </FloatingCard>
         </section>
+
+        {promoAtivo && <EventoPromoSection />}
 
         {/* ── Como Funciona ── */}
         <section
@@ -394,7 +414,7 @@ export default async function WebHomePage() {
 
                 {/* Pilar 4: Atalhos e Macetes */}
                 <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm space-y-4 hover:-translate-y-1 transition-transform duration-300">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-800 flex items-center justify-center">
                     <span className="material-symbols-outlined text-2xl">
                       tips_and_updates
                     </span>
@@ -464,7 +484,7 @@ export default async function WebHomePage() {
 
               {/* Física */}
               <div className="bg-surface p-8 rounded-3xl border border-outline/5 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col items-start">
-                <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center mb-6">
+                <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-6">
                   <span className="material-symbols-outlined text-3xl">
                     science
                   </span>
@@ -628,7 +648,7 @@ export default async function WebHomePage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-8">
               <a
-                className="bg-tertiary cursor-pointer text-on-tertiary px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all"
+                className="bg-tertiary hover:bg-blue-700 cursor-pointer text-on-tertiary px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all"
                 href={zcalUrl}
                 target="_blank"
                 rel="noopener noreferrer"

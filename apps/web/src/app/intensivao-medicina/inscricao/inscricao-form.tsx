@@ -405,7 +405,7 @@ export function InscricaoForm({ precoReais }: { precoReais: number }) {
       <button
         type="submit"
         disabled={submitting}
-        className="w-full bg-tertiary text-on-tertiary px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
+        className="w-full bg-tertiary hover:bg-blue-700 text-on-tertiary px-8 py-4 rounded-xl font-bold text-lg hover:shadow-xl transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
       >
         {submitting
           ? "Enviando..."
