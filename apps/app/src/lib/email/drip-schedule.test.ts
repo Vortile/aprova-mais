@@ -127,9 +127,13 @@ describe("computeDripSchedule", () => {
         data_sabado_4: "2026-10-03",
       }),
     );
-    const devolutiva3 = withSabado4.find((item) => item.tipo === "devolutiva_dia3");
+    const devolutiva3 = withSabado4.find(
+      (item) => item.tipo === "devolutiva_dia3",
+    );
     const posEvento = withSabado4.find((item) => item.tipo === "pos_evento");
-    expect(devolutiva3?.targetDate.toISOString().slice(0, 10)).toBe("2026-09-27");
+    expect(devolutiva3?.targetDate.toISOString().slice(0, 10)).toBe(
+      "2026-09-27",
+    );
     expect(posEvento?.targetDate.toISOString().slice(0, 10)).toBe("2026-10-04");
   });
 });

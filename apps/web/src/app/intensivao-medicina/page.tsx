@@ -259,7 +259,9 @@ export default async function IntensivaoMedicinaPage() {
                 Quem vai te guiar nos 4 sábados
               </h2>
               <p className="text-on-surface-variant leading-relaxed">
-                Professores especialistas que unem rigor acadêmico, didática comprovada e foco cirúrgico na TRI e nos vestibulares de Medicina do Amazonas.
+                Professores especialistas que unem rigor acadêmico, didática
+                comprovada e foco cirúrgico na TRI e nos vestibulares de
+                Medicina do Amazonas.
               </p>
             </div>
 
@@ -287,7 +289,12 @@ export default async function IntensivaoMedicinaPage() {
                     </div>
                   </div>
                   <p className="text-sm text-on-surface-variant leading-relaxed text-center sm:text-left">
-                    Mestre em Física da Matéria Condensada pela UFAM com pesquisas publicadas internacionalmente na <em>Nature Scientific Reports</em>. Especialista em desconstruir a TRI de Ciências da Natureza, eliminando erros recorrentes e acelerando a pontuação necessária para a nota de corte de Medicina.
+                    Mestre em Física da Matéria Condensada pela UFAM com
+                    pesquisas publicadas internacionalmente na{" "}
+                    <em>Nature Scientific Reports</em>. Especialista em
+                    desconstruir a TRI de Ciências da Natureza, eliminando erros
+                    recorrentes e acelerando a pontuação necessária para a nota
+                    de corte de Medicina.
                   </p>
                 </div>
               </div>
@@ -315,7 +322,13 @@ export default async function IntensivaoMedicinaPage() {
                     </div>
                   </div>
                   <p className="text-sm text-on-surface-variant leading-relaxed text-center sm:text-left">
-                    Graduando em Matemática pela Universidade do Estado do Amazonas (UEA) e educador do Projeto Ocupa (iniciativa de preparação governamental para vestibulares). Com sólida experiência no treinamento de alunos para a OBMEP, é especialista em ensinar métodos ágeis de cálculo, interpretação de enunciados e atalhos de raciocínio para gabaritar a prova de Matemática do ENEM.
+                    Graduando em Matemática pela Universidade do Estado do
+                    Amazonas (UEA) e educador do Projeto Ocupa (iniciativa de
+                    preparação governamental para vestibulares). Com sólida
+                    experiência no treinamento de alunos para a OBMEP, é
+                    especialista em ensinar métodos ágeis de cálculo,
+                    interpretação de enunciados e atalhos de raciocínio para
+                    gabaritar a prova de Matemática do ENEM.
                   </p>
                 </div>
               </div>

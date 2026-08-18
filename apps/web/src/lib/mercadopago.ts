@@ -83,7 +83,11 @@ async function mercadoPagoFetch(
 
 function isValidPublicUrl(url: string | undefined): boolean {
   if (!url) return false;
-  return url.startsWith("https://") && !url.includes("localhost") && !url.includes("127.0.0.1");
+  return (
+    url.startsWith("https://") &&
+    !url.includes("localhost") &&
+    !url.includes("127.0.0.1")
+  );
 }
 
 /**
@@ -106,7 +110,9 @@ export async function createPixPayment(params: {
       payment_method_id: "pix",
       payer: params.payer,
       external_reference: params.inscricaoId,
-      ...(isValidPublicUrl(params.notificationUrl) ? { notification_url: params.notificationUrl } : {}),
+      ...(isValidPublicUrl(params.notificationUrl)
+        ? { notification_url: params.notificationUrl }
+        : {}),
     }),
   });
 }
@@ -138,7 +144,9 @@ export async function createCardPayment(params: {
       issuer_id: params.issuerId,
       payer: params.payer,
       external_reference: params.inscricaoId,
-      ...(isValidPublicUrl(params.notificationUrl) ? { notification_url: params.notificationUrl } : {}),
+      ...(isValidPublicUrl(params.notificationUrl)
+        ? { notification_url: params.notificationUrl }
+        : {}),
     }),
   });
 }
