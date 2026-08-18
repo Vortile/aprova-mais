@@ -6,17 +6,17 @@ Este documento estabelece o planejamento completo, técnico, financeiro, pedagó
 
 ## 📌 1. Visão Geral do Evento
 
-| Parâmetro               | Detalhe                                                                                                     |
-| :---------------------- | :---------------------------------------------------------------------------------------------------------- |
-| **Evento**              | Intensivão ENEM 2026 — Foco Medicina                                                                        |
-| **Formato**             | Presencial (4 Sábados de Imersão, 2h por sábado)                                                            |
-| **Local**               | **Open Laranjeiras Gallery**                                                                                |
-| **Endereço**            | Av. Prof. Nilton Lins, 1984 – Flores, Manaus - AM, 69058-300                                                |
-| **Contato Oficial**     | WhatsApp: (92) 98158-1955 (Prof. Deuticilam)                                                                |
-| **Preço**               | R$ 500,00 (à vista no PIX ou em até 12x no Cartão de Crédito)                                               |
-| **Capacidade Máxima**   | **26 Alunos** (2 turmas de 13 alunos)                                                                       |
-| **Divisão de Horários** | Cada turma tem 2h de aula com os professores de Física e Matemática. |
-| **Encerramento**        | Automático ao confirmar o 26º pagamento (Exibição de _Vagas Esgotadas_)                                     |
+| Parâmetro               | Detalhe                                                                 |
+| :---------------------- | :---------------------------------------------------------------------- |
+| **Evento**              | Intensivão ENEM 2026 — Foco Medicina                                    |
+| **Formato**             | Presencial (4 Sábados de Imersão, 2h por sábado)                        |
+| **Local**               | **Open Laranjeiras Gallery**                                            |
+| **Endereço**            | Av. Prof. Nilton Lins, 1984 – Flores, Manaus - AM, 69058-300            |
+| **Contato Oficial**     | WhatsApp: (92) 98158-1955 (Prof. Deuticilam)                            |
+| **Preço**               | R$ 500,00 (à vista no PIX ou em até 12x no Cartão de Crédito)           |
+| **Capacidade Máxima**   | **26 Alunos** (2 turmas de 13 alunos)                                   |
+| **Divisão de Horários** | Cada turma tem 2h de aula com os professores de Física e Matemática.    |
+| **Encerramento**        | Automático ao confirmar o 26º pagamento (Exibição de _Vagas Esgotadas_) |
 
 ---
 
