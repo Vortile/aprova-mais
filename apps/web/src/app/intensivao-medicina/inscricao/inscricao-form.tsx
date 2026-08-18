@@ -388,16 +388,6 @@ export function InscricaoForm({ precoReais }: { precoReais: number }) {
         </div>
       )}
 
-      <Field label="Restrições alimentares ou médicas (opcional)">
-        <textarea
-          className={inputClassName}
-          value={values.restricoesMedicas}
-          onChange={(e) => updateField("restricoesMedicas", e.target.value)}
-          rows={2}
-          placeholder="Alergias, diabetes, etc. (informação opcional)"
-        />
-      </Field>
-
       {formError && (
         <p className="text-center text-error font-medium">{formError}</p>
       )}

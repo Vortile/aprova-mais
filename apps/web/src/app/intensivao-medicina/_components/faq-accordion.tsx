@@ -18,7 +18,7 @@ const FAQ_ITEMS = [
   {
     question: "O que está incluso no material?",
     answer:
-      "A apostila física de questões comentadas e os mapas mentais dos principais tópicos estão inclusos nos R$ 500. O coffee-break não está incluído.",
+      "A apostila física com questões comentadas e os mapas mentais estratégicos de Física e Matemática estão inclusos no valor da inscrição. Você recebe o material impresso no primeiro dia.",
   },
   {
     question: "Como funciona o pagamento?",

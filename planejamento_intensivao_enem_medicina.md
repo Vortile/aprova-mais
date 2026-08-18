@@ -142,7 +142,7 @@ O formulário coleta as informações vitais sem gerar fricção excessiva:
    - 3º ano do Ensino Médio
    - Já concluí o Ensino Médio
 7. **Nome do Responsável & WhatsApp do Responsável** _(Exibido se idade < 18 anos)_
-8. **Restrições Alimentares / Observações Médicas** _(Opcional — para o coffee-break)_
+8. **Observações / Informações Adicionais** _(Opcional)_
 
 ---
 
