@@ -13,6 +13,7 @@ export type DripEmailType =
   | "checklist_evento"
   | "devolutiva_dia1"
   | "devolutiva_dia2"
+  | "devolutiva_dia3"
   | "pos_evento";
 
 function getResendClient() {
@@ -90,7 +91,7 @@ function buildContent(
           <tr><td style="padding-bottom:16px;"><h1 style="font-size:20px;color:#111827;margin:0;">Uma palavra do Prof. Júnior</h1></td></tr>
           <tr><td style="font-size:15px;line-height:24px;color:#4b5563;">
             ${paragraph(`Olá, ${primeiroNome}!`)}
-            ${paragraph("Fico muito feliz que você decidiu investir nesses 3 sábados para a sua aprovação em Medicina. Vamos trabalhar juntos, com método e foco total no que realmente importa para a nota de corte.")}
+            ${paragraph("Fico muito feliz que você decidiu investir nesses 4 sábados para a sua aprovação em Medicina. Vamos trabalhar juntos, com método e foco total no que realmente importa para a nota de corte.")}
             ${paragraph("Qualquer dúvida antes do evento, é só chamar no WhatsApp.")}
           </td></tr>
         `,
@@ -137,7 +138,18 @@ function buildContent(
           <tr><td style="padding-bottom:16px;"><h1 style="font-size:20px;color:#111827;margin:0;">Reta final!</h1></td></tr>
           <tr><td style="font-size:15px;line-height:24px;color:#4b5563;">
             ${paragraph(`Olá, ${primeiroNome}!`)}
-            ${paragraph("Estamos quase lá. Ajuste seu plano de revisão para o Sábado 3 com foco em redação e simulado — é o nosso último encontro antes do ENEM.")}
+            ${paragraph("Estamos avançando. Revise os mapas mentais e prepare-se para o Sábado 3, com mais uma hora de Física e uma hora de Matemática.")}
+          </td></tr>
+        `,
+      };
+    case "devolutiva_dia3":
+      return {
+        subject: `Devolutiva do Sábado 3 + preparação para o Sábado 4`,
+        bodyHtml: `
+          <tr><td style="padding-bottom:16px;"><h1 style="font-size:20px;color:#111827;margin:0;">Último encontro se aproximando</h1></td></tr>
+          <tr><td style="font-size:15px;line-height:24px;color:#4b5563;">
+            ${paragraph(`Olá, ${primeiroNome}!`)}
+            ${paragraph("Revise os mapas mentais trabalhados até aqui e prepare-se para o quarto sábado, com mais uma hora de Física e uma hora de Matemática para consolidar sua reta final.")}
           </td></tr>
         `,
       };

@@ -21,12 +21,12 @@ export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
   title: "Intensivão ENEM 2026 — Foco Medicina | Aprova+",
   description:
-    "3 sábados presenciais em Manaus para destravar a nota de Medicina no ENEM 2026. Vagas limitadas a 26 alunos.",
+    "4 sábados presenciais em Manaus para destravar a nota de Medicina no ENEM 2026. Vagas limitadas a 26 alunos.",
 };
 
 const OFERTA_STACK = [
   {
-    item: "3 Sábados de Imersão Presencial (6h de treinamento cirúrgico)",
+    item: "4 Sábados de Imersão Presencial (8h de treinamento cirúrgico)",
     valor: 750,
   },
   {
@@ -34,15 +34,13 @@ const OFERTA_STACK = [
     valor: 197,
   },
   {
-    item: "Simulado diagnóstico TRI Medicina com devolutiva individual",
+    item: "Mapas mentais dos tópicos mais importantes para Medicina",
     valor: 197,
   },
-  { item: "Plantão e análise de redação modelo nota 1000", valor: 147 },
   {
     item: "Acesso ao grupo VIP no WhatsApp com o Prof. Júnior até o ENEM",
     valor: 297,
   },
-  { item: "Coffee-break e networking exclusivo nos 3 dias", valor: 97 },
 ] as const;
 
 const VALOR_TOTAL = OFERTA_STACK.reduce((sum, row) => sum + row.valor, 0);
@@ -87,7 +85,7 @@ export default async function IntensivaoMedicinaPage() {
                   location_on
                 </span>
                 <span className="text-primary font-bold text-xs uppercase tracking-widest">
-                  Manaus · AM · Presencial · 3 Sábados
+                  Manaus · AM · Presencial · 4 Sábados
                 </span>
               </div>
 
@@ -98,10 +96,11 @@ export default async function IntensivaoMedicinaPage() {
               </h1>
 
               <p className="text-lg md:text-xl text-on-surface-variant leading-relaxed">
-                Um intensivão presencial de 3 sábados (12/09, 19/09 e 26/09)
-                para quem já estuda muito, mas travou nos mesmos pontos da TRI.
-                Método cirúrgico, foco total em Medicina e turma pequena com o
-                Prof. Júnior.
+                Um intensivão presencial de 4 sábados (12/09, 19/09, 26/09 e
+                03/10) para quem já estuda muito, mas travou nos mesmos pontos
+                da TRI. Em cada encontro, são 2h de aula com foco cirúrgico: 1h
+                de Física com o Prof. Júnior e 1h de Matemática com o Prof.
+                Convidado Juan Carlos Maia.
               </p>
 
               <div className="flex flex-col items-center md:items-start gap-3 pt-2">
@@ -171,8 +170,8 @@ export default async function IntensivaoMedicinaPage() {
               <p className="text-lg text-on-surface-variant leading-relaxed">
                 Não é falta de esforço. É estudar teoria genérica quando a prova
                 cobra um padrão bem específico de raciocínio. O Intensivão troca
-                "estudar muito" por "estudar exatamente o que pesa" nos blocos
-                decisivos de Ciências da Natureza, Matemática e Redação.
+                "estudar muito" por "estudar exatamente o que pesa" em Física e
+                Matemática, com mapas mentais para revisar os pontos decisivos.
               </p>
             </div>
 
@@ -197,27 +196,33 @@ export default async function IntensivaoMedicinaPage() {
         {/* ── Cronograma ── */}
         <section className="py-20 px-6 max-w-5xl mx-auto" id="cronograma">
           <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface text-center mb-12">
-            O que acontece nos 3 sábados
+            O que acontece nos 4 sábados
           </h2>
-          <StaggerContainer className="grid md:grid-cols-3 gap-6">
+          <StaggerContainer className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 dia: "Sábado 1 · 12/09",
-                titulo: "Desconstrução da TRI",
-                desc: "Ciências da Natureza: identificando e eliminando os erros que mais custam pontos na nota de corte de Medicina.",
-                icon: "biotech",
+                titulo: "Física + Matemática: base forte",
+                desc: "1h de Física e 1h de Matemática para identificar lacunas e organizar o raciocínio que mais pontua.",
+                icon: "science",
               },
               {
                 dia: "Sábado 2 · 19/09",
-                titulo: "Matemática de Alto Rendimento",
-                desc: "As questões de maior peso na TRI, resolvidas com o método mais rápido possível dentro do tempo de prova.",
+                titulo: "Questões e velocidade",
+                desc: "Física e Matemática aplicadas a questões do ENEM, com estratégias para interpretar e resolver melhor.",
                 icon: "calculate",
               },
               {
                 dia: "Sábado 3 · 26/09",
-                titulo: "Redação Cirúrgica + Simulado",
-                desc: "Estrutura de redação nota 1000 e simulado diagnóstico completo, com devolutiva individual.",
-                icon: "edit_document",
+                titulo: "Padrões que se repetem",
+                desc: "Mapas mentais e revisão dos padrões de Física e Matemática que mais aparecem na prova.",
+                icon: "account_tree",
+              },
+              {
+                dia: "Sábado 4 · 03/10",
+                titulo: "Reta final de alto rendimento",
+                desc: "Mais 1h de cada disciplina, consolidando métodos, atalhos e prioridades para a reta final do ENEM.",
+                icon: "trending_up",
               },
             ].map((sabado) => (
               <StaggerItem
@@ -243,29 +248,77 @@ export default async function IntensivaoMedicinaPage() {
           </StaggerContainer>
         </section>
 
-        {/* ── Mentor ── */}
+        {/* ── Mentores ── */}
         <section className="bg-surface-container-lowest py-20 px-6 rounded-[3.5rem]">
-          <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center gap-10 text-center md:text-left">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              alt={`Professor ${teacher.firstName}`}
-              className="w-40 h-40 rounded-full object-cover shadow-xl shrink-0"
-              src="/junior-professor-mestre.jpeg"
-            />
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest text-tertiary mb-2">
-                Quem vai te guiar nos 3 sábados
+          <div className="max-w-5xl mx-auto space-y-12">
+            <div className="text-center space-y-3 max-w-2xl mx-auto">
+              <p className="text-xs font-bold uppercase tracking-widest text-tertiary">
+                Corpo Docente Especialista
               </p>
-              <h2 className="text-2xl md:text-3xl font-headline font-bold text-on-surface mb-4">
-                Prof. {teacher.fullName}
+              <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface">
+                Quem vai te guiar nos 4 sábados
               </h2>
               <p className="text-on-surface-variant leading-relaxed">
-                Bacharel em Física e mestre em Física da Matéria Condensada pela
-                UFAM, com pesquisas publicadas internacionalmente. Especialista
-                em preparar alunos de Manaus para a nota de corte de Medicina
-                através de um método próprio, cirúrgico e voltado para resultado
-                real na TRI.
+                Professores especialistas que unem rigor acadêmico, didática comprovada e foco cirúrgico na TRI e nos vestibulares de Medicina do Amazonas.
               </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {/* Prof. Júnior */}
+              <div className="bg-surface-container-low p-8 rounded-3xl border border-outline-variant/10 shadow-sm flex flex-col justify-between gap-6 hover:-translate-y-1 transition-all duration-300">
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      alt={`Professor ${teacher.fullName}`}
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover shadow-md shrink-0"
+                      src="/junior-professor-mestre.jpeg"
+                    />
+                    <div className="space-y-1">
+                      <span className="inline-block px-3 py-1 rounded-full bg-primary-container/40 text-primary text-[11px] font-bold uppercase tracking-wider">
+                        Física · Fundador Aprova+
+                      </span>
+                      <h3 className="text-xl font-headline font-bold text-on-surface">
+                        Prof. {teacher.fullName}
+                      </h3>
+                      <p className="text-xs text-on-surface-variant font-medium">
+                        Bacharel e Mestre em Física · UFAM
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-on-surface-variant leading-relaxed text-center sm:text-left">
+                    Mestre em Física da Matéria Condensada pela UFAM com pesquisas publicadas internacionalmente na <em>Nature Scientific Reports</em>. Especialista em desconstruir a TRI de Ciências da Natureza, eliminando erros recorrentes e acelerando a pontuação necessária para a nota de corte de Medicina.
+                  </p>
+                </div>
+              </div>
+
+              {/* Prof. Convidado Juan Carlos */}
+              <div className="bg-surface-container-low p-8 rounded-3xl border border-outline-variant/10 shadow-sm flex flex-col justify-between gap-6 hover:-translate-y-1 transition-all duration-300">
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      alt="Professor Convidado Juan Carlos Ribeiro Maia"
+                      className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover shadow-md shrink-0"
+                      src="/juan-carlos-maia.jpg"
+                    />
+                    <div className="space-y-1">
+                      <span className="inline-block px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-[11px] font-bold uppercase tracking-wider">
+                        Professor Convidado · Matemática
+                      </span>
+                      <h3 className="text-xl font-headline font-bold text-on-surface">
+                        Prof. Juan Carlos Maia
+                      </h3>
+                      <p className="text-xs text-on-surface-variant font-medium">
+                        Graduando em Matemática · UEA
+                      </p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-on-surface-variant leading-relaxed text-center sm:text-left">
+                    Graduando em Matemática pela Universidade do Estado do Amazonas (UEA) e educador do Projeto Ocupa (iniciativa de preparação governamental para vestibulares). Com sólida experiência no treinamento de alunos para a OBMEP, é especialista em ensinar métodos ágeis de cálculo, interpretação de enunciados e atalhos de raciocínio para gabaritar a prova de Matemática do ENEM.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </section>

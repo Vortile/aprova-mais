@@ -9,7 +9,7 @@ import { whatsappUrl } from "@/lib/teacher";
 type Inscricao = TableRow<"evento_inscricoes">;
 type EventoDatas = Pick<
   TableRow<"eventos">,
-  "data_sabado_1" | "data_sabado_2" | "data_sabado_3"
+  "data_sabado_1" | "data_sabado_2" | "data_sabado_3" | "data_sabado_4"
 >;
 
 const BRAND_PRIMARY = "#1e535c";
@@ -41,6 +41,7 @@ function formatDatasEncontros(evento?: EventoDatas | null) {
     evento.data_sabado_1,
     evento.data_sabado_2,
     evento.data_sabado_3,
+    evento.data_sabado_4,
   ].filter((data): data is string => Boolean(data));
 
   if (datas.length === 0) return null;
@@ -153,7 +154,7 @@ export async function sendTicketEmail(
     </tr>
     <tr>
       <td style="padding-bottom:24px;font-size:14px;line-height:22px;color:${BRAND_TEXT};">
-        <p style="margin:0 0 8px 0;"><strong>O que levar nos 3 sábados:</strong></p>
+        <p style="margin:0 0 8px 0;"><strong>O que levar nos 4 sábados:</strong></p>
         <p style="margin:0;">Documento oficial com foto, caneta preta e uma garrafa de água. O material de apoio é entregue no local.</p>
       </td>
     </tr>

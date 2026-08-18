@@ -10,7 +10,7 @@ export function EventoPromoBanner() {
     >
       <span className="material-symbols-outlined text-base">bolt</span>
       <span className="hidden sm:inline">
-        Intensivão ENEM 2026 — Foco Medicina: 3 sábados presenciais em Manaus.
+        Intensivão ENEM 2026 — Foco Medicina: 4 sábados presenciais em Manaus.
       </span>
       <span className="sm:hidden">Intensivão ENEM 2026 — Foco Medicina</span>
       <span className="font-black underline underline-offset-2 whitespace-nowrap">

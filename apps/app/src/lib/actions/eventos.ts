@@ -129,7 +129,7 @@ type ActionResult =
 
 export async function registrarCheckinAction(
   inscricaoId: string,
-  diaNumero: 1 | 2 | 3,
+  diaNumero: 1 | 2 | 3 | 4,
 ): Promise<ActionResult> {
   const session = await assertAdminSession();
   const supabase = createAdminClient();
@@ -196,6 +196,7 @@ export async function atualizarDatasEventoAction(
     sabado1: string;
     sabado2: string;
     sabado3: string;
+    sabado4: string;
     horarioGeral: string;
     salaTurma1: string;
     salaTurma2: string;
@@ -211,6 +212,7 @@ export async function atualizarDatasEventoAction(
         data_sabado_1: datas.sabado1 || null,
         data_sabado_2: datas.sabado2 || null,
         data_sabado_3: datas.sabado3 || null,
+        data_sabado_4: datas.sabado4 || null,
         horario_geral: datas.horarioGeral || null,
         sala_turma_1: datas.salaTurma1 || null,
         sala_turma_2: datas.salaTurma2 || null,

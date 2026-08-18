@@ -58,6 +58,7 @@ function fakeEvento(overrides: Partial<Evento> = {}): Evento {
     data_sabado_1: null,
     data_sabado_2: null,
     data_sabado_3: null,
+    data_sabado_4: null,
     ativo: true,
     created_at: "2026-08-01T00:00:00Z",
     ...overrides,
@@ -108,7 +109,7 @@ describe("computeDripSchedule", () => {
     expect(byTipo.devolutiva_dia1).toBe("2026-09-13");
   });
 
-  it("only schedules pos_evento once sábado 3 is set (final day of the 3-Saturday event)", () => {
+  it("only schedules pos_evento once sábado 4 is set (final day of the 4-Saturday event)", () => {
     const withoutSabado3 = computeDripSchedule(
       fakeInscricao({ pago_em: null }),
       fakeEvento({ data_sabado_1: "2026-09-12", data_sabado_2: "2026-09-19" }),
@@ -117,15 +118,18 @@ describe("computeDripSchedule", () => {
       false,
     );
 
-    const withSabado3 = computeDripSchedule(
+    const withSabado4 = computeDripSchedule(
       fakeInscricao({ pago_em: null }),
       fakeEvento({
         data_sabado_1: "2026-09-12",
         data_sabado_2: "2026-09-19",
         data_sabado_3: "2026-09-26",
+        data_sabado_4: "2026-10-03",
       }),
     );
-    const posEvento = withSabado3.find((item) => item.tipo === "pos_evento");
-    expect(posEvento?.targetDate.toISOString().slice(0, 10)).toBe("2026-09-27");
+    const devolutiva3 = withSabado4.find((item) => item.tipo === "devolutiva_dia3");
+    const posEvento = withSabado4.find((item) => item.tipo === "pos_evento");
+    expect(devolutiva3?.targetDate.toISOString().slice(0, 10)).toBe("2026-09-27");
+    expect(posEvento?.targetDate.toISOString().slice(0, 10)).toBe("2026-10-04");
   });
 });

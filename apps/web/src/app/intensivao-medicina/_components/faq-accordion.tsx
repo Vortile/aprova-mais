@@ -8,7 +8,7 @@ const FAQ_ITEMS = [
   {
     question: "E se eu perder um dos sábados?",
     answer:
-      "O conteúdo é sequencial e presencial, então recomendamos fortemente participar dos 3 dias. Caso perca um encontro, disponibilizamos o resumo em vídeo e o material da aula pelo WhatsApp para você não ficar para trás.",
+      "O conteúdo é sequencial e presencial, então recomendamos fortemente participar dos 4 dias. Caso perca um encontro, disponibilizamos o resumo e os mapas mentais pelo WhatsApp para você não ficar para trás.",
   },
   {
     question: "Menor de idade pode ir desacompanhado?",
@@ -16,14 +16,14 @@ const FAQ_ITEMS = [
       "Sim. Coletamos o nome e WhatsApp de um responsável no ato da inscrição para qualquer contato de emergência, mas o aluno participa normalmente das aulas sem necessidade de acompanhante durante o evento.",
   },
   {
-    question: "O material impresso já está incluso?",
+    question: "O que está incluso no material?",
     answer:
-      "Sim, a apostila física de questões comentadas, o simulado diagnóstico e o coffee-break dos 3 dias estão inclusos nos R$ 500 — sem nenhuma cobrança extra.",
+      "A apostila física de questões comentadas e os mapas mentais dos principais tópicos estão inclusos nos R$ 500. O coffee-break não está incluído.",
   },
   {
     question: "Como funciona o pagamento?",
     answer:
-      "Você pode pagar via PIX (aprovação imediata) ou Cartão de Crédito em até 12x. Assim que o pagamento é confirmed, o ingresso com QR Code chega automaticamente no seu e-mail.",
+      "Você pode pagar via PIX (aprovação imediata) ou Cartão de Crédito em até 12x. Assim que o pagamento é confirmado, o ingresso com QR Code chega automaticamente no seu e-mail.",
   },
   {
     question: "Como sei em qual turma (sala) eu fiquei?",

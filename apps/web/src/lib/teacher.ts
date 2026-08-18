@@ -24,6 +24,13 @@ export const teacher = {
   portalUrl: "https://app.aprovamaiscurso-pro.com.br/entrar",
 } as const;
 
+export const guestTeacher = {
+  firstName: "Juan Carlos",
+  fullName: "Juan Carlos Ribeiro Maia",
+  role: "Professor Convidado de Matemática",
+  institution: "UEA",
+} as const;
+
 // ── Derived helpers ──────────────────────
 
 /** Full WhatsApp deep-link URL */

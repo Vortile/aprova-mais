@@ -64,6 +64,7 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
   const [sabado1, setSabado1] = useState(data.evento.data_sabado_1 ?? "");
   const [sabado2, setSabado2] = useState(data.evento.data_sabado_2 ?? "");
   const [sabado3, setSabado3] = useState(data.evento.data_sabado_3 ?? "");
+  const [sabado4, setSabado4] = useState(data.evento.data_sabado_4 ?? "");
   const [horarioGeral, setHorarioGeral] = useState(
     data.evento.horario_geral ?? "",
   );
@@ -84,7 +85,7 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
 
   const maxFunil = Math.max(...Object.values(data.funil), 1);
 
-  async function handleCheckin(inscricaoId: string, dia: 1 | 2 | 3) {
+  async function handleCheckin(inscricaoId: string, dia: 1 | 2 | 3 | 4) {
     setPendingCheckin(`${inscricaoId}-${dia}`);
     const result = await registrarCheckinAction(inscricaoId, dia);
     setPendingCheckin(null);
@@ -113,6 +114,7 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
       sabado1,
       sabado2,
       sabado3,
+      sabado4,
       horarioGeral,
       salaTurma1,
       salaTurma2,
@@ -201,7 +203,7 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
 
       <Card>
         <CardHeader>
-          <CardTitle>Datas, Horário e Salas dos 3 Sábados</CardTitle>
+          <CardTitle>Datas, Horário e Salas dos 4 Sábados</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <div className="flex flex-col sm:flex-row gap-4 sm:items-end flex-wrap">
@@ -227,6 +229,14 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
                 type="date"
                 value={sabado3}
                 onChange={(e) => setSabado3(e.target.value)}
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm">
+              Sábado 4
+              <Input
+                type="date"
+                value={sabado4}
+                onChange={(e) => setSabado4(e.target.value)}
               />
             </label>
           </div>
@@ -278,7 +288,7 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
               <TableHeader>
                 <TableRow>
                   <TableHead>Aluno</TableHead>
-                  <TableHead>Turma</TableHead>
+                  <TableHead>Sala</TableHead>
                   <TableHead>Status</TableHead>
                   <TableHead>Pagamento</TableHead>
                   <TableHead>Check-in</TableHead>
@@ -296,7 +306,7 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
                     </TableCell>
                     <TableCell>
                       {row.turma_alocada
-                        ? `Turma ${row.turma_alocada} (${row.horario_turma})`
+                        ? `${row.sala_alocada ?? `Sala ${row.turma_alocada}`} (${row.horario_turma})`
                         : "—"}
                     </TableCell>
                     <TableCell>{statusBadge(row.status_pagamento)}</TableCell>
@@ -305,7 +315,7 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
                     </TableCell>
                     <TableCell>
                       <div className="flex gap-1">
-                        {([1, 2, 3] as const).map((dia) => (
+                        {([1, 2, 3, 4] as const).map((dia) => (
                           <Button
                             key={dia}
                             size="sm"

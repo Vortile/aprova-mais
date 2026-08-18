@@ -394,7 +394,7 @@ export function InscricaoForm({ precoReais }: { precoReais: number }) {
           value={values.restricoesMedicas}
           onChange={(e) => updateField("restricoesMedicas", e.target.value)}
           rows={2}
-          placeholder="Alergias, diabetes, etc. (para o coffee-break)"
+          placeholder="Alergias, diabetes, etc. (informação opcional)"
         />
       </Field>
 

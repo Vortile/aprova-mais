@@ -30,8 +30,9 @@ export function EventoPromoSection() {
                 Intensivão ENEM 2026 — Foco Medicina
               </h2>
               <p className="text-blue-50 text-base md:text-lg leading-relaxed max-w-xl">
-                3 sábados presenciais com o Prof. Júnior para destravar a nota
-                de Medicina na TRI. Turma pequena, vagas limitadas.
+                4 sábados presenciais com os professores Júnior (Física) e Juan
+                Carlos (Matemática): 1h de cada matéria por encontro. Turma
+                pequena, vagas limitadas.
               </p>
             </div>
 

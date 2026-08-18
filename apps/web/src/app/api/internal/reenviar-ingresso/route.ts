@@ -47,7 +47,7 @@ export async function POST(request: Request) {
   try {
     const { data: eventoRowData } = await supabase
       .from(TABLES.EVENTOS)
-      .select("data_sabado_1, data_sabado_2, data_sabado_3")
+      .select("data_sabado_1, data_sabado_2, data_sabado_3, data_sabado_4")
       .eq("id", inscricao.evento_id)
       .single();
 

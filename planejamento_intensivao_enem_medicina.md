@@ -9,13 +9,13 @@ Este documento estabelece o planejamento completo, técnico, financeiro, pedagó
 | Parâmetro               | Detalhe                                                                                                  |
 | :---------------------- | :------------------------------------------------------------------------------------------------------- |
 | **Evento**              | Intensivão ENEM 2026 — Foco Medicina                                                                     |
-| **Formato**             | Presencial (3 Sábados de Imersão)                                                                        |
+| **Formato**             | Presencial (4 Sábados de Imersão, 2h por sábado)                                                          |
 | **Local**               | **Open Laranjeiras Gallery**                                                                             |
 | **Endereço**            | Av. Prof. Nilton Lins, 1984 – Flores, Manaus - AM, 69058-300                                             |
 | **Contato Oficial**     | WhatsApp: (92) 98158-1955 (Prof. Júnior)                                                                 |
 | **Preço**               | R$ 500,00 (à vista no PIX ou em até 12x no Cartão de Crédito)                                            |
 | **Capacidade Máxima**   | **26 Alunos** (2 turmas de 13 alunos)                                                                    |
-| **Divisão de Horários** | **Turma 1:** 08:00 às 10:00 (Inscrições #01 a #13)<br>**Turma 2:** 10:00 às 12:00 (Inscrições #14 a #26) |
+| **Divisão de Horários** | Cada turma tem 2h de aula: 1h de Física + 1h de Matemática. A ordem das disciplinas alterna entre as salas. |
 | **Encerramento**        | Automático ao confirmar o 26º pagamento (Exibição de _Vagas Esgotadas_)                                  |
 
 ---
@@ -68,7 +68,7 @@ A estratégia de persuasão e cópia da Landing Page foi desenhada a partir das 
 
 ### 1. A Equação de Valor de Alex Hormozi (_$100M Offers_)
 
-$$\text{Valor Percebido} = \frac{\text{Aprovação em Medicina (Sonho)} \times \text{Certeza no Método do Prof. Júnior}}{\text{3 Sábados (Tempo Curto)} \times \text{Zero Enrolação / Foco Cirúrgico na TRI}}$$
+$$\text{Valor Percebido} = \frac{\text{Aprovação em Medicina (Sonho)} \times \text{Certeza no Método do Prof. Júnior}}{\text{4 Sábados (Tempo Curto)} \times \text{Zero Enrolação / Foco Cirúrgico na TRI}}$$
 
 ### 2. O Stack de Valor Ancorado (Offer Stacking)
 
@@ -76,13 +76,11 @@ Para tornar os **R$ 500,00** um "no-brainer" (uma escolha óbvia e irresistível
 
 | Entregável                                                       |        Valor de Mercado Individual         |
 | :--------------------------------------------------------------- | :----------------------------------------: |
-| **3 Sábados de Imersão Presencial (100% focado no padrão TRI)**  |                 R$ 750,00                  |
+| **4 Sábados de Imersão Presencial (1h Física + 1h Matemática por encontro)** | R$ 750,00 |
 | **Apostila Física de Questões Comentadas & Padrões Recorrentes** |                 R$ 197,00                  |
-| **Simulado Diagnóstico TRI Medicina com Devolutiva Individual**  |                 R$ 197,00                  |
-| **Plantão e Análise de Redação Modelo Nota 1000**                |                 R$ 147,00                  |
+| **Mapas Mentais dos Tópicos Mais Importantes para Medicina**     |                 R$ 197,00                  |
 | **Acesso ao Grupo VIP no WhatsApp com Prof. Júnior até o ENEM**  |                 R$ 297,00                  |
-| **Coffee-Break & Networking Exclusivo nos 3 dias**               |                  R$ 97,00                  |
-| **VALOR TOTAL REAL ACUMULADO:**                                  |            **~~R$ 1.685,00~~**             |
+| **VALOR TOTAL REAL ACUMULADO:**                                  |            **~~R$ 1.441,00~~**             |
 | **INVESTIMENTO DO LOTE 1 (26 Vagas):**                           | **R$ 500,00 à vista (ou 12x de R$ 49,90)** |
 
 ### 3. As 3 Âncoras de Preço (Custo da Inação)
