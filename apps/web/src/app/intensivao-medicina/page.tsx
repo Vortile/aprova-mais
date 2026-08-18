@@ -128,7 +128,7 @@ export default async function IntensivaoMedicinaPage() {
                       </span>{" "}
                       vagas
                       {turma1Esgotada
-                        ? " — Primeira sala lotada, últimas vagas na segunda sala (mesmo horário)"
+                        ? " — Turma 1 (08h às 10h) lotada, últimas vagas para a Turma 2 (10h às 12h)"
                         : ""}
                     </>
                   ) : (

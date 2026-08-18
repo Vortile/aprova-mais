@@ -242,9 +242,9 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
           </div>
           <div className="flex flex-col sm:flex-row gap-4 sm:items-end flex-wrap">
             <label className="flex flex-col gap-1 text-sm">
-              Horário (mesmo para todas as salas)
+              Horário / Turnos
               <Input
-                placeholder="08:00 às 12:00"
+                placeholder="Turma 1: 08:00 às 10:00 | Turma 2: 10:00 às 12:00"
                 value={horarioGeral}
                 onChange={(e) => setHorarioGeral(e.target.value)}
               />

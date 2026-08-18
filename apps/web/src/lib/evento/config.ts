@@ -18,7 +18,9 @@ export const evento = {
   localNome: "Open Laranjeiras Gallery",
   localEndereco: "Av. Prof. Nilton Lins, 1984 – Flores, Manaus - AM, 69058-300",
   localContato: "(92) 98158-1955",
-  horarioGeral: "08:00 às 12:00",
+  horarioTurma1: "08:00 às 10:00",
+  horarioTurma2: "10:00 às 12:00",
+  horarioGeral: "Turma 1: 08:00 às 10:00 | Turma 2: 10:00 às 12:00",
   salaTurma1: "Sala HY",
 } as const;
 

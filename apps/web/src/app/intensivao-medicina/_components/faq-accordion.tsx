@@ -26,8 +26,8 @@ const FAQ_ITEMS = [
       "Você pode pagar via PIX (aprovação imediata) ou Cartão de Crédito em até 12x. Assim que o pagamento é confirmado, o ingresso com QR Code chega automaticamente no seu e-mail.",
   },
   {
-    question: "Como sei em qual turma (sala) eu fiquei?",
-    answer: `Todas as turmas acontecem no mesmo horário (${evento.horarioGeral}). As vagas são organizadas por ordem de confirmação de pagamento: os primeiros 13 pagantes ficam na ${evento.salaTurma1} e os próximos 13 na segunda sala. Sua sala é informada no e-mail de confirmação.`,
+    question: "Como sei em qual turma e horário eu fiquei?",
+    answer: `As 26 vagas são organizadas por ordem de confirmação de pagamento: os primeiros 13 inscritos garantem vaga na Turma 1 (${evento.horarioTurma1}) e os 13 seguintes na Turma 2 (${evento.horarioTurma2}). A confirmação exata da sua turma e horário é informada no e-mail de confirmação junto ao ingresso.`,
   },
 ] as const;
 
