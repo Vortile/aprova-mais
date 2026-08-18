@@ -7,6 +7,7 @@ import {
   asSupabaseInsert,
   asSupabaseUpdate,
   asSupabaseRow,
+  asSupabaseRows,
 } from "@/lib/supabase/typed";
 import { inscricaoSchema } from "@/lib/validations/inscricao";
 import { calculateAge, onlyDigits } from "@/lib/evento/format";
@@ -112,8 +113,74 @@ export async function criarInscricaoAction(
     return { ok: false, error: "Data de nascimento inválida." };
   }
 
+  const cleanCpf = onlyDigits(values.cpfAluno);
+  const cleanEmail = values.emailAluno.toLowerCase().trim();
+
   const supabase = createAdminClient();
 
+  // Check if CPF or email is already registered in this event
+  const { data: existingData } = await supabase
+    .from(TABLES.EVENTO_INSCRICOES)
+    .select("id, status_pagamento, cpf_aluno, email_aluno")
+    .eq("evento_id", status.eventoId)
+    .or(`cpf_aluno.eq.${cleanCpf},email_aluno.ilike.${cleanEmail}`);
+
+  const existingRows = asSupabaseRows<"evento_inscricoes">(existingData ?? []) ?? [];
+
+  const approvedRow = existingRows.find((r) => r.status_pagamento === "aprovado");
+
+  if (approvedRow) {
+    if (onlyDigits(approvedRow.cpf_aluno) === cleanCpf) {
+      return {
+        ok: false,
+        error: "Este CPF já possui uma vaga confirmada no Intensivão.",
+      };
+    }
+    return {
+      ok: false,
+      error: "Este e-mail já possui uma vaga confirmada no Intensivão.",
+    };
+  }
+
+  // If a pending registration exists for this CPF or email, update it instead of creating a duplicate pending row
+  const pendingRow = existingRows.find((r) => r.status_pagamento === "pendente");
+
+  if (pendingRow) {
+    const { data: updatedData, error: updateError } = await supabase
+      .from(TABLES.EVENTO_INSCRICOES)
+      .update(
+        asSupabaseUpdate<"evento_inscricoes">({
+          session_id: sessionId,
+          nome_aluno: values.nomeAluno,
+          email_aluno: values.emailAluno,
+          whatsapp_aluno: onlyDigits(values.whatsappAluno),
+          cpf_aluno: cleanCpf,
+          data_nascimento: values.dataNascimento,
+          idade_aluno: idade,
+          serie_atual: values.serieAtual,
+          nome_responsavel: values.nomeResponsavel || null,
+          whatsapp_responsavel: values.whatsappResponsavel
+            ? onlyDigits(values.whatsappResponsavel)
+            : null,
+          restricoes_medicas: values.restricoesMedicas || null,
+          valor_pago_centavos: status.precoCentavos,
+          utm_source: values.utmSource || null,
+          utm_medium: values.utmMedium || null,
+          utm_campaign: values.utmCampaign || null,
+        }),
+      )
+      .eq("id", pendingRow.id)
+      .select("id")
+      .single();
+
+    const data = asSupabaseRow<"evento_inscricoes">(updatedData);
+
+    if (!updateError && data) {
+      return { ok: true, inscricaoId: data.id };
+    }
+  }
+
+  // Otherwise, insert a new pending registration
   const { data: insertedData, error } = await supabase
     .from(TABLES.EVENTO_INSCRICOES)
     .insert(
@@ -123,7 +190,7 @@ export async function criarInscricaoAction(
         nome_aluno: values.nomeAluno,
         email_aluno: values.emailAluno,
         whatsapp_aluno: onlyDigits(values.whatsappAluno),
-        cpf_aluno: onlyDigits(values.cpfAluno),
+        cpf_aluno: cleanCpf,
         data_nascimento: values.dataNascimento,
         idade_aluno: idade,
         serie_atual: values.serieAtual,

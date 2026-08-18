@@ -581,6 +581,7 @@ export interface Database {
           pago_em?: string | null;
         };
         Update: {
+          session_id?: string | null;
           nome_aluno?: string;
           email_aluno?: string;
           whatsapp_aluno?: string;
