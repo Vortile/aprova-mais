@@ -54,7 +54,7 @@ function fakeEvento(overrides: Partial<Evento> = {}): Evento {
     local_contato: "(92) 98158-1955",
     horario_geral: "Turma 1: 08:00 às 10:00 | Turma 2: 10:00 às 12:00",
     sala_turma_1: "Sala HY",
-    sala_turma_2: null,
+    sala_turma_2: "Sala HY",
     data_sabado_1: null,
     data_sabado_2: null,
     data_sabado_3: null,

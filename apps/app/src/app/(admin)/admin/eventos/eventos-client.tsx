@@ -260,7 +260,7 @@ export function EventosClient({ data }: { data: EventoDashboardData }) {
             <label className="flex flex-col gap-1 text-sm">
               Sala 2
               <Input
-                placeholder="A definir"
+                placeholder="Sala HY"
                 value={salaTurma2}
                 onChange={(e) => setSalaTurma2(e.target.value)}
               />

@@ -15,6 +15,7 @@ export const ROUTES = {
     CONFIGURACOES: "/admin/configuracoes",
     EMAILS: "/admin/emails",
     EVENTOS: "/admin/eventos",
+    EVENTOS_PREVIEW_EMAILS: "/admin/eventos/preview-emails",
   },
   ALUNO: {
     HOME: "/aluno",

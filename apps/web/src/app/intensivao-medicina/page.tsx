@@ -33,14 +33,6 @@ const OFERTA_STACK = [
     item: "Apostila física de questões comentadas & padrões recorrentes",
     valor: 197,
   },
-  {
-    item: "Mapas mentais dos tópicos mais importantes para Medicina",
-    valor: 197,
-  },
-  {
-    item: "Acesso ao grupo VIP no WhatsApp com o Prof. Júnior até o ENEM",
-    valor: 297,
-  },
 ] as const;
 
 const VALOR_TOTAL = OFERTA_STACK.reduce((sum, row) => sum + row.valor, 0);
@@ -98,9 +90,9 @@ export default async function IntensivaoMedicinaPage() {
               <p className="text-lg md:text-xl text-on-surface-variant leading-relaxed">
                 Um intensivão presencial de 4 sábados (12/09, 19/09, 26/09 e
                 03/10) para quem já estuda muito, mas travou nos mesmos pontos
-                da TRI. Em cada encontro, são 2h de aula com foco cirúrgico: 1h
-                de Física com o Prof. Júnior e 1h de Matemática com o Prof.
-                Convidado Juan Carlos Maia.
+                da prova. Em cada encontro, são 2h de aula de Física e
+                Matemática com o Prof. Deuticilam e o Prof. Convidado Juan
+                Carlos Maia.
               </p>
 
               <div className="flex flex-col items-center md:items-start gap-3 pt-2">
@@ -165,13 +157,14 @@ export default async function IntensivaoMedicinaPage() {
           <FadeInWhenVisible className="max-w-5xl mx-auto space-y-12">
             <div className="text-center space-y-6 max-w-3xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-headline font-bold text-on-surface">
-                Por que 90% dos candidatos a Medicina travam na TRI?
+                Por que tantos candidatos a Medicina travam na nota de corte?
               </h2>
               <p className="text-lg text-on-surface-variant leading-relaxed">
                 Não é falta de esforço. É estudar teoria genérica quando a prova
                 cobra um padrão bem específico de raciocínio. O Intensivão troca
-                "estudar muito" por "estudar exatamente o que pesa" em Física e
-                Matemática, com mapas mentais para revisar os pontos decisivos.
+                &quot;estudar muito&quot; por &quot;estudar com método e foco
+                cirúrgico&quot; nos modelos de questões que realmente definem a
+                sua nota em Física e Matemática.
               </p>
             </div>
 
@@ -203,7 +196,7 @@ export default async function IntensivaoMedicinaPage() {
               {
                 dia: "Sábado 1 · 12/09",
                 titulo: "Física + Matemática: base forte",
-                desc: "1h de Física e 1h de Matemática para identificar lacunas e organizar o raciocínio que mais pontua.",
+                desc: "2h de imersão em Física e Matemática para identificar lacunas e organizar o raciocínio que mais pontua.",
                 icon: "science",
               },
               {
@@ -215,13 +208,13 @@ export default async function IntensivaoMedicinaPage() {
               {
                 dia: "Sábado 3 · 26/09",
                 titulo: "Padrões que se repetem",
-                desc: "Mapas mentais e revisão dos padrões de Física e Matemática que mais aparecem na prova.",
+                desc: "Revisão e resolução guiada dos padrões de Física e Matemática que mais aparecem na prova.",
                 icon: "account_tree",
               },
               {
                 dia: "Sábado 4 · 03/10",
                 titulo: "Reta final de alto rendimento",
-                desc: "Mais 1h de cada disciplina, consolidando métodos, atalhos e prioridades para a reta final do ENEM.",
+                desc: "Aprimoramento final de Física e Matemática, consolidando métodos, atalhos e prioridades para a reta final do ENEM.",
                 icon: "trending_up",
               },
             ].map((sabado) => (
@@ -260,13 +253,13 @@ export default async function IntensivaoMedicinaPage() {
               </h2>
               <p className="text-on-surface-variant leading-relaxed">
                 Professores especialistas que unem rigor acadêmico, didática
-                comprovada e foco cirúrgico na TRI e nos vestibulares de
+                comprovada e foco cirúrgico no ENEM e nos vestibulares de
                 Medicina do Amazonas.
               </p>
             </div>
 
             <div className="grid md:grid-cols-2 gap-8">
-              {/* Prof. Júnior */}
+              {/* Prof. Deuticilam */}
               <div className="bg-surface-container-low p-8 rounded-3xl border border-outline-variant/10 shadow-sm flex flex-col justify-between gap-6 hover:-translate-y-1 transition-all duration-300">
                 <div className="space-y-6">
                   <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5 text-center sm:text-left">
@@ -292,9 +285,9 @@ export default async function IntensivaoMedicinaPage() {
                     Mestre em Física da Matéria Condensada pela UFAM com
                     pesquisas publicadas internacionalmente na{" "}
                     <em>Nature Scientific Reports</em>. Especialista em
-                    desconstruir a TRI de Ciências da Natureza, eliminando erros
-                    recorrentes e acelerando a pontuação necessária para a nota
-                    de corte de Medicina.
+                    desconstruir as questões de Física e Ciências da Natureza,
+                    eliminando erros recorrentes e acelerando o rendimento
+                    necessário para a nota de corte de Medicina.
                   </p>
                 </div>
               </div>

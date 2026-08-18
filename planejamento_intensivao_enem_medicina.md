@@ -12,10 +12,10 @@ Este documento estabelece o planejamento completo, técnico, financeiro, pedagó
 | **Formato**             | Presencial (4 Sábados de Imersão, 2h por sábado)                                                            |
 | **Local**               | **Open Laranjeiras Gallery**                                                                                |
 | **Endereço**            | Av. Prof. Nilton Lins, 1984 – Flores, Manaus - AM, 69058-300                                                |
-| **Contato Oficial**     | WhatsApp: (92) 98158-1955 (Prof. Júnior)                                                                    |
+| **Contato Oficial**     | WhatsApp: (92) 98158-1955 (Prof. Deuticilam)                                                                |
 | **Preço**               | R$ 500,00 (à vista no PIX ou em até 12x no Cartão de Crédito)                                               |
 | **Capacidade Máxima**   | **26 Alunos** (2 turmas de 13 alunos)                                                                       |
-| **Divisão de Horários** | Cada turma tem 2h de aula: 1h de Física + 1h de Matemática. A ordem das disciplinas alterna entre as salas. |
+| **Divisão de Horários** | Cada turma tem 2h de aula com os professores de Física e Matemática. |
 | **Encerramento**        | Automático ao confirmar o 26º pagamento (Exibição de _Vagas Esgotadas_)                                     |
 
 ---
@@ -61,14 +61,14 @@ A estratégia de persuasão e cópia da Landing Page foi desenhada a partir das 
 │                                                                             │
 │ 1. Alex Hormozi ($100M Offers)        → Equação de Valor & Grandiosa Oferta │
 │ 2. Robert Cialdini (Armas da Persuasão) → Escassez Real (26 Vagas) + Prova    │
-│ 3. Eugene Schwartz (Breakthrough Adv.) → Nível Solution-Aware (Dor da TRI)  │
+│ 3. Eugene Schwartz (Breakthrough Adv.) → Nível Solution-Aware (Dor da Prova)│
 │ 4. Blair Warren (One-Sentence)         → Justificar o Fracasso Anterior     │
 └─────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### 1. A Equação de Valor de Alex Hormozi (_$100M Offers_)
 
-$$\text{Valor Percebido} = \frac{\text{Aprovação em Medicina (Sonho)} \times \text{Certeza no Método do Prof. Júnior}}{\text{4 Sábados (Tempo Curto)} \times \text{Zero Enrolação / Foco Cirúrgico na TRI}}$$
+$$\text{Valor Percebido} = \frac{\text{Aprovação em Medicina (Sonho)} \times \text{Certeza no Método do Prof. Deuticilam}}{\text{4 Sábados (Tempo Curto)} \times \text{Zero Enrolação / Foco Cirúrgico no ENEM}}$$
 
 ### 2. O Stack de Valor Ancorado (Offer Stacking)
 
@@ -76,11 +76,9 @@ Para tornar os **R$ 500,00** um "no-brainer" (uma escolha óbvia e irresistível
 
 | Entregável                                                                   |        Valor de Mercado Individual         |
 | :--------------------------------------------------------------------------- | :----------------------------------------: |
-| **4 Sábados de Imersão Presencial (1h Física + 1h Matemática por encontro)** |                 R$ 750,00                  |
+| **4 Sábados de Imersão Presencial (2h de Física e Matemática por encontro)** |                 R$ 750,00                  |
 | **Apostila Física de Questões Comentadas & Padrões Recorrentes**             |                 R$ 197,00                  |
-| **Mapas Mentais dos Tópicos Mais Importantes para Medicina**                 |                 R$ 197,00                  |
-| **Acesso ao Grupo VIP no WhatsApp com Prof. Júnior até o ENEM**              |                 R$ 297,00                  |
-| **VALOR TOTAL REAL ACUMULADO:**                                              |            **~~R$ 1.441,00~~**             |
+| **VALOR TOTAL REAL ACUMULADO:**                                              |             **~~R$ 947,00~~**              |
 | **INVESTIMENTO DO LOTE 1 (26 Vagas):**                                       | **R$ 500,00 à vista (ou 12x de R$ 49,90)** |
 
 ### 3. As 3 Âncoras de Preço (Custo da Inação)
@@ -91,7 +89,7 @@ Para tornar os **R$ 500,00** um "no-brainer" (uma escolha óbvia e irresistível
 
 ### 4. Psicologia da Dupla Audiência (Pais vs. Alunos)
 
-- **Para o Aluno:** Fim da insegurança de "estudar muito e não sair dos 700 pontos na TRI", clareza de quais questões priorizar no dia da prova, sensação de estar em uma turma de elite.
+- **Para o Aluno:** Fim da insegurança de "estudar muito e não sair do lugar", clareza de quais questões priorizar no dia da prova, sensação de estar em uma turma de elite.
 - **Para os Pais:** Segurança do investimento, apoio pedagógico de alto nível em Manaus, ambiente presencial controlado e de excelência.
 
 ---
@@ -133,7 +131,7 @@ O formulário coleta as informações vitais sem gerar fricção excessiva:
 
 1. **Nome Completo do Aluno** _(Obrigatório — para crachá e lista de presença)_
 2. **E-mail do Aluno/Responsável** _(Obrigatório — onde o ingresso e QR Code chegam)_
-3. **WhatsApp com DDD** _(Obrigatório — para lembretes e grupo VIP)_
+3. **WhatsApp com DDD** _(Obrigatório — para avisos e envio do ingresso)_
 4. **CPF do Aluno** _(Obrigatório — para credenciamento e emissão do pagamento)_
 5. **Data de Nascimento / Idade** _(Obrigatório)_
 6. **Série / Situação Atual** _(Dropdown obrigatório)_:
@@ -155,9 +153,9 @@ Usando o **Resend** já integrado ao Aprova+, o aluno e o responsável receberã
   │
 [D+2] Guia Prático: "Como se preparar para o Sábado 1 + Material Pré-Aula"
   │
-[D+4] Mensagem Pessoal do Prof. Júnior (Vídeo exclusivo e boas-vindas)
+[D+4] Mensagem Pessoal do Prof. Deuticilam (Vídeo exclusivo e boas-vindas)
   │
-[D+6] O Mapa da TRI de Medicina (Diagnóstico dos erros mais comuns no ENEM)
+[D+6] Estratégia de Prova para Medicina (Diagnóstico dos erros mais comuns no ENEM)
   │
 [2 Dias antes do Sábado 1] Checklist Operacional (O que levar, endereço e pontualidade)
   │

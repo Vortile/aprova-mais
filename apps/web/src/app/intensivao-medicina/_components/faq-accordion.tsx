@@ -8,7 +8,7 @@ const FAQ_ITEMS = [
   {
     question: "E se eu perder um dos sábados?",
     answer:
-      "O conteúdo é sequencial e presencial, então recomendamos fortemente participar dos 4 dias. Caso perca um encontro, disponibilizamos o resumo e os mapas mentais pelo WhatsApp para você não ficar para trás.",
+      "O conteúdo é sequencial e presencial, então recomendamos fortemente participar dos 4 dias. Caso perca um encontro, disponibilizamos o material e as orientações da aula para você não ficar para trás.",
   },
   {
     question: "Menor de idade pode ir desacompanhado?",
@@ -18,7 +18,7 @@ const FAQ_ITEMS = [
   {
     question: "O que está incluso no material?",
     answer:
-      "A apostila física com questões comentadas e os mapas mentais estratégicos de Física e Matemática estão inclusos no valor da inscrição. Você recebe o material impresso no primeiro dia.",
+      "A apostila física com questões comentadas e resoluções guiadas de Física e Matemática está inclusa no valor da inscrição. Você recebe o material impresso no primeiro dia.",
   },
   {
     question: "Como funciona o pagamento?",
@@ -27,7 +27,7 @@ const FAQ_ITEMS = [
   },
   {
     question: "Como sei em qual turma e horário eu fiquei?",
-    answer: `As 26 vagas são organizadas por ordem de confirmação de pagamento: os primeiros 13 inscritos garantem vaga na Turma 1 (${evento.horarioTurma1}) e os 13 seguintes na Turma 2 (${evento.horarioTurma2}). A confirmação exata da sua turma e horário é informada no e-mail de confirmação junto ao ingresso.`,
+    answer: `As 26 vagas são organizadas por ordem de confirmação de pagamento: os primeiros 13 inscritos garantem vaga na Turma 1 (${evento.horarioTurma1}) e os 13 seguintes na Turma 2 (${evento.horarioTurma2}), ambas na ${evento.salaTurma1}. A confirmação exata da sua turma e horário é informada no e-mail de confirmação junto ao ingresso.`,
   },
 ] as const;
 

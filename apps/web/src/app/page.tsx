@@ -170,7 +170,7 @@ export default async function WebHomePage() {
             <div className="absolute inset-0 bg-primary/5 rounded-[4rem] -rotate-3 translate-x-4"></div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              alt="Professor Junior em ambiente de estudo"
+              alt="Professor Deuticilam em ambiente de estudo"
               className="w-full h-full object-cover asymmetric-image-mask shadow-2xl relative z-10 grayscale-15 hover:grayscale-0 transition-all duration-700"
               src="/junior-professor-mestre.jpeg"
             />
@@ -180,7 +180,7 @@ export default async function WebHomePage() {
                   <span className="material-symbols-outlined">verified</span>
                 </div>
                 <div>
-                  <p className="font-bold text-primary">Deuticilam Júnior</p>
+                  <p className="font-bold text-primary">Prof. Deuticilam</p>
                   <p className="text-xs text-on-surface-variant">
                     Fundador &amp; Formado em Física
                   </p>
@@ -280,10 +280,10 @@ export default async function WebHomePage() {
             </h2>
             <p className="text-lg text-on-surface-variant leading-relaxed">
               A Equipe Aprova+ foi fundada e é liderada pelo{" "}
-              <strong>Prof. Deuticilam Junior</strong>, bacharel em Física e
-              mestre em Física da Matéria Condensada pela UFAM (Universidade
-              Federal do Amazonas). Com reconhecimento científico internacional,
-              ele possui pesquisas publicadas em veículos de prestígio como a{" "}
+              <strong>Prof. Deuticilam</strong>, bacharel em Física e mestre em
+              Física da Matéria Condensada pela UFAM (Universidade Federal do
+              Amazonas). Com reconhecimento científico internacional, ele possui
+              pesquisas publicadas em veículos de prestígio como a{" "}
               <a
                 href="https://www.nature.com/articles/s41598-018-21968-9"
                 target="_blank"
@@ -329,10 +329,10 @@ export default async function WebHomePage() {
                   <span className="text-primary">Aprova+</span>
                 </h2>
                 <p className="text-lg text-on-surface-variant leading-relaxed">
-                  Criado pelo Prof. Deuticilam Junior a partir de anos de
-                  experiência com ensino domiciliar, nosso método é estruturado
-                  para gerar alto desempenho e independência total. Não queremos
-                  que o aluno dependa de nós para sempre, mas sim que aprenda a
+                  Criado pelo Prof. Deuticilam a partir de anos de experiência
+                  com ensino domiciliar, nosso método é estruturado para gerar
+                  alto desempenho e independência total. Não queremos que o
+                  aluno dependa de nós para sempre, mas sim que aprenda a
                   aprender.
                 </p>
                 <div className="bg-surface p-6 rounded-3xl border border-outline/5 shadow-sm space-y-4">

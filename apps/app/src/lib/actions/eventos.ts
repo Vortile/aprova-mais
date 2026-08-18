@@ -227,3 +227,241 @@ export async function atualizarDatasEventoAction(
   revalidatePath(ROUTES.ADMIN.EVENTOS);
   return { ok: true, message: "Datas atualizadas com sucesso." };
 }
+
+export async function enviarPreviewEmailAction(input: {
+  to: string;
+  emailType: "ticket" | "all" | string;
+  apiKeyOverride?: string;
+  nomeAluno?: string;
+  turma?: 1 | 2;
+}): Promise<ActionResult> {
+  await assertAdminSession();
+
+  const {
+    to,
+    emailType,
+    apiKeyOverride,
+    nomeAluno = "Luciano Simoni",
+    turma = 1,
+  } = input;
+
+  if (!to || !to.includes("@")) {
+    return { ok: false, error: "Informe um endereço de e-mail válido." };
+  }
+
+  const apiKey = apiKeyOverride || process.env.RESEND_API_KEY;
+  if (!apiKey) {
+    return {
+      ok: false,
+      error:
+        "RESEND_API_KEY não configurada. Por favor, forneça uma chave válida do Resend (re_...).",
+    };
+  }
+
+  try {
+    const { Resend } = await import("resend");
+    const QRCode = (await import("qrcode")).default;
+    const { generateTicketEmailHtml } =
+      await import("@/lib/email/ticket-template");
+    const { generateDripEmailHtml, DRIP_EMAIL_LABELS } =
+      await import("@/lib/email/drip-templates");
+    type DripEmailType = Parameters<typeof generateDripEmailHtml>[0]["tipo"];
+    const { evento: eventoConfig } = await import("@/lib/evento/config");
+
+    const resend = new Resend(apiKey);
+    const fromEmail = "Aprova+ Eventos <contato@aprovamaiscurso-pro.com.br>";
+
+    const mockInscricao: InscricaoRow = {
+      id: "preview-test-uuid",
+      evento_id: "evt-preview-uuid",
+      numero_inscricao: 1,
+      session_id: "sess-preview",
+      nome_aluno: nomeAluno,
+      email_aluno: to,
+      whatsapp_aluno: "92981581955",
+      cpf_aluno: "00011122233",
+      data_nascimento: "2006-08-18",
+      idade_aluno: 19,
+      serie_atual: "concluido",
+      nome_responsavel: null,
+      whatsapp_responsavel: null,
+      restricoes_medicas: null,
+      status_pagamento: "aprovado",
+      forma_pagamento: "pix",
+      gateway: "mercadopago",
+      gateway_payment_id: "mp-123456789",
+      numero_confirmacao: turma === 1 ? 1 : 14,
+      turma_alocada: turma,
+      horario_turma:
+        turma === 1 ? eventoConfig.horarioTurma1 : eventoConfig.horarioTurma2,
+      sala_alocada:
+        turma === 1 ? eventoConfig.salaTurma1 : eventoConfig.salaTurma2,
+      codigo_ingresso: "APROVA-MED-TESTE-2026",
+      valor_pago_centavos: 50000,
+      utm_source: null,
+      utm_medium: null,
+      utm_campaign: null,
+      created_at: new Date().toISOString(),
+      pago_em: new Date().toISOString(),
+    };
+
+    if (emailType === "all") {
+      const qrBuffer = await QRCode.toBuffer(mockInscricao.codigo_ingresso, {
+        width: 320,
+        margin: 1,
+      });
+
+      const ticketHtml = generateTicketEmailHtml({
+        inscricao: mockInscricao,
+        evento: {
+          data_sabado_1: "2026-09-12",
+          data_sabado_2: "2026-09-19",
+          data_sabado_3: "2026-09-26",
+          data_sabado_4: "2026-10-03",
+        },
+      });
+
+      const ticketRes = await resend.emails.send({
+        from: fromEmail,
+        to: [to],
+        subject: `[PREVIEW 1/9] 🎟️ Seu Ingresso — Intensivão ENEM 2026 (Foco Medicina)`,
+        html: ticketHtml,
+        attachments: [
+          {
+            filename: "ingresso-qrcode.png",
+            content: qrBuffer.toString("base64"),
+            contentId: "ticket-qrcode",
+            contentType: "image/png",
+          },
+        ],
+      });
+
+      if (ticketRes.error) {
+        return {
+          ok: false,
+          error: `Erro no Resend (Ingresso): ${ticketRes.error.message}`,
+        };
+      }
+
+      const dripKeys: DripEmailType[] = [
+        "guia_preparacao",
+        "mensagem_professor",
+        "mapa_tri",
+        "checklist_evento",
+        "devolutiva_dia1",
+        "devolutiva_dia2",
+        "devolutiva_dia3",
+        "pos_evento",
+      ];
+
+      let counter = 2;
+      for (const tipo of dripKeys) {
+        const drip = generateDripEmailHtml({
+          tipo,
+          nomeAluno,
+          turma,
+          sala: turma === 1 ? eventoConfig.salaTurma1 : eventoConfig.salaTurma2,
+          horario:
+            turma === 1
+              ? eventoConfig.horarioTurma1
+              : eventoConfig.horarioTurma2,
+        });
+
+        const res = await resend.emails.send({
+          from: fromEmail,
+          to: [to],
+          subject: `[PREVIEW ${counter}/9] ${drip.subject}`,
+          html: drip.html,
+        });
+
+        if (res.error) {
+          return {
+            ok: false,
+            error: `Erro no Resend (${DRIP_EMAIL_LABELS[tipo].title}): ${res.error.message}`,
+          };
+        }
+
+        counter++;
+        await new Promise((r) => setTimeout(r, 400));
+      }
+
+      return {
+        ok: true,
+        message: `Todos os 9 e-mails de preview foram enviados para ${to}!`,
+      };
+    }
+
+    if (emailType === "ticket") {
+      const qrBuffer = await QRCode.toBuffer(mockInscricao.codigo_ingresso, {
+        width: 320,
+        margin: 1,
+      });
+
+      const ticketHtml = generateTicketEmailHtml({
+        inscricao: mockInscricao,
+        evento: {
+          data_sabado_1: "2026-09-12",
+          data_sabado_2: "2026-09-19",
+          data_sabado_3: "2026-09-26",
+          data_sabado_4: "2026-10-03",
+        },
+      });
+
+      const res = await resend.emails.send({
+        from: fromEmail,
+        to: [to],
+        subject: `[TESTE] 🎟️ Seu Ingresso — ${eventoConfig.titulo}`,
+        html: ticketHtml,
+        attachments: [
+          {
+            filename: "ingresso-qrcode.png",
+            content: qrBuffer.toString("base64"),
+            contentId: "ticket-qrcode",
+            contentType: "image/png",
+          },
+        ],
+      });
+
+      if (res.error) {
+        return { ok: false, error: res.error.message };
+      }
+
+      return { ok: true, message: `Ingresso de teste enviado para ${to}!` };
+    }
+
+    // Single Drip email
+    const drip = generateDripEmailHtml({
+      tipo: emailType as DripEmailType,
+      nomeAluno,
+      turma,
+      sala: turma === 1 ? eventoConfig.salaTurma1 : eventoConfig.salaTurma2,
+      horario:
+        turma === 1 ? eventoConfig.horarioTurma1 : eventoConfig.horarioTurma2,
+    });
+
+    const res = await resend.emails.send({
+      from: fromEmail,
+      to: [to],
+      subject: `[TESTE] ${drip.subject}`,
+      html: drip.html,
+    });
+
+    if (res.error) {
+      return { ok: false, error: res.error.message };
+    }
+
+    return {
+      ok: true,
+      message: `E-mail de teste (${emailType}) enviado para ${to}!`,
+    };
+  } catch (err) {
+    console.error("enviarPreviewEmailAction error:", err);
+    return {
+      ok: false,
+      error:
+        err instanceof Error
+          ? err.message
+          : "Erro desconhecido ao disparar e-mail.",
+    };
+  }
+}

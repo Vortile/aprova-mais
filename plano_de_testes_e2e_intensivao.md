@@ -120,7 +120,7 @@ pnpm test                      # roda os dois via turbo
    - `NEXT_PUBLIC_MERCADOPAGO_PUBLIC_KEY` = chave pública `APP_USR-...`
    - `MERCADOPAGO_WEBHOOK_SECRET` = configurar o secret real no painel do Mercado Pago e aqui
 2. Confirmar que o domínio de produção está acessível publicamente (o webhook do Mercado Pago precisa alcançar `https://seu-dominio/api/webhooks/mercadopago`).
-3. Avisar o Prof. Júnior / responsável financeiro que uma cobrança real de **R$ 500,00** vai ocorrer e será estornada logo em seguida.
+3. Avisar o Prof. Deuticilam / responsável financeiro que uma cobrança real de **R$ 500,00** vai ocorrer e será estornada logo em seguida.
 
 ### Execução
 
